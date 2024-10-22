@@ -22,6 +22,8 @@ class SonarePageState extends State<SonarePage> {
 
   double? _heading; // direction de la boussole
 
+  double? _bearing; // direction du cap (bearing)
+
   double _redAngle = 0; // angle du cercle rouge
 
   double _blueThickness = 10; //epaisseur cercle bleu
@@ -91,8 +93,7 @@ class SonarePageState extends State<SonarePage> {
     double distance = calculateDistance(from, to); // En m
 
     double speed = distance / (timeElapsed / 1000); // vitesse en m/s
-
-    print(speed * 3.6);
+    double speedKmh = speed * 3.6; // Convertir en km/h
 
     // double animationDuration =
     //     (timeElapsed * 0.8).toDouble(); // Animation à 80% du temps écoulé
@@ -117,7 +118,30 @@ class SonarePageState extends State<SonarePage> {
       });
     }
 
+    if (speedKmh >= 5) {
+      // Si la vitesse est supérieure ou égale à 5 km/h, utiliser le cap
+      _bearing = calculateBearing(from, to);
+      _mapController.rotate(-_bearing!);
+    }
+
     _lastUpdateTime = now;
+  }
+
+  double calculateBearing(LatLng from, LatLng to) {
+    double lat1 = from.latitude * (pi / 180.0);
+    double lon1 = from.longitude * (pi / 180.0);
+    double lat2 = to.latitude * (pi / 180.0);
+    double lon2 = to.longitude * (pi / 180.0);
+
+    double dLon = lon2 - lon1;
+
+    double y = sin(dLon) * cos(lat2);
+    double x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon);
+
+    double bearing = atan2(y, x);
+
+    return (bearing * (180.0 / pi) + 360.0) %
+        360.0; // Convertit en degrés et ramène dans la plage [0, 360]
   }
 
   double calculateDistance(LatLng start, LatLng end) {
@@ -143,14 +167,14 @@ class SonarePageState extends State<SonarePage> {
         setState(() {
           _heading = event.heading;
         });
-        _mapController.rotate(-_heading!);
+        // _mapController.rotate(-_heading!);
       }
     });
   }
 
   void _onMapReady() {
     _startListeningToLocationChanges();
-    _listenToCompass();
+    // _listenToCompass();
   }
 
   @override
@@ -216,8 +240,8 @@ class SonarePageState extends State<SonarePage> {
                                 height: 25.0,
                                 point: _currentPosition!,
                                 child: Transform.rotate(
-                                  angle: _heading != null
-                                      ? _heading! * (pi / 180)
+                                  angle: _bearing != null
+                                      ? _bearing! * (pi / 180)
                                       : 0.0, // Rotation inverse pour la flèche
                                   child: Icon(
                                     Icons.navigation, // Icône de flèche
