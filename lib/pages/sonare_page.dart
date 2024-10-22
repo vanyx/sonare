@@ -58,12 +58,82 @@ class SonarePageState extends State<SonarePage> {
       ),
     ).listen((Position position) {
       if (mounted) {
-        setState(() {
-          _currentPosition = LatLng(position.latitude, position.longitude);
-        });
-        _mapController.move(_currentPosition!, _zoomLevel);
+        LatLng newPosition = LatLng(position.latitude, position.longitude);
+
+        // fils de pute de fonction
+        _animateMarker(_currentPosition!, newPosition);
       }
     });
+  }
+
+  LatLng lerp(LatLng start, LatLng end, double t) {
+    return LatLng(
+      start.latitude + (end.latitude - start.latitude) * t,
+      start.longitude + (end.longitude - start.longitude) * t,
+    );
+  }
+
+  DateTime? _lastUpdateTime;
+
+  void _animateMarker(LatLng from, LatLng to) {
+    DateTime now = DateTime.now();
+
+    if (_lastUpdateTime == null) {
+      _lastUpdateTime = now;
+      setState(() {
+        _currentPosition = to;
+      });
+      return;
+    }
+
+    int timeElapsed = now.difference(_lastUpdateTime!).inMilliseconds;
+
+    double distance = calculateDistance(from, to); // En m
+
+    double speed = distance / (timeElapsed / 1000); // vitesse en m/s
+
+    print(speed * 3.6);
+
+    // double animationDuration =
+    //     (timeElapsed * 0.8).toDouble(); // Animation à 80% du temps écoulé
+    // // Limite la durée de l'animation pour éviter des animations trop longues ou trop courtes
+    // animationDuration =
+    //     animationDuration.clamp(500, 1500);
+
+    double animationDuration = 1000;
+
+    const int steps = 30;
+    double stepDuration = animationDuration / steps; // Durée par étape
+
+    for (int i = 0; i <= steps; i++) {
+      Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
+        double t = i / steps;
+        LatLng interpolatedPosition = lerp(from, to, t);
+        setState(() {
+          _currentPosition = interpolatedPosition;
+        });
+
+        _mapController.move(interpolatedPosition, _zoomLevel);
+      });
+    }
+
+    _lastUpdateTime = now;
+  }
+
+  double calculateDistance(LatLng start, LatLng end) {
+    const double R = 6371000; // Rayon de la Terre en mètres
+    double lat1 = start.latitude * (3.141592653589793 / 180.0);
+    double lat2 = end.latitude * (3.141592653589793 / 180.0);
+    double deltaLat =
+        (end.latitude - start.latitude) * (3.141592653589793 / 180.0);
+    double deltaLon =
+        (end.longitude - start.longitude) * (3.141592653589793 / 180.0);
+
+    double a = (sin(deltaLat / 2) * sin(deltaLat / 2)) +
+        cos(lat1) * cos(lat2) * (sin(deltaLon / 2) * sin(deltaLon / 2));
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    return R * c; // Distance en mètres
   }
 
   // Ecoute les changements de direction de la boussole
@@ -73,7 +143,6 @@ class SonarePageState extends State<SonarePage> {
         setState(() {
           _heading = event.heading;
         });
-        print(_heading);
         _mapController.rotate(-_heading!);
       }
     });

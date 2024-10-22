@@ -1,0 +1,1 @@
+ /Users/vanyx/Grut/Dev/sonare/.dart_tool/flutter_build/ae13a912f9c1ca97b9f0abe7b00c07a9/native_assets.yaml: 

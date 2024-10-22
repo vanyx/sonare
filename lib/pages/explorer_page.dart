@@ -49,12 +49,66 @@ class ExplorerPageState extends State<ExplorerPage> {
       return;
     }
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
     if (mounted) {
       setState(() {
         _currentPosition = LatLng(position.latitude, position.longitude);
       });
     }
+  }
+
+  LatLng lerp(LatLng start, LatLng end, double t) {
+    return LatLng(
+      start.latitude + (end.latitude - start.latitude) * t,
+      start.longitude + (end.longitude - start.longitude) * t,
+    );
+  }
+
+  DateTime? _lastUpdateTime;
+
+  void _animateMarker(LatLng from, LatLng to) {
+    DateTime now = DateTime.now();
+
+    if (_lastUpdateTime == null) {
+      _lastUpdateTime = now;
+      setState(() {
+        _currentPosition = to;
+      });
+      return;
+    }
+
+    int timeElapsed = now.difference(_lastUpdateTime!).inMilliseconds;
+
+    double distance = calculateDistance(from, to); // En m
+
+    double speed = distance / (timeElapsed / 1000); // vitesse en m/s
+
+    // double animationDuration =
+    //     (timeElapsed * 0.8).toDouble(); // Animation à 80% du temps écoulé
+    // // Limite la durée de l'animation pour éviter des animations trop longues ou trop courtes
+    // animationDuration =
+    //     animationDuration.clamp(500, 1500);
+
+    double animationDuration = 1000;
+
+    const int steps = 30;
+    double stepDuration = animationDuration / steps; // Durée par étape
+
+    for (int i = 0; i <= steps; i++) {
+      Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
+        double t = i / steps;
+        LatLng interpolatedPosition = lerp(from, to, t);
+        setState(() {
+          _currentPosition = interpolatedPosition;
+        });
+
+        if (!widget.explorerUserMovedCamera) {
+          _mapController.move(interpolatedPosition, _currentZoom);
+        }
+      });
+    }
+
+    _lastUpdateTime = now;
   }
 
   StreamSubscription<Position>? _positionSubscription;
@@ -66,13 +120,10 @@ class ExplorerPageState extends State<ExplorerPage> {
       ),
     ).listen((Position position) {
       if (mounted) {
-        setState(() {
-          _currentPosition = LatLng(position.latitude, position.longitude);
-        });
+        LatLng newPosition = LatLng(position.latitude, position.longitude);
 
-        if (!widget.explorerUserMovedCamera) {
-          _mapController.move(_currentPosition!, _currentZoom);
-        }
+        // fils de pute de fonction
+        _animateMarker(_currentPosition!, newPosition);
 
         // Check automatiquement les fish si l'user se deplace
         if (_lastPosition == null ||
@@ -311,7 +362,7 @@ class ExplorerPageState extends State<ExplorerPage> {
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.app',
+                  userAgentPackageName: 'com.vanyx.sonare',
                 ),
                 MarkerLayer(
                   markers: [

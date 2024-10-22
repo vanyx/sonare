@@ -202,7 +202,7 @@ class _MainPageState extends State<MainPage> {
       );
     } else {
       currentPage = SonarePage();
-      // currentPage = Test2Page();
+      // currentPage = TestPage();
     }
 
     return Scaffold(
