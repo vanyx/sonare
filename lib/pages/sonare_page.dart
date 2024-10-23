@@ -16,13 +16,20 @@ class SonarePageState extends State<SonarePage> {
 
   MapController _mapController = MapController();
 
+  StreamSubscription<Position>? _positionSubscription;
+
   double _zoomLevel = 16.0;
 
   double _sizeScreenCoef = 0.9; //min 0.0 et max 1.0
 
   double? _heading; // direction de la boussole
 
-  double? _bearing; // direction du cap (bearing)
+  /**
+   * _bearing donne l'angle de l'orientation de la carte
+   * il est fourni par le calcul du cap si l'user est en mouvement
+   * si non, il est donné par la boussole
+   */
+  double? _bearing;
 
   double _redAngle = 0; // angle du cercle rouge
 
@@ -32,10 +39,23 @@ class SonarePageState extends State<SonarePage> {
 
   bool _isMovingForSure = false;
 
+  DateTime? _lastUpdateTime;
+
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
+  }
+
+  void _onMapReady() {
+    _listeningToLocationChanges();
+    _listenToCompass();
+  }
+
+  @override
+  void dispose() {
+    _positionSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _getCurrentLocation() async {
@@ -53,9 +73,7 @@ class SonarePageState extends State<SonarePage> {
     }
   }
 
-  StreamSubscription<Position>? _positionSubscription;
-
-  void _startListeningToLocationChanges() {
+  void _listeningToLocationChanges() {
     _positionSubscription = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
@@ -70,14 +88,19 @@ class SonarePageState extends State<SonarePage> {
     });
   }
 
-  LatLng lerp(LatLng start, LatLng end, double t) {
-    return LatLng(
-      start.latitude + (end.latitude - start.latitude) * t,
-      start.longitude + (end.longitude - start.longitude) * t,
-    );
+  void _listenToCompass() {
+    FlutterCompass.events!.listen((CompassEvent event) {
+      if (mounted && event.heading != null) {
+        setState(() {
+          _heading = event.heading;
+          _bearing = _heading;
+        });
+        if (!_isMovingForSure) {
+          _mapController.rotate(-_heading!);
+        }
+      }
+    });
   }
-
-  DateTime? _lastUpdateTime;
 
   void _animateMarker(LatLng from, LatLng to) {
     DateTime now = DateTime.now();
@@ -92,10 +115,10 @@ class SonarePageState extends State<SonarePage> {
 
     int timeElapsed = now.difference(_lastUpdateTime!).inMilliseconds;
 
-    double distance = calculateDistance(from, to); // En m
+    double distance = calculateDistance(from, to); // en m
 
     double speed = distance / (timeElapsed / 1000); // vitesse en m/s
-    double speedKmh = speed * 3.6; // Convertir en km/h
+    double speedKmh = speed * 3.6; // en km/h
 
     // double animationDuration =
     //     (timeElapsed * 0.8).toDouble(); // Animation à 80% du temps écoulé
@@ -103,8 +126,7 @@ class SonarePageState extends State<SonarePage> {
     // animationDuration =
     //     animationDuration.clamp(500, 1500);
 
-    //@TODO:
-    // A ajuster/ameliorer
+    //@TODO: à ajuster/ameliorer
     if (speedKmh >= 10) {
       if (!_isMovingForSure) {
         if (mounted) {
@@ -114,7 +136,6 @@ class SonarePageState extends State<SonarePage> {
         }
       }
 
-      // Si la vitesse est supérieure ou égale à 5 km/h, utiliser le cap
       double newBearing = calculateBearing(from, to);
       _animateBearing(_bearing ?? 0, newBearing);
     } else {
@@ -128,7 +149,7 @@ class SonarePageState extends State<SonarePage> {
     double animationDuration = 1000;
 
     const int steps = 30;
-    double stepDuration = animationDuration / steps; // Durée par étape
+    double stepDuration = animationDuration / steps;
 
     for (int i = 0; i <= steps; i++) {
       Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
@@ -145,11 +166,9 @@ class SonarePageState extends State<SonarePage> {
     _lastUpdateTime = now;
   }
 
-  ////////////////////
-
   Future<void> _animateBearing(double from, double to) async {
-    const int steps = 30; // Nombre d'étapes dans l'animation
-    double stepDuration = 1000 / steps; // Durée de chaque étape en ms
+    const int steps = 30;
+    double stepDuration = 1000 / steps;
 
     for (int i = 0; i <= steps; i++) {
       Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
@@ -165,7 +184,13 @@ class SonarePageState extends State<SonarePage> {
     }
   }
 
-// Fonction pour interpoler l'angle (cap) de manière fluide
+  LatLng lerp(LatLng start, LatLng end, double t) {
+    return LatLng(
+      start.latitude + (end.latitude - start.latitude) * t,
+      start.longitude + (end.longitude - start.longitude) * t,
+    );
+  }
+
   double lerpAngle(double start, double end, double t) {
     double difference = end - start;
     if (difference.abs() > 180.0) {
@@ -178,8 +203,6 @@ class SonarePageState extends State<SonarePage> {
     double result = start + (end - start) * t;
     return result % 360.0;
   }
-
-  ////////////////
 
   double calculateBearing(LatLng from, LatLng to) {
     double lat1 = from.latitude * (pi / 180.0);
@@ -195,11 +218,11 @@ class SonarePageState extends State<SonarePage> {
     double bearing = atan2(y, x);
 
     return (bearing * (180.0 / pi) + 360.0) %
-        360.0; // Convertit en degrés et ramène dans la plage [0, 360]
+        360.0; // converti en degrés et ramène dans la plage [0, 360]
   }
 
   double calculateDistance(LatLng start, LatLng end) {
-    const double R = 6371000; // Rayon de la Terre en mètres
+    const double R = 6371000; // rayon de la Terre en mètres
     double lat1 = start.latitude * (3.141592653589793 / 180.0);
     double lat2 = end.latitude * (3.141592653589793 / 180.0);
     double deltaLat =
@@ -211,32 +234,7 @@ class SonarePageState extends State<SonarePage> {
         cos(lat1) * cos(lat2) * (sin(deltaLon / 2) * sin(deltaLon / 2));
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
-    return R * c; // Distance en mètres
-  }
-
-  // Ecoute les changements de direction de la boussole
-  void _listenToCompass() {
-    FlutterCompass.events!.listen((CompassEvent event) {
-      if (mounted && event.heading != null) {
-        setState(() {
-          _heading = event.heading;
-        });
-        if (!_isMovingForSure) {
-          _mapController.rotate(-_heading!);
-        }
-      }
-    });
-  }
-
-  void _onMapReady() {
-    _startListeningToLocationChanges();
-    _listenToCompass();
-  }
-
-  @override
-  void dispose() {
-    _positionSubscription?.cancel();
-    super.dispose();
+    return R * c; // distance en m
   }
 
   @override
@@ -262,7 +260,6 @@ class SonarePageState extends State<SonarePage> {
             : Stack(
                 alignment: Alignment.center,
                 children: [
-                  // carte
                   Container(
                     width: screenSize.width * _sizeScreenCoef,
                     height: screenSize.width * _sizeScreenCoef,
@@ -276,8 +273,8 @@ class SonarePageState extends State<SonarePage> {
                         options: MapOptions(
                           initialCenter: _currentPosition!,
                           initialZoom: _zoomLevel,
-                          minZoom: _zoomLevel, // Empêche de zoomer
-                          maxZoom: _zoomLevel, // Empêche de zoomer
+                          minZoom: _zoomLevel, // empeche de zoomer
+                          maxZoom: _zoomLevel, // empeche de zoomer
                           onMapReady: _onMapReady,
                           interactionOptions: InteractionOptions(
                             flags: 0,
@@ -296,13 +293,11 @@ class SonarePageState extends State<SonarePage> {
                                 height: 25.0,
                                 point: _currentPosition!,
                                 child: Transform.rotate(
-                                  angle: (_isMovingForSure && _bearing != null)
+                                  angle: _bearing != null
                                       ? _bearing! * (pi / 180)
-                                      : (_heading != null
-                                          ? _heading! * (pi / 180)
-                                          : 0.0),
+                                      : 0.0, // rotation inverse pour la flèche,
                                   child: Icon(
-                                    Icons.navigation, // Icône de flèche
+                                    Icons.navigation,
                                     color:
                                         const Color.fromARGB(255, 197, 14, 14),
                                     size: 30.0,
@@ -324,10 +319,10 @@ class SonarePageState extends State<SonarePage> {
                   Positioned(
                     left: redCirclePosition.dx -
                         (_redThickness /
-                            2), // Position du cercle (moins le rayon)
+                            2), // position du cercle (moins le rayon)
                     top: redCirclePosition.dy -
                         (_redThickness /
-                            2), // Position du cercle (moins le rayon)
+                            2), // position du cercle (moins le rayon)
                     child: Container(
                       width: _redThickness,
                       height: _redThickness,

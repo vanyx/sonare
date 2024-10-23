@@ -4,7 +4,7 @@ import 'pages/main_page.dart';
 
 Future main() async {
   // Mode immersif
-  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   // Desactiver la rotation de l'ecran
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
