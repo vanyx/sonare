@@ -37,9 +37,15 @@ class SonarePageState extends State<SonarePage> {
 
   double _redThickness = 20; //diametre cercle rouge
 
+  DateTime? _lastUpdateTime;
+
   bool _isMovingForSure = false;
 
-  DateTime? _lastUpdateTime;
+  int _movingCount = 0;
+
+  int _stoppedCount = 0;
+
+  final int _transitionThreshold = 3; // nombre de confirmations nécessaires
 
   @override
   void initState() {
@@ -93,9 +99,11 @@ class SonarePageState extends State<SonarePage> {
       if (mounted && event.heading != null) {
         setState(() {
           _heading = event.heading;
-          _bearing = _heading;
         });
-        if (!_isMovingForSure) {
+        if (!_isMovingForSure && _heading != null) {
+          setState(() {
+            _bearing = _heading;
+          });
           _mapController.rotate(-_heading!);
         }
       }
@@ -127,19 +135,27 @@ class SonarePageState extends State<SonarePage> {
     //     animationDuration.clamp(500, 1500);
 
     //@TODO: à ajuster/ameliorer
-    if (speedKmh >= 10) {
-      if (!_isMovingForSure) {
-        if (mounted) {
-          setState(() {
-            _isMovingForSure = true;
-          });
-        }
+    if (speedKmh >= 5) {
+      _stoppedCount = 0;
+      _movingCount++;
+
+      // l'user se deplace
+      if (_movingCount >= _transitionThreshold && !_isMovingForSure) {
+        setState(() {
+          _isMovingForSure = true;
+        });
       }
 
-      double newBearing = calculateBearing(from, to);
-      _animateBearing(_bearing ?? 0, newBearing);
+      if (_isMovingForSure) {
+        double newBearing = calculateBearing(from, to);
+        _animateBearing(_bearing ?? 0, newBearing);
+      }
     } else {
-      if (mounted) {
+      _movingCount = 0;
+      _stoppedCount++;
+
+      //l'user est arrete
+      if (_stoppedCount >= _transitionThreshold && _isMovingForSure) {
         setState(() {
           _isMovingForSure = false;
         });
