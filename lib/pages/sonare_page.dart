@@ -16,7 +16,7 @@ class SonarePageState extends State<SonarePage> {
 
   MapController _mapController = MapController();
 
-  double _zoomLevel = 15.0;
+  double _zoomLevel = 16.0;
 
   double _sizeScreenCoef = 0.9; //min 0.0 et max 1.0
 
@@ -29,6 +29,8 @@ class SonarePageState extends State<SonarePage> {
   double _blueThickness = 10; //epaisseur cercle bleu
 
   double _redThickness = 20; //diametre cercle rouge
+
+  bool _isMovingForSure = false;
 
   @override
   void initState() {
@@ -101,6 +103,28 @@ class SonarePageState extends State<SonarePage> {
     // animationDuration =
     //     animationDuration.clamp(500, 1500);
 
+    //@TODO:
+    // A ajuster/ameliorer
+    if (speedKmh >= 10) {
+      if (!_isMovingForSure) {
+        if (mounted) {
+          setState(() {
+            _isMovingForSure = true;
+          });
+        }
+      }
+
+      // Si la vitesse est supérieure ou égale à 5 km/h, utiliser le cap
+      double newBearing = calculateBearing(from, to);
+      _animateBearing(_bearing ?? 0, newBearing);
+    } else {
+      if (mounted) {
+        setState(() {
+          _isMovingForSure = false;
+        });
+      }
+    }
+
     double animationDuration = 1000;
 
     const int steps = 30;
@@ -118,14 +142,44 @@ class SonarePageState extends State<SonarePage> {
       });
     }
 
-    if (speedKmh >= 5) {
-      // Si la vitesse est supérieure ou égale à 5 km/h, utiliser le cap
-      _bearing = calculateBearing(from, to);
-      _mapController.rotate(-_bearing!);
-    }
-
     _lastUpdateTime = now;
   }
+
+  ////////////////////
+
+  Future<void> _animateBearing(double from, double to) async {
+    const int steps = 30; // Nombre d'étapes dans l'animation
+    double stepDuration = 1000 / steps; // Durée de chaque étape en ms
+
+    for (int i = 0; i <= steps; i++) {
+      Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
+        if (!mounted) return;
+
+        double t = i / steps;
+        double interpolatedBearing = lerpAngle(from, to, t);
+        setState(() {
+          _bearing = interpolatedBearing;
+        });
+        _mapController.rotate(-interpolatedBearing);
+      });
+    }
+  }
+
+// Fonction pour interpoler l'angle (cap) de manière fluide
+  double lerpAngle(double start, double end, double t) {
+    double difference = end - start;
+    if (difference.abs() > 180.0) {
+      if (difference > 0) {
+        start += 360.0;
+      } else {
+        end += 360.0;
+      }
+    }
+    double result = start + (end - start) * t;
+    return result % 360.0;
+  }
+
+  ////////////////
 
   double calculateBearing(LatLng from, LatLng to) {
     double lat1 = from.latitude * (pi / 180.0);
@@ -167,14 +221,16 @@ class SonarePageState extends State<SonarePage> {
         setState(() {
           _heading = event.heading;
         });
-        // _mapController.rotate(-_heading!);
+        if (!_isMovingForSure) {
+          _mapController.rotate(-_heading!);
+        }
       }
     });
   }
 
   void _onMapReady() {
     _startListeningToLocationChanges();
-    // _listenToCompass();
+    _listenToCompass();
   }
 
   @override
@@ -240,13 +296,16 @@ class SonarePageState extends State<SonarePage> {
                                 height: 25.0,
                                 point: _currentPosition!,
                                 child: Transform.rotate(
-                                  angle: _bearing != null
+                                  angle: (_isMovingForSure && _bearing != null)
                                       ? _bearing! * (pi / 180)
-                                      : 0.0, // Rotation inverse pour la flèche
+                                      : (_heading != null
+                                          ? _heading! * (pi / 180)
+                                          : 0.0),
                                   child: Icon(
                                     Icons.navigation, // Icône de flèche
-                                    color: Colors.blue,
-                                    size: 40.0,
+                                    color:
+                                        const Color.fromARGB(255, 197, 14, 14),
+                                    size: 30.0,
                                   ),
                                 ),
                               ),
