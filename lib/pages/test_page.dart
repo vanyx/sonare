@@ -45,27 +45,22 @@ class _TestPageState extends State<TestPage> {
   }
 
   /**
-   * Trouvé depuis le package Flutter 'flutter_map_math'
-   * 
+   * Trouve depuis le package Flutter 'flutter_map_math'
    * https://github.com/Ujjwalsharma2210/flutter_map_math/blob/main/lib/flutter_geo_math.dart
    */
-  double bearingBetween(double lat1, double lon1, double lat2, double lon2) {
+  double azimutBetweenCenterAndPointRadian(
+      double lat1, double lon1, double lat2, double lon2) {
     var dLon = degreesToRadians(lon2 - lon1);
     var y = sin(dLon) * cos(degreesToRadians(lat2));
     var x = cos(degreesToRadians(lat1)) * sin(degreesToRadians(lat2)) -
         sin(degreesToRadians(lat1)) * cos(degreesToRadians(lat2)) * cos(dLon);
     var angle = atan2(y, x);
-    return (radiansToDegrees(angle) + 360) % 360;
+    return angle - pi / 2;
   }
 
   /// Convert degrees to radians
   double degreesToRadians(double degrees) {
     return degrees * pi / 180;
-  }
-
-  /// converts radians to degrees
-  double radiansToDegrees(double radians) {
-    return radians * 180 / pi;
   }
 
   Future<void> _getCurrentLocation() async {
@@ -99,21 +94,18 @@ class _TestPageState extends State<TestPage> {
   }
 
   void updateRedCircleAngle() {
-    LatLng targetPosition = LatLng(47.744281802357015, -3.3593437166432123);
+    LatLng targetPosition = LatLng(47.75884822618481, -3.1212000252345042);
 
     if (_currentPosition != null) {
-      final double _redAngleDegrees = bearingBetween(
+      final double newAngle = azimutBetweenCenterAndPointRadian(
           _currentPosition!.latitude,
           _currentPosition!.longitude,
           targetPosition.latitude,
           targetPosition.longitude);
 
-      final double newAngle = _redAngleDegrees * (pi / 180);
-
       if (mounted) {
-        // Vérification si le widget est toujours monté
         setState(() {
-          _redAngle = newAngle - pi / 2;
+          _redAngle = newAngle;
         });
       }
     }

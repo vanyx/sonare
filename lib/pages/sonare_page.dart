@@ -47,6 +47,8 @@ class SonarePageState extends State<SonarePage> {
 
   final int _transitionThreshold = 3; // nombre de confirmations nécessaires
 
+  LatLng targetPosition = LatLng(47.68069206739682, -3.0024104596925625);
+
   @override
   void initState() {
     super.initState();
@@ -56,12 +58,47 @@ class SonarePageState extends State<SonarePage> {
   void _onMapReady() {
     _listeningToLocationChanges();
     _listenToCompass();
+    updateRedCircleAngle();
   }
 
   @override
   void dispose() {
     _positionSubscription?.cancel();
     super.dispose();
+  }
+
+  void updateRedCircleAngle() {
+    if (_currentPosition != null) {
+      final double newAngle = azimutBetweenCenterAndPointRadian(
+          _currentPosition!.latitude,
+          _currentPosition!.longitude,
+          targetPosition.latitude,
+          targetPosition.longitude);
+
+      if (mounted) {
+        setState(() {
+          _redAngle = newAngle - degreesToRadians(_bearing!);
+        });
+      }
+    }
+  }
+
+  /**
+   * https://github.com/Ujjwalsharma2210/flutter_map_math/blob/main/lib/flutter_geo_math.dart
+   */
+  double azimutBetweenCenterAndPointRadian(
+      double lat1, double lon1, double lat2, double lon2) {
+    var dLon = degreesToRadians(lon2 - lon1);
+    var y = sin(dLon) * cos(degreesToRadians(lat2));
+    var x = cos(degreesToRadians(lat1)) * sin(degreesToRadians(lat2)) -
+        sin(degreesToRadians(lat1)) * cos(degreesToRadians(lat2)) * cos(dLon);
+    var angle = atan2(y, x);
+    return angle - pi / 2;
+  }
+
+  /// Convert degrees to radians
+  double degreesToRadians(double degrees) {
+    return degrees * pi / 180;
   }
 
   Future<void> _getCurrentLocation() async {
@@ -104,6 +141,7 @@ class SonarePageState extends State<SonarePage> {
           setState(() {
             _bearing = _heading;
           });
+          updateRedCircleAngle();
           _mapController.rotate(-_heading!);
         }
       }
@@ -195,6 +233,7 @@ class SonarePageState extends State<SonarePage> {
         setState(() {
           _bearing = interpolatedBearing;
         });
+        updateRedCircleAngle();
         _mapController.rotate(-interpolatedBearing);
       });
     }
