@@ -128,12 +128,6 @@
       "languageVersion": "3.0"
     },
     {
-      "name": "flutter_map_location_marker",
-      "rootUri": "file:///Users/vanyx/.pub-cache/hosted/pub.dev/flutter_map_location_marker-9.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.0"
-    },
-    {
       "name": "flutter_test",
       "rootUri": "file:///Users/vanyx/Grut/Tools/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -440,7 +434,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-10-22T06:20:51.125610Z",
+  "generated": "2024-10-24T11:07:50.540995Z",
   "generator": "pub",
   "generatorVersion": "3.5.3",
   "flutterRoot": "file:///Users/vanyx/Grut/Tools/flutter",
