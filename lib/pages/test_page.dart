@@ -11,7 +11,7 @@ class TestPage extends StatefulWidget {
 }
 
 class _TestPageState extends State<TestPage> {
-  LatLng? _currentPosition;
+  LatLng? _currentPosition = LatLng(47.66530597396649, -2.7511620191238237);
 
   MapController _mapController = MapController();
 
@@ -27,15 +27,40 @@ class _TestPageState extends State<TestPage> {
 
   double _redThickness = 20; //diametre cercle rouge
 
+  LatLng targetPosition = LatLng(47.660567026203516, -2.7468716259968713);
+
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    // _getCurrentLocation();
   }
 
   void _onMapReady() {
-    _listeningToLocationChanges();
+    // _listeningToLocationChanges();
     updateRedCircleAngle();
+    checkTargetVisibility();
+  }
+
+  bool checkTargetVisibility() {
+    final double mapRadiusInPixels =
+        (MediaQuery.of(context).size.width * _sizeScreenCoef) / 2;
+
+    // Calculer la distance géographique entre currentPosition et targetPosition
+    final distanceInMeters = const Distance().as(
+      LengthUnit.Meter,
+      _currentPosition!,
+      targetPosition,
+    );
+
+    // Conversion de la distance en pixels
+    final pixelDistance = distanceInMeters /
+        (156543.03392 *
+            cos(_currentPosition!.latitude * pi / 180) /
+            pow(2, _zoomLevel));
+
+    // Comparer la distance en pixels avec le rayon du cercle
+    bool result = pixelDistance <= mapRadiusInPixels;
+    return result;
   }
 
   @override
@@ -94,8 +119,6 @@ class _TestPageState extends State<TestPage> {
   }
 
   void updateRedCircleAngle() {
-    LatLng targetPosition = LatLng(47.75884822618481, -3.1212000252345042);
-
     if (_currentPosition != null) {
       final double newAngle = azimutBetweenCenterAndPointRadian(
           _currentPosition!.latitude,
@@ -169,6 +192,16 @@ class _TestPageState extends State<TestPage> {
                                 child: Icon(
                                   Icons.navigation,
                                   color: const Color.fromARGB(255, 197, 14, 14),
+                                  size: 30.0,
+                                ),
+                              ),
+                              Marker(
+                                width: 25.0,
+                                height: 25.0,
+                                point: targetPosition,
+                                child: Icon(
+                                  Icons.coronavirus,
+                                  color: const Color.fromARGB(255, 26, 55, 215),
                                   size: 30.0,
                                 ),
                               ),

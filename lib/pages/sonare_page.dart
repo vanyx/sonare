@@ -47,7 +47,7 @@ class SonarePageState extends State<SonarePage> {
 
   final int _transitionThreshold = 3; // nombre de confirmations nécessaires
 
-  LatLng targetPosition = LatLng(47.68069206739682, -3.0024104596925625);
+  LatLng targetPosition = LatLng(47.71571000726854, -3.0586985757323966);
 
   @override
   void initState() {
@@ -65,6 +65,28 @@ class SonarePageState extends State<SonarePage> {
   void dispose() {
     _positionSubscription?.cancel();
     super.dispose();
+  }
+
+  bool checkTargetVisibility() {
+    final double mapRadiusInPixels =
+        (MediaQuery.of(context).size.width * _sizeScreenCoef) / 2;
+
+    // Calculer la distance géographique entre currentPosition et targetPosition
+    final distanceInMeters = const Distance().as(
+      LengthUnit.Meter,
+      _currentPosition!,
+      targetPosition,
+    );
+
+    // Conversion de la distance en pixels
+    final pixelDistance = distanceInMeters /
+        (156543.03392 *
+            cos(_currentPosition!.latitude * pi / 180) /
+            pow(2, _zoomLevel));
+
+    // Comparer la distance en pixels avec le rayon du cercle
+    bool result = pixelDistance <= mapRadiusInPixels;
+    return result;
   }
 
   void updateRedCircleAngle() {
@@ -359,6 +381,16 @@ class SonarePageState extends State<SonarePage> {
                                   ),
                                 ),
                               ),
+                              Marker(
+                                width: 25.0,
+                                height: 25.0,
+                                point: targetPosition,
+                                child: Icon(
+                                  Icons.mark_email_read_rounded,
+                                  color: const Color.fromARGB(255, 232, 23, 23),
+                                  size: 30.0,
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -371,22 +403,23 @@ class SonarePageState extends State<SonarePage> {
                     painter: CirclePainter(center, _blueRadius, _blueThickness),
                   ),
                   // cercle rouge
-                  Positioned(
-                    left: redCirclePosition.dx -
-                        (_redThickness /
-                            2), // position du cercle (moins le rayon)
-                    top: redCirclePosition.dy -
-                        (_redThickness /
-                            2), // position du cercle (moins le rayon)
-                    child: Container(
-                      width: _redThickness,
-                      height: _redThickness,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.red,
+                  if (!checkTargetVisibility())
+                    Positioned(
+                      left: redCirclePosition.dx -
+                          (_redThickness /
+                              2), // position du cercle (moins le rayon)
+                      top: redCirclePosition.dy -
+                          (_redThickness /
+                              2), // position du cercle (moins le rayon)
+                      child: Container(
+                        width: _redThickness,
+                        height: _redThickness,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color.fromARGB(255, 232, 23, 23),
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
       ),
