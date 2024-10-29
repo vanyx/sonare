@@ -25,10 +25,11 @@ class FloatingMenuButton extends StatelessWidget {
           },
         );
       },
-      backgroundColor: Colors.white,
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       child: Icon(
         Icons.menu,
         size: 28.0,
+        color: const Color.fromARGB(255, 0, 0, 0),
       ),
     );
   }

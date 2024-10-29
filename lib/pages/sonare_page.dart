@@ -45,7 +45,8 @@ class SonarePageState extends State<SonarePage> {
 
   int _stoppedCount = 0;
 
-  final int _transitionThreshold = 3; // nombre de confirmations nécessaires
+  final int _transitionThreshold =
+      3; // nombre de confirmations necessaires pour le cap
 
   LatLng targetPosition = LatLng(47.71571000726854, -3.0586985757323966);
 
@@ -65,62 +66,6 @@ class SonarePageState extends State<SonarePage> {
   void dispose() {
     _positionSubscription?.cancel();
     super.dispose();
-  }
-
-  bool checkTargetVisibility() {
-    final double mapRadiusInPixels =
-        (MediaQuery.of(context).size.width * _sizeScreenCoef) / 2;
-
-    // Calculer la distance géographique entre currentPosition et targetPosition
-    final distanceInMeters = const Distance().as(
-      LengthUnit.Meter,
-      _currentPosition!,
-      targetPosition,
-    );
-
-    // Conversion de la distance en pixels
-    final pixelDistance = distanceInMeters /
-        (156543.03392 *
-            cos(_currentPosition!.latitude * pi / 180) /
-            pow(2, _zoomLevel));
-
-    // Comparer la distance en pixels avec le rayon du cercle
-    bool result = pixelDistance <= mapRadiusInPixels;
-    return result;
-  }
-
-  void updateRedCircleAngle() {
-    if (_currentPosition != null) {
-      final double newAngle = azimutBetweenCenterAndPointRadian(
-          _currentPosition!.latitude,
-          _currentPosition!.longitude,
-          targetPosition.latitude,
-          targetPosition.longitude);
-
-      if (mounted) {
-        setState(() {
-          _redAngle = newAngle - degreesToRadians(_bearing!);
-        });
-      }
-    }
-  }
-
-  /**
-   * https://github.com/Ujjwalsharma2210/flutter_map_math/blob/main/lib/flutter_geo_math.dart
-   */
-  double azimutBetweenCenterAndPointRadian(
-      double lat1, double lon1, double lat2, double lon2) {
-    var dLon = degreesToRadians(lon2 - lon1);
-    var y = sin(dLon) * cos(degreesToRadians(lat2));
-    var x = cos(degreesToRadians(lat1)) * sin(degreesToRadians(lat2)) -
-        sin(degreesToRadians(lat1)) * cos(degreesToRadians(lat2)) * cos(dLon);
-    var angle = atan2(y, x);
-    return angle - pi / 2;
-  }
-
-  /// Convert degrees to radians
-  double degreesToRadians(double degrees) {
-    return degrees * pi / 180;
   }
 
   Future<void> _getCurrentLocation() async {
@@ -214,7 +159,7 @@ class SonarePageState extends State<SonarePage> {
       _movingCount = 0;
       _stoppedCount++;
 
-      //l'user est arrete
+      //l'user est arreté
       if (_stoppedCount >= _transitionThreshold && _isMovingForSure) {
         setState(() {
           _isMovingForSure = false;
@@ -261,6 +206,61 @@ class SonarePageState extends State<SonarePage> {
     }
   }
 
+  bool checkTargetVisibility(LatLng toCheck) {
+    final double mapRadiusInPixels =
+        (MediaQuery.of(context).size.width * _sizeScreenCoef) / 2;
+
+    // Calcul la distance geographique entre currentPosition et la position cible
+    final distanceInMeters = const Distance().as(
+      LengthUnit.Meter,
+      _currentPosition!,
+      toCheck,
+    );
+
+    // Conversion de la distance en pixels
+    final pixelDistance = distanceInMeters /
+        (156543.03392 *
+            cos(_currentPosition!.latitude * pi / 180) /
+            pow(2, _zoomLevel));
+
+    // Comparer la distance en pixels avec le rayon du cercle
+    bool result = pixelDistance <= mapRadiusInPixels;
+    return result;
+  }
+
+  void updateRedCircleAngle() {
+    if (_currentPosition != null) {
+      final double newAngle = azimutBetweenCenterAndPointRadian(
+          _currentPosition!.latitude,
+          _currentPosition!.longitude,
+          targetPosition.latitude,
+          targetPosition.longitude);
+
+      if (mounted) {
+        setState(() {
+          _redAngle = newAngle - degreesToRadians(_bearing!);
+        });
+      }
+    }
+  }
+
+  /**
+   * https://github.com/Ujjwalsharma2210/flutter_map_math/blob/main/lib/flutter_geo_math.dart
+   */
+  double azimutBetweenCenterAndPointRadian(
+      double lat1, double lon1, double lat2, double lon2) {
+    var dLon = degreesToRadians(lon2 - lon1);
+    var y = sin(dLon) * cos(degreesToRadians(lat2));
+    var x = cos(degreesToRadians(lat1)) * sin(degreesToRadians(lat2)) -
+        sin(degreesToRadians(lat1)) * cos(degreesToRadians(lat2)) * cos(dLon);
+    var angle = atan2(y, x);
+    return angle - pi / 2;
+  }
+
+  double degreesToRadians(double degrees) {
+    return degrees * pi / 180;
+  }
+
   LatLng lerp(LatLng start, LatLng end, double t) {
     return LatLng(
       start.latitude + (end.latitude - start.latitude) * t,
@@ -295,11 +295,11 @@ class SonarePageState extends State<SonarePage> {
     double bearing = atan2(y, x);
 
     return (bearing * (180.0 / pi) + 360.0) %
-        360.0; // converti en degrés et ramène dans la plage [0, 360]
+        360.0; // converti en degres et ramene dans la plage [0, 360]
   }
 
   double calculateDistance(LatLng start, LatLng end) {
-    const double R = 6371000; // rayon de la Terre en mètres
+    const double R = 6371000; // rayon de la Terre en m
     double lat1 = start.latitude * (3.141592653589793 / 180.0);
     double lat2 = end.latitude * (3.141592653589793 / 180.0);
     double deltaLat =
@@ -331,6 +331,7 @@ class SonarePageState extends State<SonarePage> {
     );
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 242, 246),
       body: Center(
         child: _currentPosition == null
             ? CircularProgressIndicator()
@@ -358,11 +359,16 @@ class SonarePageState extends State<SonarePage> {
                           ),
                         ),
                         children: [
+                          // TileLayer(
+                          //   urlTemplate:
+                          //       'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          //   userAgentPackageName: 'com.vanyx.sonare',
+                          // ),
+
                           TileLayer(
-                            urlTemplate:
-                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            userAgentPackageName: 'com.vanyx.sonare',
-                          ),
+                              urlTemplate:
+                                  'https://a.tiles.mapbox.com/styles/v1/strava/clvman4pm01ga01qr5te2fpma/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3RyYXZhIiwiYSI6ImNtMWp3M2UyZDAydzIyam9zaTh6OTNiZm0ifQ.AOpRu_eeNKWg6r-4GS52Kw'),
+
                           MarkerLayer(
                             markers: [
                               Marker(
@@ -372,7 +378,7 @@ class SonarePageState extends State<SonarePage> {
                                 child: Transform.rotate(
                                   angle: _bearing != null
                                       ? _bearing! * (pi / 180)
-                                      : 0.0, // rotation inverse pour la flèche,
+                                      : 0.0, // rotation inverse pour la fleche
                                   child: Icon(
                                     Icons.navigation,
                                     color:
@@ -403,7 +409,7 @@ class SonarePageState extends State<SonarePage> {
                     painter: CirclePainter(center, _blueRadius, _blueThickness),
                   ),
                   // cercle rouge
-                  if (!checkTargetVisibility())
+                  if (!checkTargetVisibility(targetPosition))
                     Positioned(
                       left: redCirclePosition.dx -
                           (_redThickness /
@@ -437,7 +443,7 @@ class CirclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color.fromARGB(255, 21, 66, 180)
+      ..color = const Color.fromARGB(255, 0, 0, 0)
       ..style = PaintingStyle.stroke
       ..strokeWidth = thickness;
 

@@ -30,16 +30,27 @@ class ExplorerPageState extends State<ExplorerPage> {
   List<LatLng> _sonare = [];
   List<LatLng> _waze = [];
   int _maxRetry = 3;
+  double distanceThreshold = 200.0; // Seuil en m
+
   MapController _mapController = MapController();
   Timer? _debounceTimer;
 
   LatLng? _lastPosition;
-  double distanceThreshold = 200.0; // Seuil en mètres
+  DateTime? _lastUpdateTime;
+
+  StreamSubscription<Position>? _positionSubscription;
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    _positionSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _getCurrentLocation() async {
@@ -56,62 +67,6 @@ class ExplorerPageState extends State<ExplorerPage> {
       });
     }
   }
-
-  LatLng lerp(LatLng start, LatLng end, double t) {
-    return LatLng(
-      start.latitude + (end.latitude - start.latitude) * t,
-      start.longitude + (end.longitude - start.longitude) * t,
-    );
-  }
-
-  DateTime? _lastUpdateTime;
-
-  void _animateMarker(LatLng from, LatLng to) {
-    DateTime now = DateTime.now();
-
-    if (_lastUpdateTime == null) {
-      _lastUpdateTime = now;
-      setState(() {
-        _currentPosition = to;
-      });
-      return;
-    }
-
-    int timeElapsed = now.difference(_lastUpdateTime!).inMilliseconds;
-
-    double distance = calculateDistance(from, to); // En m
-
-    double speed = distance / (timeElapsed / 1000); // vitesse en m/s
-
-    // double animationDuration =
-    //     (timeElapsed * 0.8).toDouble(); // Animation à 80% du temps écoulé
-    // // Limite la durée de l'animation pour éviter des animations trop longues ou trop courtes
-    // animationDuration =
-    //     animationDuration.clamp(500, 1500);
-
-    double animationDuration = 1000;
-
-    const int steps = 30;
-    double stepDuration = animationDuration / steps; // Durée par étape
-
-    for (int i = 0; i <= steps; i++) {
-      Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
-        double t = i / steps;
-        LatLng interpolatedPosition = lerp(from, to, t);
-        setState(() {
-          _currentPosition = interpolatedPosition;
-        });
-
-        if (!widget.explorerUserMovedCamera) {
-          _mapController.move(interpolatedPosition, _currentZoom);
-        }
-      });
-    }
-
-    _lastUpdateTime = now;
-  }
-
-  StreamSubscription<Position>? _positionSubscription;
 
   void _startListeningToLocationChanges() {
     _positionSubscription = Geolocator.getPositionStream(
@@ -140,27 +95,43 @@ class ExplorerPageState extends State<ExplorerPage> {
     });
   }
 
-  double calculateDistance(LatLng start, LatLng end) {
-    const double R = 6371000; // Rayon de la Terre en mètres
-    double lat1 = start.latitude * (3.141592653589793 / 180.0);
-    double lat2 = end.latitude * (3.141592653589793 / 180.0);
-    double deltaLat =
-        (end.latitude - start.latitude) * (3.141592653589793 / 180.0);
-    double deltaLon =
-        (end.longitude - start.longitude) * (3.141592653589793 / 180.0);
+  void _animateMarker(LatLng from, LatLng to) {
+    DateTime now = DateTime.now();
 
-    double a = (sin(deltaLat / 2) * sin(deltaLat / 2)) +
-        cos(lat1) * cos(lat2) * (sin(deltaLon / 2) * sin(deltaLon / 2));
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    if (_lastUpdateTime == null) {
+      _lastUpdateTime = now;
+      setState(() {
+        _currentPosition = to;
+      });
+      return;
+    }
 
-    return R * c; // Distance en mètres
-  }
+    // double animationDuration =
+    //     (timeElapsed * 0.8).toDouble(); // Animation à 80% du temps écoulé
+    // // Limite la durée de l'animation pour éviter des animations trop longues ou trop courtes
+    // animationDuration =
+    //     animationDuration.clamp(500, 1500);
 
-  @override
-  void dispose() {
-    _debounceTimer?.cancel();
-    _positionSubscription?.cancel();
-    super.dispose();
+    double animationDuration = 1000;
+
+    const int steps = 30;
+    double stepDuration = animationDuration / steps; // Duree par étape
+
+    for (int i = 0; i <= steps; i++) {
+      Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
+        double t = i / steps;
+        LatLng interpolatedPosition = lerp(from, to, t);
+        setState(() {
+          _currentPosition = interpolatedPosition;
+        });
+
+        if (!widget.explorerUserMovedCamera) {
+          _mapController.move(interpolatedPosition, _currentZoom);
+        }
+      });
+    }
+
+    _lastUpdateTime = now;
   }
 
   void _onMapChanged(MapCamera camera, bool? hasGesture) {
@@ -220,12 +191,9 @@ class ExplorerPageState extends State<ExplorerPage> {
         if (retries > 0) {
           await Future.delayed(Duration(milliseconds: 200));
           _fetchSonare(north, south, west, east, retries - 1);
-        } else {
-          throw Exception('Failed to load fish data after multiple attempts');
         }
       }
     } catch (e) {
-      print(e);
       if (retries > 0) {
         await Future.delayed(Duration(milliseconds: 200));
         _fetchSonare(north, south, west, east, retries - 1);
@@ -274,8 +242,6 @@ class ExplorerPageState extends State<ExplorerPage> {
         if (retries > 0) {
           await Future.delayed(Duration(milliseconds: 200));
           _fetchWaze(north, south, west, east, retries - 1);
-        } else {
-          throw Exception('Failed to load fish data after multiple attempts');
         }
       }
     } catch (e) {
@@ -295,14 +261,12 @@ class ExplorerPageState extends State<ExplorerPage> {
       const int steps = 30;
       double stepDuration = duration / steps;
 
-      // position actuelle de la caméra
       LatLng currentCenter = _mapController.camera.center;
       double currentZoom = _mapController.camera.zoom;
       double currentRotation = _mapController.camera.rotation;
 
       double targetRotation = 0.0;
 
-      // animation
       for (int i = 0; i <= steps; i++) {
         double t = i / steps;
 
@@ -324,11 +288,33 @@ class ExplorerPageState extends State<ExplorerPage> {
 
         _mapController.rotate(interpolatedRotation);
 
-        // Pause entre chaque étape
         await Future.delayed(Duration(milliseconds: stepDuration.toInt()));
       }
     }
     widget.userMovedCamera(false);
+  }
+
+  LatLng lerp(LatLng start, LatLng end, double t) {
+    return LatLng(
+      start.latitude + (end.latitude - start.latitude) * t,
+      start.longitude + (end.longitude - start.longitude) * t,
+    );
+  }
+
+  double calculateDistance(LatLng start, LatLng end) {
+    const double R = 6371000; // Rayon de la Terre en m
+    double lat1 = start.latitude * (3.141592653589793 / 180.0);
+    double lat2 = end.latitude * (3.141592653589793 / 180.0);
+    double deltaLat =
+        (end.latitude - start.latitude) * (3.141592653589793 / 180.0);
+    double deltaLon =
+        (end.longitude - start.longitude) * (3.141592653589793 / 180.0);
+
+    double a = (sin(deltaLat / 2) * sin(deltaLat / 2)) +
+        cos(lat1) * cos(lat2) * (sin(deltaLon / 2) * sin(deltaLon / 2));
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    return R * c; // Distance en m
   }
 
   @override
@@ -356,14 +342,17 @@ class ExplorerPageState extends State<ExplorerPage> {
                 maxZoom: 18.0,
                 onPositionChanged: _onMapChanged,
                 onMapReady: _startListeningToLocationChanges,
-                onTap: (tapPosition, point) {}, // Ajout pour éviter l'erreur
+                onTap: (tapPosition, point) {},
                 onLongPress: (tapPosition, point) {},
               ),
               children: [
+                // TileLayer(
+                //   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                //   userAgentPackageName: 'com.vanyx.sonare',
+                // ),
                 TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.vanyx.sonare',
-                ),
+                    urlTemplate:
+                        'https://a.tiles.mapbox.com/styles/v1/strava/clvman4pm01ga01qr5te2fpma/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3RyYXZhIiwiYSI6ImNtMWp3M2UyZDAydzIyam9zaTh6OTNiZm0ifQ.AOpRu_eeNKWg6r-4GS52Kw'),
                 MarkerLayer(
                   markers: [
                     for (var fishPosition in _waze)

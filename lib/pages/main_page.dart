@@ -15,6 +15,9 @@ class _MainPageState extends State<MainPage> {
   bool _explorerUserMovedCamera = false;
   bool isBottomSheetOpen = false;
 
+  double marginTop = 0.0;
+  double marginRight = 0.0;
+
   final GlobalKey<ExplorerPageState> _explorerKey =
       GlobalKey<ExplorerPageState>();
 
@@ -187,6 +190,19 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Calcul des marges initiales une seule fois
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final screenSize = MediaQuery.of(context).size;
+      setState(() {
+        marginTop = screenSize.height * 0.06;
+        marginRight = screenSize.width * 0.05;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget? currentPage;
 
@@ -202,7 +218,7 @@ class _MainPageState extends State<MainPage> {
       );
     } else {
       currentPage = SonarePage();
-      // currentPage = TestPage();
+      // currentPage = Test2Page();
     }
 
     return Scaffold(
@@ -214,8 +230,8 @@ class _MainPageState extends State<MainPage> {
               children: [
                 currentPage,
                 Positioned(
-                  top: 30.0,
-                  right: 20.0,
+                  top: marginTop,
+                  right: marginRight,
                   child: isBottomSheetOpen
                       ? Container()
                       : Column(
@@ -231,13 +247,13 @@ class _MainPageState extends State<MainPage> {
                                 ),
                                 minimumSize: const Size(40, 40),
                                 padding: EdgeInsets.all(0),
-                                backgroundColor: Colors.white,
-                                overlayColor: Colors.white,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 255, 255, 255),
                                 elevation: 4,
                               ),
                               child: Icon(
                                 Icons.map_outlined,
-                                color: Colors.black,
+                                color: const Color.fromARGB(255, 0, 0, 0),
                                 size: 25.0,
                               ),
                             ),
@@ -255,8 +271,8 @@ class _MainPageState extends State<MainPage> {
                                   ),
                                   minimumSize: const Size(40, 40),
                                   padding: EdgeInsets.all(0),
-                                  backgroundColor: Colors.white,
-                                  overlayColor: Colors.white,
+                                  backgroundColor:
+                                      Color.fromARGB(255, 255, 255, 255),
                                   elevation: 4,
                                 ),
                                 child: Transform.rotate(
@@ -265,7 +281,7 @@ class _MainPageState extends State<MainPage> {
                                     _explorerUserMovedCamera
                                         ? Icons.navigation_outlined
                                         : Icons.navigation,
-                                    color: Colors.black,
+                                    color: const Color.fromARGB(255, 0, 0, 0),
                                     size: 25.0,
                                   ),
                                 ),
@@ -273,15 +289,19 @@ class _MainPageState extends State<MainPage> {
                             ],
                           ],
                         ),
-                )
+                ),
+                Positioned(
+                  top: marginTop,
+                  left: marginRight,
+                  child: isBottomSheetOpen
+                      ? SizedBox.shrink()
+                      : FloatingMenuButton(),
+                ),
               ],
             ),
           ),
         ],
       ),
-      floatingActionButton:
-          isBottomSheetOpen ? SizedBox.shrink() : FloatingMenuButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
   }
 }
