@@ -100,10 +100,12 @@ class ExplorerPageState extends State<ExplorerPage> {
 
     if (_lastUpdateTime == null) {
       _lastUpdateTime = now;
-      setState(() {
-        _currentPosition = to;
-      });
-      return;
+      if (mounted) {
+        setState(() {
+          _currentPosition = to;
+        });
+        return;
+      }
     }
 
     // double animationDuration =
@@ -121,9 +123,11 @@ class ExplorerPageState extends State<ExplorerPage> {
       Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
         double t = i / steps;
         LatLng interpolatedPosition = lerp(from, to, t);
-        setState(() {
-          _currentPosition = interpolatedPosition;
-        });
+        if (mounted) {
+          setState(() {
+            _currentPosition = interpolatedPosition;
+          });
+        }
 
         if (!widget.explorerUserMovedCamera) {
           _mapController.move(interpolatedPosition, _currentZoom);

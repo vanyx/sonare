@@ -1,8 +1,6 @@
 # TODO
 
-- passer le calcul des variables dans le build à dans le init
 
-- mettre targetPosition dans un tableau, et en gerer plusieurs
 - ajouter fish dans le mode sonare
 - implémenter la recherche automatique des fish
 

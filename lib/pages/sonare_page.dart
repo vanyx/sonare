@@ -18,7 +18,7 @@ class SonarePageState extends State<SonarePage> {
 
   StreamSubscription<Position>? _positionSubscription;
 
-  double _zoomLevel = 16.0;
+  double _zoomLevel = 15.7;
 
   double _sizeScreenCoef = 0.9; //min 0.0 et max 1.0
 
@@ -30,8 +30,6 @@ class SonarePageState extends State<SonarePage> {
    * si non, il est donné par la boussole
    */
   double? _bearing;
-
-  double _redAngle = 0; // angle du cercle rouge
 
   double _blueThickness = 10; //epaisseur cercle bleu
 
@@ -48,18 +46,55 @@ class SonarePageState extends State<SonarePage> {
   final int _transitionThreshold =
       3; // nombre de confirmations necessaires pour le cap
 
-  LatLng targetPosition = LatLng(47.71571000726854, -3.0586985757323966);
+  Size? screenSize;
+
+  double? _blueRadius;
+
+  Offset? center;
+
+  List<Map<String, dynamic>> _fishs = [
+    {
+      'position': LatLng(48.10688316410168, -1.6744401134774303),
+      'visible': false,
+      'angle': 0.0,
+      'circlePosition': Offset(0, 0),
+    },
+    {
+      'position': LatLng(48.10468320660706, -1.6736865173993232),
+      'visible': false,
+      'angle': 0.0,
+      'circlePosition': Offset(0, 0),
+    },
+    {
+      'position': LatLng(48.10908089627052, -1.6767927553609934),
+      'visible': false,
+      'angle': 0.0,
+      'circlePosition': Offset(0, 0),
+    },
+  ];
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        screenSize = MediaQuery.of(context).size;
+
+        _blueRadius =
+            (screenSize!.width * _sizeScreenCoef) / 2; //rayon du cercle bleu
+
+        center = Offset(screenSize!.width / 2,
+            screenSize!.height / 2); //coord. centre de l'ecran
+      });
+    });
+
     _getCurrentLocation();
   }
 
   void _onMapReady() {
     _listeningToLocationChanges();
     _listenToCompass();
-    updateRedCircleAngle();
   }
 
   @override
@@ -80,6 +115,7 @@ class SonarePageState extends State<SonarePage> {
       setState(() {
         _currentPosition = LatLng(position.latitude, position.longitude);
       });
+      updateFish();
     }
   }
 
@@ -108,7 +144,7 @@ class SonarePageState extends State<SonarePage> {
           setState(() {
             _bearing = _heading;
           });
-          updateRedCircleAngle();
+          updateFish();
           _mapController.rotate(-_heading!);
         }
       }
@@ -180,6 +216,8 @@ class SonarePageState extends State<SonarePage> {
           _currentPosition = interpolatedPosition;
         });
 
+        updateFish();
+
         _mapController.move(interpolatedPosition, _zoomLevel);
       });
     }
@@ -200,7 +238,7 @@ class SonarePageState extends State<SonarePage> {
         setState(() {
           _bearing = interpolatedBearing;
         });
-        updateRedCircleAngle();
+        updateFish();
         _mapController.rotate(-interpolatedBearing);
       });
     }
@@ -228,20 +266,33 @@ class SonarePageState extends State<SonarePage> {
     return result;
   }
 
-  void updateRedCircleAngle() {
-    if (_currentPosition != null) {
-      final double newAngle = azimutBetweenCenterAndPointRadian(
-          _currentPosition!.latitude,
-          _currentPosition!.longitude,
-          targetPosition.latitude,
-          targetPosition.longitude);
-
-      if (mounted) {
-        setState(() {
-          _redAngle = newAngle - degreesToRadians(_bearing!);
-        });
-      }
+  void updateFish() {
+    if (_currentPosition == null ||
+        _bearing == null ||
+        center == null ||
+        _blueRadius == null) {
+      return;
     }
+    setState(() {
+      for (var fish in _fishs) {
+        //visibility
+        fish['visible'] = checkTargetVisibility(fish['position']);
+
+        // Calcul angle
+        fish['angle'] = azimutBetweenCenterAndPointRadian(
+                _currentPosition!.latitude,
+                _currentPosition!.longitude,
+                fish['position'].latitude,
+                fish['position'].longitude) -
+            degreesToRadians(_bearing!);
+
+        // position sur le cercle
+        fish['circlePosition'] = Offset(
+          center!.dx + _blueRadius! * cos(fish['angle']),
+          center!.dy + _blueRadius! * sin(fish['angle']),
+        );
+      }
+    });
   }
 
   /**
@@ -316,20 +367,6 @@ class SonarePageState extends State<SonarePage> {
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-
-    final double _blueRadius =
-        (screenSize.width * _sizeScreenCoef) / 2; //rayon du cercle bleu
-
-    final Offset center = Offset(
-        screenSize.width / 2, screenSize.height / 2); //coord. centre de l'ecran
-
-    // calcul de la position actuelle du cercle rouge
-    final Offset redCirclePosition = Offset(
-      center.dx + _blueRadius * cos(_redAngle),
-      center.dy + _blueRadius * sin(_redAngle),
-    );
-
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 242, 242, 246),
       body: Center(
@@ -339,8 +376,8 @@ class SonarePageState extends State<SonarePage> {
                 alignment: Alignment.center,
                 children: [
                   Container(
-                    width: screenSize.width * _sizeScreenCoef,
-                    height: screenSize.width * _sizeScreenCoef,
+                    width: screenSize!.width * _sizeScreenCoef,
+                    height: screenSize!.width * _sizeScreenCoef,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.transparent,
@@ -387,16 +424,25 @@ class SonarePageState extends State<SonarePage> {
                                   ),
                                 ),
                               ),
-                              Marker(
-                                width: 25.0,
-                                height: 25.0,
-                                point: targetPosition,
-                                child: Icon(
-                                  Icons.mark_email_read_rounded,
-                                  color: const Color.fromARGB(255, 232, 23, 23),
-                                  size: 30.0,
-                                ),
-                              ),
+                              // Marqueurs pour chaque poisson visible
+                              for (var fish in _fishs)
+                                if (fish['visible'])
+                                  Marker(
+                                    width: 25.0,
+                                    height: 25.0,
+                                    point: fish['position'],
+                                    child: Transform.rotate(
+                                      angle: _bearing != null
+                                          ? _bearing! * (pi / 180)
+                                          : 0.0, // rotation inverse pour la fleche
+                                      child: Icon(
+                                        Icons.point_of_sale_outlined,
+                                        color: const Color.fromARGB(
+                                            255, 232, 23, 23),
+                                        size: 25.0,
+                                      ),
+                                    ),
+                                  ),
                             ],
                           ),
                         ],
@@ -405,27 +451,26 @@ class SonarePageState extends State<SonarePage> {
                   ),
                   // cercle bleu
                   CustomPaint(
-                    size: Size(screenSize.width, screenSize.height),
-                    painter: CirclePainter(center, _blueRadius, _blueThickness),
+                    size: Size(screenSize!.width, screenSize!.height),
+                    painter:
+                        CirclePainter(center!, _blueRadius!, _blueThickness),
                   ),
-                  // cercle rouge
-                  if (!checkTargetVisibility(targetPosition))
-                    Positioned(
-                      left: redCirclePosition.dx -
-                          (_redThickness /
-                              2), // position du cercle (moins le rayon)
-                      top: redCirclePosition.dy -
-                          (_redThickness /
-                              2), // position du cercle (moins le rayon)
-                      child: Container(
-                        width: _redThickness,
-                        height: _redThickness,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color.fromARGB(255, 232, 23, 23),
+
+                  // Cercle rouge pour chaque poisson invisible
+                  for (var fish in _fishs)
+                    if (!fish['visible'])
+                      Positioned(
+                        left: fish['circlePosition'].dx - (_redThickness / 2),
+                        top: fish['circlePosition'].dy - (_redThickness / 2),
+                        child: Container(
+                          width: _redThickness,
+                          height: _redThickness,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color.fromARGB(255, 232, 23, 23),
+                          ),
                         ),
                       ),
-                    ),
                 ],
               ),
       ),

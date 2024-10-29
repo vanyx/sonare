@@ -23,10 +23,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			CgWFBKF1sEMDDjlDDzDZVSCLPas=
+			/sDzh2oIdaFurE8uXWNeAcGHHKo=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"0a058504a175b043030e39430f30d955208b3dab"</string>
+			<string>cdhash H"fec0f3876a0875a16eac4f2e5d635e01c1871caa"</string>
 		</dict>
 		<key>Frameworks/FlutterMacOS.framework</key>
 		<dict>
@@ -41,19 +41,19 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			zngAlQeDzH5bFBJ9/U929texw9c=
+			cK6L2uJps2eAug9ch0Pi6m08Hho=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"ce7800950783cc7e5b14127dfd4f76f6d7b1c3d7"</string>
+			<string>cdhash H"70ae8bdae269b36780ba0f5c8743e2ea6d3c1e1a"</string>
 		</dict>
 		<key>Frameworks/geolocator_apple.framework</key>
 		<dict>
 			<key>cdhash</key>
 			<data>
-			zphMiYV/AaPFOasz1zKCVNe0FlI=
+			2P6waTYG/wh2+63Cg1BqnCbt3eE=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"ce984c89857f01a3c539ab33d7328254d7b41652"</string>
+			<string>cdhash H"d8feb0693606ff0876fbadc283506a9c26eddde1"</string>
 		</dict>
 		<key>Frameworks/libswiftAVFoundation.dylib</key>
 		<dict>
@@ -230,28 +230,28 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			+eFurwVyYKeqIkWsZ60itF4Igpg=
+			fftN6KfGZarm7kZG4DWoGDH+XcI=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"f9e16eaf057260a7aa2245ac67ad22b45e088298"</string>
+			<string>cdhash H"7dfb4de8a7c665aae6ee4646e035a81831fe5dc2"</string>
 		</dict>
 		<key>MacOS/__preview.dylib</key>
 		<dict>
 			<key>cdhash</key>
 			<data>
-			WXeOTWnGGK9Ks5cXzR/DlsHPmFw=
+			DFsM2C694Yt6ovH3AC9HHhvDbaM=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"59778e4d69c618af4ab39717cd1fc396c1cf985c"</string>
+			<string>cdhash H"0c5b0cd82ebde18b7aa2f1f7002f471e1bc36da3"</string>
 		</dict>
 		<key>MacOS/sonare.debug.dylib</key>
 		<dict>
 			<key>cdhash</key>
 			<data>
-			1zt0fMlgLCLFrlusmMRrdoO4iEE=
+			M93D/NNIWEWG83VAWpQVHBLx9O4=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"d73b747cc9602c22c5ae5bac98c46b7683b88841"</string>
+			<string>cdhash H"33ddc3fcd348584586f375405a94151c12f1f4ee"</string>
 		</dict>
 		<key>Resources/AppIcon.icns</key>
 		<dict>
