@@ -16,6 +16,7 @@
 
 - notif
 - sons
+- arriere plan
 
 - Essayer de fzctoriser le code : créer des widgets pour ceux réutilisés, idem pour les fonctions, etc.
 
