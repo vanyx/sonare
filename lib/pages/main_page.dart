@@ -21,6 +21,19 @@ class _MainPageState extends State<MainPage> {
   final GlobalKey<ExplorerPageState> _explorerKey =
       GlobalKey<ExplorerPageState>();
 
+  @override
+  void initState() {
+    super.initState();
+    // Calcul des marges initiales une seule fois
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final screenSize = MediaQuery.of(context).size;
+      setState(() {
+        marginTop = screenSize.height * 0.06;
+        marginRight = screenSize.width * 0.05;
+      });
+    });
+  }
+
   void _changeMode(int mode) {
     setState(() {
       _selectedMode = mode;
@@ -185,19 +198,6 @@ class _MainPageState extends State<MainPage> {
     ).whenComplete(() {
       setState(() {
         isBottomSheetOpen = false;
-      });
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // Calcul des marges initiales une seule fois
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final screenSize = MediaQuery.of(context).size;
-      setState(() {
-        marginTop = screenSize.height * 0.06;
-        marginRight = screenSize.width * 0.05;
       });
     });
   }
