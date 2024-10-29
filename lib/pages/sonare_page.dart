@@ -115,7 +115,7 @@ class SonarePageState extends State<SonarePage> {
       setState(() {
         _currentPosition = LatLng(position.latitude, position.longitude);
       });
-      updateFish();
+      updateFishParams();
     }
   }
 
@@ -144,11 +144,23 @@ class SonarePageState extends State<SonarePage> {
           setState(() {
             _bearing = _heading;
           });
-          updateFish();
+          updateFishParams();
           _mapController.rotate(-_heading!);
         }
       }
     });
+  }
+
+  /**
+  * @TODO
+  */
+  void updateFish() {
+    ///
+    /// TODO :
+    /// Check si les fish dans le tableau sont encore dans le perimetre
+    /// Si on a suffisament bougé, on call waze et sonare api pour ajouter des nouveaux fishs
+    /// update les params ?
+    ///
   }
 
   void _animateMarker(LatLng from, LatLng to) {
@@ -216,7 +228,7 @@ class SonarePageState extends State<SonarePage> {
           _currentPosition = interpolatedPosition;
         });
 
-        updateFish();
+        updateFishParams();
 
         _mapController.move(interpolatedPosition, _zoomLevel);
       });
@@ -238,7 +250,7 @@ class SonarePageState extends State<SonarePage> {
         setState(() {
           _bearing = interpolatedBearing;
         });
-        updateFish();
+        updateFishParams();
         _mapController.rotate(-interpolatedBearing);
       });
     }
@@ -266,7 +278,7 @@ class SonarePageState extends State<SonarePage> {
     return result;
   }
 
-  void updateFish() {
+  void updateFishParams() {
     if (_currentPosition == null ||
         _bearing == null ||
         center == null ||
