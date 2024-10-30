@@ -168,9 +168,11 @@ class SonarePageState extends State<SonarePage> {
 
     if (_lastUpdateTime == null) {
       _lastUpdateTime = now;
-      setState(() {
-        _currentPosition = to;
-      });
+      if (mounted) {
+        setState(() {
+          _currentPosition = to;
+        });
+      }
       return;
     }
 
@@ -194,9 +196,11 @@ class SonarePageState extends State<SonarePage> {
 
       // l'user se deplace
       if (_movingCount >= _transitionThreshold && !_isMovingForSure) {
-        setState(() {
-          _isMovingForSure = true;
-        });
+        if (mounted) {
+          setState(() {
+            _isMovingForSure = true;
+          });
+        }
       }
 
       if (_isMovingForSure) {
@@ -209,9 +213,11 @@ class SonarePageState extends State<SonarePage> {
 
       //l'user est arreté
       if (_stoppedCount >= _transitionThreshold && _isMovingForSure) {
-        setState(() {
-          _isMovingForSure = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isMovingForSure = false;
+          });
+        }
       }
     }
 
@@ -224,9 +230,11 @@ class SonarePageState extends State<SonarePage> {
       Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
         double t = i / steps;
         LatLng interpolatedPosition = lerp(from, to, t);
-        setState(() {
-          _currentPosition = interpolatedPosition;
-        });
+        if (mounted) {
+          setState(() {
+            _currentPosition = interpolatedPosition;
+          });
+        }
 
         updateFishParams();
 
@@ -247,9 +255,11 @@ class SonarePageState extends State<SonarePage> {
 
         double t = i / steps;
         double interpolatedBearing = lerpAngle(from, to, t);
-        setState(() {
-          _bearing = interpolatedBearing;
-        });
+        if (mounted) {
+          setState(() {
+            _bearing = interpolatedBearing;
+          });
+        }
         updateFishParams();
         _mapController.rotate(-interpolatedBearing);
       });
@@ -285,26 +295,28 @@ class SonarePageState extends State<SonarePage> {
         _blueRadius == null) {
       return;
     }
-    setState(() {
-      for (var fish in _fishs) {
-        //visibility
-        fish['visible'] = checkTargetVisibility(fish['position']);
+    if (mounted) {
+      setState(() {
+        for (var fish in _fishs) {
+          //visibility
+          fish['visible'] = checkTargetVisibility(fish['position']);
 
-        // Calcul angle
-        fish['angle'] = azimutBetweenCenterAndPointRadian(
-                _currentPosition!.latitude,
-                _currentPosition!.longitude,
-                fish['position'].latitude,
-                fish['position'].longitude) -
-            degreesToRadians(_bearing!);
+          // Calcul angle
+          fish['angle'] = azimutBetweenCenterAndPointRadian(
+                  _currentPosition!.latitude,
+                  _currentPosition!.longitude,
+                  fish['position'].latitude,
+                  fish['position'].longitude) -
+              degreesToRadians(_bearing!);
 
-        // position sur le cercle
-        fish['circlePosition'] = Offset(
-          center!.dx + _blueRadius! * cos(fish['angle']),
-          center!.dy + _blueRadius! * sin(fish['angle']),
-        );
-      }
-    });
+          // position sur le cercle
+          fish['circlePosition'] = Offset(
+            center!.dx + _blueRadius! * cos(fish['angle']),
+            center!.dy + _blueRadius! * sin(fish['angle']),
+          );
+        }
+      });
+    }
   }
 
   /**

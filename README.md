@@ -4,8 +4,6 @@
 - ajouter fish dans le mode sonare
 - implémenter la recherche automatique des fish
 
-- supprimer l'erreur au build quand j'ouvre le mode sonare
-
 - supprimer/modifier le circular indicator dans le mode sonare
 
 - check le probleme de la boussole bourrée après qu'on ai pas mal bougé

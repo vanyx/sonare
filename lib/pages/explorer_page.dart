@@ -84,9 +84,11 @@ class ExplorerPageState extends State<ExplorerPage> {
         if (_lastPosition == null ||
             calculateDistance(_lastPosition!, _currentPosition!) >
                 distanceThreshold) {
-          setState(() {
-            _lastPosition = _currentPosition;
-          });
+          if (mounted) {
+            setState(() {
+              _lastPosition = _currentPosition;
+            });
+          }
 
           var camera = _mapController.camera;
           _onMapChanged(camera, false);
@@ -139,15 +141,19 @@ class ExplorerPageState extends State<ExplorerPage> {
   }
 
   void _onMapChanged(MapCamera camera, bool? hasGesture) {
-    setState(() {
-      _currentZoom = camera.zoom;
-    });
+    if (mounted) {
+      setState(() {
+        _currentZoom = camera.zoom;
+      });
+    }
 
     if (hasGesture!) {
       if (hasGesture) {
-        setState(() {
-          widget.userMovedCamera(true);
-        });
+        if (mounted) {
+          setState(() {
+            widget.userMovedCamera(true);
+          });
+        }
       }
     }
 
