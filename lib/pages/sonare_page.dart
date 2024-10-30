@@ -5,6 +5,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_compass/flutter_compass.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class SonarePage extends StatefulWidget {
   @override
@@ -51,6 +53,8 @@ class SonarePageState extends State<SonarePage> {
   double? _blueRadius;
 
   Offset? center;
+
+  int _maxRetry = 3;
 
   List<Map<String, dynamic>> _fishs = [
     {
@@ -151,16 +155,82 @@ class SonarePageState extends State<SonarePage> {
     });
   }
 
-  /**
-  * @TODO
-  */
   void updateFish() {
+    if (_currentPosition == null) return;
+
+    const double fishDistanceThreshold =
+        5000; // Distance max de garder les fishs dans la zone en m
+    const double apiCallDistanceThreshold =
+        500; // Distance min à parcourir avant un nouvel appel API en m
+
+    // Filtrer les radars existants pour n'afficher que ceux dans le seuil
+    _fishs.removeWhere((fish) =>
+        calculateDistance(_currentPosition!, fish['position']) >
+        fishDistanceThreshold);
+
+    // @TODO
+    /// - Créer un deuxieme seuil de distance, qui correspond à la distance de laquelle il faut suffisament se deplacer
+    ///  pour faire un call à Waze.
+    /// => l'api de waze prend en param pas une position et un rayon, mais une tuile
+    /// Donc il faut calculer selon la distance voulu (à fixer egalement) la tuile
     ///
-    /// TODO :
-    /// Check si les fish dans le tableau sont encore dans le perimetre
-    /// Si on a suffisament bougé, on call waze et sonare api pour ajouter des nouveaux fishs
-    /// update les params ?
+    /// Quand on recoit une reponse, on ajoute ces positions dans _fishs et on leur ajoute les valeurs par defaut
+    /// 'visible': false,
+    ///  'angle': 0.0,
+    ///'circlePosition': Offset(0, 0),
     ///
+    ///
+  }
+
+  Future<List<LatLng>> _fetchWaze(
+      double north, double south, double west, double east, int retries) async {
+    String url = 'https://www.waze.com/live-map/api/georss';
+
+    Map<String, String> queryParams = {
+      "top": north.toString(),
+      "bottom": south.toString(),
+      "left": west.toString(),
+      "right": east.toString(),
+      "env": "row",
+      "types": "alerts"
+    };
+
+    try {
+      Uri uri = Uri.parse(url);
+      final finalUri = uri.replace(queryParameters: queryParams);
+
+      final response = await http.get(finalUri);
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        List<LatLng> newFish = [];
+
+        if (data['alerts'] != null) {
+          for (var alert in data['alerts']) {
+            var location = alert['location'];
+            if (location != null && alert['type'] == 'POLICE') {
+              LatLng fishPosition = LatLng(location['y'], location['x']);
+              newFish.add(fishPosition);
+            }
+          }
+        }
+        return newFish; // Retourner directement le tableau de positions
+      } else {
+        if (retries > 0) {
+          await Future.delayed(Duration(milliseconds: 200));
+          return await _fetchWaze(north, south, west, east, retries - 1);
+        } else {
+          return []; // Retourne une liste vide si la requête échoue
+        }
+      }
+    } catch (e) {
+      if (retries > 0) {
+        await Future.delayed(Duration(milliseconds: 200));
+        return await _fetchWaze(north, south, west, east, retries - 1);
+      } else {
+        return []; // Retourne une liste vide en cas d'erreur
+      }
+    }
   }
 
   void _animateMarker(LatLng from, LatLng to) {

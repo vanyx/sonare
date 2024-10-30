@@ -4,6 +4,8 @@
 - ajouter fish dans le mode sonare
 - implémenter la recherche automatique des fish
 
+- En mode sonare si la requete n'abouti pas, il faut absolument la refaire et ne pas re attendre le seuil
+
 - supprimer/modifier le circular indicator dans le mode sonare
 
 - check le probleme de la boussole bourrée après qu'on ai pas mal bougé
