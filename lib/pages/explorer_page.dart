@@ -90,8 +90,7 @@ class ExplorerPageState extends State<ExplorerPage> {
             });
           }
 
-          var camera = _mapController.camera;
-          _onMapChanged(camera, false);
+          _onMapChanged(_mapController.camera, false);
         }
       }
     });

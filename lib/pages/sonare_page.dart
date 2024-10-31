@@ -53,32 +53,15 @@ class SonarePageState extends State<SonarePage> {
 
   double? _blueRadius;
 
-  Offset? center;
+  Offset? _center;
 
   int _maxRetry = 3;
 
   LatLng? _lastApiPosition;
 
-  List<Map<String, dynamic>> _fishs = [
-    {
-      'position': LatLng(47.75480301384233, -3.340195820441881),
-      'visible': false,
-      'angle': 0.0,
-      'circlePosition': Offset(0, 0),
-    },
-    {
-      'position': LatLng(48.10468320660706, -1.6736865173993232),
-      'visible': false,
-      'angle': 0.0,
-      'circlePosition': Offset(0, 0),
-    },
-    {
-      'position': LatLng(48.10908089627052, -1.6767927553609934),
-      'visible': false,
-      'angle': 0.0,
-      'circlePosition': Offset(0, 0),
-    },
-  ];
+  List<Fish> _fishs = [];
+
+  bool _errorWazeRequest = false;
 
   @override
   void initState() {
@@ -91,7 +74,7 @@ class SonarePageState extends State<SonarePage> {
         _blueRadius =
             (screenSize!.width * _sizeScreenCoef) / 2; //rayon du cercle bleu
 
-        center = Offset(screenSize!.width / 2,
+        _center = Offset(screenSize!.width / 2,
             screenSize!.height / 2); //coord. centre de l'ecran
       });
     });
@@ -100,6 +83,7 @@ class SonarePageState extends State<SonarePage> {
   }
 
   void _onMapReady() {
+    updateFish();
     _listeningToLocationChanges();
     _listenToCompass();
   }
@@ -137,13 +121,13 @@ class SonarePageState extends State<SonarePage> {
 
         // fils de pute de fonction
         _animateMarker(_currentPosition!, newPosition);
+
+        updateFish();
       }
     });
   }
 
   void _listenToCompass() {
-    //test
-    updateFish();
     FlutterCompass.events!.listen((CompassEvent event) {
       if (mounted && event.heading != null) {
         setState(() {
@@ -171,12 +155,13 @@ class SonarePageState extends State<SonarePage> {
 
     // filtrage
     _fishs.removeWhere((fish) =>
-        calculateDistance(_currentPosition!, fish['position']) >
+        calculateDistance(_currentPosition!, fish.position) >
         fishDistanceThreshold);
 
     if (_lastApiPosition != null) {
       if (calculateDistance(_lastApiPosition!, _currentPosition!) <
-          apiCallDistanceThreshold) {
+              apiCallDistanceThreshold &&
+          !_errorWazeRequest) {
         return;
       }
     }
@@ -197,12 +182,13 @@ class SonarePageState extends State<SonarePage> {
         await _fetchWaze(north, south, west, east, _maxRetry);
 
     for (var position in newFishPositions) {
-      _fishs.add({
-        'position': position,
-        'visible': false,
-        'angle': 0.0,
-        'circlePosition': Offset(0, 0),
-      });
+      _fishs.add(Fish(
+        position: position,
+        visible: false,
+        angle: 0.0,
+        circlePosition: Offset(0, 0),
+        type: 'waze',
+      ));
     }
 
     updateFishParams();
@@ -228,6 +214,14 @@ class SonarePageState extends State<SonarePage> {
       final response = await http.get(finalUri);
 
       if (response.statusCode == 200) {
+        if (!_errorWazeRequest) {
+          if (mounted) {
+            setState(() {
+              _errorWazeRequest = false;
+            });
+          }
+        }
+
         var data = json.decode(response.body);
         List<LatLng> newFish = [];
 
@@ -240,13 +234,18 @@ class SonarePageState extends State<SonarePage> {
             }
           }
         }
-        return newFish; // Retourner directement le tableau de positions
+        return newFish;
       } else {
         if (retries > 0) {
           await Future.delayed(Duration(milliseconds: 200));
           return await _fetchWaze(north, south, west, east, retries - 1);
         } else {
-          return []; // Retourne une liste vide si la requête échoue
+          if (mounted) {
+            setState(() {
+              _errorWazeRequest = true;
+            });
+          }
+          return [];
         }
       }
     } catch (e) {
@@ -254,7 +253,12 @@ class SonarePageState extends State<SonarePage> {
         await Future.delayed(Duration(milliseconds: 200));
         return await _fetchWaze(north, south, west, east, retries - 1);
       } else {
-        return []; // Retourne une liste vide en cas d'erreur
+        if (mounted) {
+          setState(() {
+            _errorWazeRequest = true;
+          });
+        }
+        return [];
       }
     }
   }
@@ -387,28 +391,28 @@ class SonarePageState extends State<SonarePage> {
   void updateFishParams() {
     if (_currentPosition == null ||
         _bearing == null ||
-        center == null ||
+        _center == null ||
         _blueRadius == null) {
       return;
     }
     if (mounted) {
       setState(() {
         for (var fish in _fishs) {
-          //visibility
-          fish['visible'] = checkTargetVisibility(fish['position']);
+          // Visibilité
+          fish.visible = checkTargetVisibility(fish.position);
 
-          // Calcul angle
-          fish['angle'] = azimutBetweenCenterAndPointRadian(
+          // Calcul de l'angle
+          fish.angle = azimutBetweenCenterAndPointRadian(
                   _currentPosition!.latitude,
                   _currentPosition!.longitude,
-                  fish['position'].latitude,
-                  fish['position'].longitude) -
+                  fish.position.latitude,
+                  fish.position.longitude) -
               degreesToRadians(_bearing!);
 
-          // position sur le cercle
-          fish['circlePosition'] = Offset(
-            center!.dx + _blueRadius! * cos(fish['angle']),
-            center!.dy + _blueRadius! * sin(fish['angle']),
+          // Position sur le cercle
+          fish.circlePosition = Offset(
+            _center!.dx + _blueRadius! * cos(fish.angle),
+            _center!.dy + _blueRadius! * sin(fish.angle),
           );
         }
       });
@@ -546,11 +550,11 @@ class SonarePageState extends State<SonarePage> {
                               ),
                               // Marqueurs pour chaque poisson visible
                               for (var fish in _fishs)
-                                if (fish['visible'])
+                                if (fish.visible)
                                   Marker(
                                     width: 25.0,
                                     height: 25.0,
-                                    point: fish['position'],
+                                    point: fish.position,
                                     child: Transform.rotate(
                                       angle: _bearing != null
                                           ? _bearing! * (pi / 180)
@@ -573,15 +577,15 @@ class SonarePageState extends State<SonarePage> {
                   CustomPaint(
                     size: Size(screenSize!.width, screenSize!.height),
                     painter:
-                        CirclePainter(center!, _blueRadius!, _blueThickness),
+                        CirclePainter(_center!, _blueRadius!, _blueThickness),
                   ),
 
                   // Cercle rouge pour chaque poisson invisible
                   for (var fish in _fishs)
-                    if (!fish['visible'])
+                    if (!fish.visible)
                       Positioned(
-                        left: fish['circlePosition'].dx - (_redThickness / 2),
-                        top: fish['circlePosition'].dy - (_redThickness / 2),
+                        left: fish.circlePosition.dx - (_redThickness / 2),
+                        top: fish.circlePosition.dy - (_redThickness / 2),
                         child: Container(
                           width: _redThickness,
                           height: _redThickness,
