@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../widgets/floating_menu_button.dart';
 import 'explorer_page.dart';
 import 'sonare_page.dart';
 import 'test_page.dart';
 import 'test2.dart';
+import './menu_page.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -43,6 +43,76 @@ class _MainPageState extends State<MainPage> {
         _explorerUserMovedCamera = false;
       });
     }
+  }
+
+  void _showCustomBottomSheet() {
+    setState(() {
+      isBottomSheetOpen = true;
+    });
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Qu\'as tu vu ?',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        isBottomSheetOpen = false;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    'Poisson',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Corail',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    ).whenComplete(() {
+      setState(() {
+        isBottomSheetOpen = false;
+      });
+    });
   }
 
   void _showBottomSheet() {
@@ -237,6 +307,7 @@ class _MainPageState extends State<MainPage> {
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // CHOIX MODE
                             ElevatedButton(
                               onPressed: () {
                                 _showBottomSheet();
@@ -258,7 +329,7 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ),
 
-                            // Dispo uniquement en mode explorer
+                            // FLECHE (Dispo uniquement en mode explorer)
                             if (_selectedMode == 1) ...[
                               ElevatedButton(
                                 onPressed: () {
@@ -290,12 +361,59 @@ class _MainPageState extends State<MainPage> {
                           ],
                         ),
                 ),
+                // MENU
                 Positioned(
                   top: marginTop,
                   left: marginRight,
                   child: isBottomSheetOpen
                       ? SizedBox.shrink()
-                      : FloatingMenuButton(),
+                      : FloatingActionButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return DraggableScrollableSheet(
+                                  initialChildSize: 1.0,
+                                  minChildSize: 1.0,
+                                  maxChildSize: 1.0,
+                                  builder: (BuildContext context,
+                                      ScrollController scrollController) {
+                                    return SingleChildScrollView(
+                                      controller: scrollController,
+                                      child: MenuPage(),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                          child: Icon(
+                            Icons.menu,
+                            size: 28.0,
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                          ),
+                        ),
+                ),
+                // REPORT
+                Positioned(
+                  bottom: 16.0,
+                  right: 16.0,
+                  child: ElevatedButton(
+                    onPressed: _showCustomBottomSheet,
+                    style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(16),
+                      backgroundColor: Colors.white,
+                      elevation: 4,
+                    ),
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.black,
+                      size: 32.0,
+                    ),
+                  ),
                 ),
               ],
             ),

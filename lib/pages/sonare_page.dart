@@ -61,7 +61,7 @@ class SonarePageState extends State<SonarePage> {
 
   List<Fish> _fishs = [];
 
-  bool _errorWazeRequest = false;
+  bool _errorWishRequest = false;
 
   @override
   void initState() {
@@ -148,10 +148,10 @@ class SonarePageState extends State<SonarePage> {
     if (_currentPosition == null) return;
 
     // Distance max à laquelle on garde les fishs en m
-    const double fishDistanceThreshold = 5000;
+    const double fishDistanceThreshold = 4000;
 
     // Distance min avant nouvel appel API en m
-    const double apiCallDistanceThreshold = 500;
+    const double apiCallDistanceThreshold = fishDistanceThreshold / 10;
 
     // filtrage
     _fishs.removeWhere((fish) =>
@@ -161,12 +161,16 @@ class SonarePageState extends State<SonarePage> {
     if (_lastApiPosition != null) {
       if (calculateDistance(_lastApiPosition!, _currentPosition!) <
               apiCallDistanceThreshold &&
-          !_errorWazeRequest) {
+          !_errorWishRequest) {
         return;
       }
     }
 
-    _lastApiPosition = _currentPosition;
+    if (mounted) {
+      setState(() {
+        _lastApiPosition = _currentPosition;
+      });
+    }
 
     double latitudeDelta =
         fishDistanceThreshold / 111000; // Distance en degrés de latitude
@@ -177,9 +181,8 @@ class SonarePageState extends State<SonarePage> {
     double south = _currentPosition!.latitude - latitudeDelta;
     double east = _currentPosition!.longitude + longitudeDelta;
     double west = _currentPosition!.longitude - longitudeDelta;
-
     List<LatLng> newFishPositions =
-        await _fetchWaze(north, south, west, east, _maxRetry);
+        await _fetchWish(north, south, west, east, _maxRetry);
 
     for (var position in newFishPositions) {
       _fishs.add(Fish(
@@ -187,14 +190,14 @@ class SonarePageState extends State<SonarePage> {
         visible: false,
         angle: 0.0,
         circlePosition: Offset(0, 0),
-        type: 'waze',
+        type: 'wish',
       ));
     }
 
     updateFishParams();
   }
 
-  Future<List<LatLng>> _fetchWaze(
+  Future<List<LatLng>> _fetchWish(
       double north, double south, double west, double east, int retries) async {
     String url = 'https://www.waze.com/live-map/api/georss';
 
@@ -214,10 +217,10 @@ class SonarePageState extends State<SonarePage> {
       final response = await http.get(finalUri);
 
       if (response.statusCode == 200) {
-        if (!_errorWazeRequest) {
+        if (!_errorWishRequest) {
           if (mounted) {
             setState(() {
-              _errorWazeRequest = false;
+              _errorWishRequest = false;
             });
           }
         }
@@ -238,11 +241,11 @@ class SonarePageState extends State<SonarePage> {
       } else {
         if (retries > 0) {
           await Future.delayed(Duration(milliseconds: 200));
-          return await _fetchWaze(north, south, west, east, retries - 1);
+          return await _fetchWish(north, south, west, east, retries - 1);
         } else {
           if (mounted) {
             setState(() {
-              _errorWazeRequest = true;
+              _errorWishRequest = true;
             });
           }
           return [];
@@ -251,11 +254,11 @@ class SonarePageState extends State<SonarePage> {
     } catch (e) {
       if (retries > 0) {
         await Future.delayed(Duration(milliseconds: 200));
-        return await _fetchWaze(north, south, west, east, retries - 1);
+        return await _fetchWish(north, south, west, east, retries - 1);
       } else {
         if (mounted) {
           setState(() {
-            _errorWazeRequest = true;
+            _errorWishRequest = true;
           });
         }
         return [];

@@ -2,10 +2,6 @@
 
 - supprimer/modifier le circular indicator dans le mode sonare
 
-- check le probleme de la boussole bourrée après qu'on ai pas mal bougé
-
-- ajouter bouton '+'
-
 - parametres
 
 - notif
