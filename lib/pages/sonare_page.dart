@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../models/models.dart';
 
 class SonarePage extends StatefulWidget {
   @override
@@ -56,9 +57,11 @@ class SonarePageState extends State<SonarePage> {
 
   int _maxRetry = 3;
 
+  LatLng? _lastApiPosition;
+
   List<Map<String, dynamic>> _fishs = [
     {
-      'position': LatLng(48.10688316410168, -1.6744401134774303),
+      'position': LatLng(47.75480301384233, -3.340195820441881),
       'visible': false,
       'angle': 0.0,
       'circlePosition': Offset(0, 0),
@@ -139,6 +142,8 @@ class SonarePageState extends State<SonarePage> {
   }
 
   void _listenToCompass() {
+    //test
+    updateFish();
     FlutterCompass.events!.listen((CompassEvent event) {
       if (mounted && event.heading != null) {
         setState(() {
@@ -155,32 +160,52 @@ class SonarePageState extends State<SonarePage> {
     });
   }
 
-  void updateFish() {
+  void updateFish() async {
     if (_currentPosition == null) return;
 
-    const double fishDistanceThreshold =
-        5000; // Distance max de garder les fishs dans la zone en m
-    const double apiCallDistanceThreshold =
-        500; // Distance min à parcourir avant un nouvel appel API en m
+    // Distance max à laquelle on garde les fishs en m
+    const double fishDistanceThreshold = 5000;
 
-    // Filtrer les radars existants pour n'afficher que ceux dans le seuil
+    // Distance min avant nouvel appel API en m
+    const double apiCallDistanceThreshold = 500;
+
+    // filtrage
     _fishs.removeWhere((fish) =>
         calculateDistance(_currentPosition!, fish['position']) >
         fishDistanceThreshold);
 
-    // @TODO
-    /// - Créer un deuxieme seuil de distance, qui correspond à la distance de laquelle il faut suffisament se deplacer
-    ///  pour faire un call à Waze.
-    /// => l'api de waze prend en param pas une position et un rayon, mais une tuile
-    /// Donc il faut calculer selon la distance voulu (à fixer egalement) la tuile
-    ///
-    /// Quand on recoit une reponse, on ajoute ces positions dans _fishs et on leur ajoute les valeurs par defaut
-    /// 'visible': false,
-    ///  'angle': 0.0,
-    ///'circlePosition': Offset(0, 0),
-    ///
-    ///update fish params
-    ///
+    if (_lastApiPosition != null) {
+      if (calculateDistance(_lastApiPosition!, _currentPosition!) <
+          apiCallDistanceThreshold) {
+        return;
+      }
+    }
+
+    _lastApiPosition = _currentPosition;
+
+    double latitudeDelta =
+        fishDistanceThreshold / 111000; // Distance en degrés de latitude
+    double longitudeDelta = fishDistanceThreshold /
+        (111000 * cos(_currentPosition!.latitude * pi / 180));
+
+    double north = _currentPosition!.latitude + latitudeDelta;
+    double south = _currentPosition!.latitude - latitudeDelta;
+    double east = _currentPosition!.longitude + longitudeDelta;
+    double west = _currentPosition!.longitude - longitudeDelta;
+
+    List<LatLng> newFishPositions =
+        await _fetchWaze(north, south, west, east, _maxRetry);
+
+    for (var position in newFishPositions) {
+      _fishs.add({
+        'position': position,
+        'visible': false,
+        'angle': 0.0,
+        'circlePosition': Offset(0, 0),
+      });
+    }
+
+    updateFishParams();
   }
 
   Future<List<LatLng>> _fetchWaze(
