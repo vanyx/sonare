@@ -10,11 +10,11 @@
 		</data>
 		<key>flutter_assets/AssetManifest.bin</key>
 		<data>
-		/f2zS+W1BzUwgMN5I3Jj7Se2zUU=
+		nSgUs9SQZaHKQ9nof4L6Ov23Vsk=
 		</data>
 		<key>flutter_assets/AssetManifest.json</key>
 		<data>
-		AH4UuPBlNldz9u25R61/d3K9/04=
+		MUE/tszOK4bd83VtdeqeaArbwnk=
 		</data>
 		<key>flutter_assets/FontManifest.json</key>
 		<data>
@@ -24,13 +24,17 @@
 		<data>
 		US+AEneSpq87Hx3iVvNQ+k3neV0=
 		</data>
-		<key>flutter_assets/assets/cartoon_sounds.mp3</key>
+		<key>flutter_assets/assets/.DS_Store</key>
 		<data>
-		xww3yuq0//5+F0MsuIIwkulRSTU=
+		3y++sUAKzaCQmjLBz2v0kvESHgc=
 		</data>
 		<key>flutter_assets/assets/explorer.png</key>
 		<data>
 		ZNhAxht0PqR1hRPFvQ0EBMn3XkU=
+		</data>
+		<key>flutter_assets/assets/navigation.png</key>
+		<data>
+		sLnYBAA5ktbv8q+vAOoJn/9LO6A=
 		</data>
 		<key>flutter_assets/assets/sonare.jpg</key>
 		<data>
@@ -39,6 +43,10 @@
 		<key>flutter_assets/assets/waze_police.png</key>
 		<data>
 		T8D0gtDnXiVFz9ds50M4fH1e+HU=
+		</data>
+		<key>flutter_assets/assets/wish-rond.png</key>
+		<data>
+		is+KYK8VHUsuQiZve8qAJdhXuxk=
 		</data>
 		<key>flutter_assets/fonts/MaterialIcons-Regular.otf</key>
 		<data>
@@ -50,7 +58,7 @@
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		U5aZgmWYIN91BNX4go2Eh6NyuT8=
+		MrloFPfNU2EDqAyLVXPm9szywmc=
 		</data>
 		<key>flutter_assets/packages/flutter_map/lib/assets/flutter_map_logo.png</key>
 		<data>
@@ -71,14 +79,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			zQRoWEZ+xJn2ogZ7NuRwCVYz8TVzxQEWy+aUWKHZ9EA=
+			PSOs9VR9+9x6D7pDLRzXvsRcSpf0Co2cBgOuOx2/QDY=
 			</data>
 		</dict>
 		<key>flutter_assets/AssetManifest.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Q9p83FR0zvu3cR48X+QreQ0+tQZqd1ObcCOKU2BC+74=
+			0ECSzDLMfKnBknQiaCm9r+0/2w/A1aM2BCWwfFX93+E=
 			</data>
 		</dict>
 		<key>flutter_assets/FontManifest.json</key>
@@ -95,18 +103,18 @@
 			37fj8K6LvL9KQqOUmdmRLZ+LR7uSHcHnAjbv5qVIYSg=
 			</data>
 		</dict>
-		<key>flutter_assets/assets/cartoon_sounds.mp3</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			AFVisCgzZfUkJ7eZ5IT4pG/3gQRXj/yLlyCFM6UTlO0=
-			</data>
-		</dict>
 		<key>flutter_assets/assets/explorer.png</key>
 		<dict>
 			<key>hash2</key>
 			<data>
 			1aqtscy3EPRSP6EUMstt/kXS0XhhpGHs4o4xO6f8uFg=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/navigation.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			piLQg1mKoDhAdZdlFgbxgrWJtIHGv8QVORp9DBUjtk0=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/sonare.jpg</key>
@@ -121,6 +129,13 @@
 			<key>hash2</key>
 			<data>
 			mmdloOEcuDYssL99h9E0p7B03H16gzeEP6cLv8a/BjI=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/wish-rond.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			0JviRoqRObono7Wre8LQlyLY+uFUmgM9C1uqPiWmU4s=
 			</data>
 		</dict>
 		<key>flutter_assets/fonts/MaterialIcons-Regular.otf</key>
@@ -141,7 +156,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			HNteYtDZODAbLPwBkz/FrSZXB59LaJdBxD7kwd98yHk=
+			XHEwuPZ22zSJJGmizBjjTQVkHiCYONiWUaqsNJ3usfM=
 			</data>
 		</dict>
 		<key>flutter_assets/packages/flutter_map/lib/assets/flutter_map_logo.png</key>

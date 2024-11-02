@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class MenuPage extends StatelessWidget {
-  final AudioPlayer _audioPlayer = AudioPlayer();
-
-  void _playClickSound() async {
-    await _audioPlayer.play(AssetSource('cartoon_sounds.mp3'));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -39,9 +33,7 @@ class MenuPage extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.info),
             title: Text('Clique ici pour rire XDDDDDD'),
-            onTap: () {
-              _playClickSound();
-            },
+            onTap: () {},
           ),
         ],
       ),

@@ -4,6 +4,8 @@
 
 - parametres
 
+- bouton + (et ajouter animation)
+
 - notif
 - sons
 - arriere plan

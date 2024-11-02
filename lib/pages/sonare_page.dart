@@ -34,7 +34,7 @@ class SonarePageState extends State<SonarePage> {
    */
   double? _bearing;
 
-  double _blueThickness = 10; //epaisseur cercle bleu
+  double _blueThickness = 8; //epaisseur cercle bleu
 
   double _redThickness = 20; //diametre cercle rouge
 
@@ -536,21 +536,22 @@ class SonarePageState extends State<SonarePage> {
                           MarkerLayer(
                             markers: [
                               Marker(
-                                width: 25.0,
-                                height: 25.0,
+                                width: 20.0,
+                                height: 20.0,
                                 point: _currentPosition!,
                                 child: Transform.rotate(
                                   angle: _bearing != null
                                       ? _bearing! * (pi / 180)
-                                      : 0.0, // rotation inverse pour la fleche
-                                  child: Icon(
-                                    Icons.navigation,
-                                    color:
-                                        const Color.fromARGB(255, 197, 14, 14),
-                                    size: 30.0,
+                                      : 0.0, // rotation inverse pour l'image
+                                  child: Image.asset(
+                                    'assets/navigation.png',
+                                    width:
+                                        10.0, // taille de l'image pour correspondre à l'icône précédente
+                                    height: 10.0,
                                   ),
                                 ),
                               ),
+
                               // Marqueurs pour chaque poisson visible
                               for (var fish in _fishs)
                                 if (fish.visible)
@@ -565,7 +566,7 @@ class SonarePageState extends State<SonarePage> {
                                       child: Icon(
                                         Icons.point_of_sale_outlined,
                                         color: const Color.fromARGB(
-                                            255, 232, 23, 23),
+                                            255, 255, 255, 255),
                                         size: 25.0,
                                       ),
                                     ),
@@ -583,7 +584,7 @@ class SonarePageState extends State<SonarePage> {
                         CirclePainter(_center!, _blueRadius!, _blueThickness),
                   ),
 
-                  // Cercle rouge pour chaque poisson invisible
+                  // cercles rouge
                   for (var fish in _fishs)
                     if (!fish.visible)
                       Positioned(
@@ -594,7 +595,23 @@ class SonarePageState extends State<SonarePage> {
                           height: _redThickness,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: const Color.fromARGB(255, 232, 23, 23),
+                            color: Color.fromARGB(255, 98, 190, 239),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 3,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black
+                                    .withOpacity(0.1), // Couleur de l'ombre
+                                spreadRadius:
+                                    1, // Taille de l'ombre autour du cercle
+                                blurRadius:
+                                    5, // Adoucit l'ombre pour un effet plus subtil
+                                offset: Offset(
+                                    2, 2), // Décalage de l'ombre en x et y
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -608,22 +625,34 @@ class SonarePageState extends State<SonarePage> {
 class CirclePainter extends CustomPainter {
   final Offset center;
   final double radius;
-  final double thickness; //epaisseur bordure
+  final double thickness;
 
   CirclePainter(this.center, this.radius, this.thickness);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color.fromARGB(255, 0, 0, 0)
+    // Peinture pour l'ombre
+    final shadowPaint = Paint()
+      ..color = Colors.black.withOpacity(0.05) // couleur de l'ombre
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = thickness
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 15); // intensité du flou
+
+    // Dessine l'ombre
+    canvas.drawCircle(center, radius, shadowPaint);
+
+    // Peinture pour le cercle
+    final circlePaint = Paint()
+      ..color = const Color.fromARGB(255, 255, 255, 255)
       ..style = PaintingStyle.stroke
       ..strokeWidth = thickness;
 
-    canvas.drawCircle(center, radius, paint);
+    // Dessine le cercle principal par-dessus l'ombre
+    canvas.drawCircle(center, radius, circlePaint);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    return false; // pas besoin de redessiner constamment
+    return false;
   }
 }
