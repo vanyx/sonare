@@ -34,9 +34,10 @@ class SonarePageState extends State<SonarePage> {
    */
   double? _bearing;
 
-  double _blueThickness = 8; //epaisseur cercle bleu
+  double _blueThickness = 0; //epaisseur cercle bleu
 
-  double _redThickness = 20; //diametre cercle rouge
+  double _minRed = 10; // taille min fish en bordure
+  double _maxRed = 30; // taille max
 
   DateTime? _lastUpdateTime;
 
@@ -62,6 +63,9 @@ class SonarePageState extends State<SonarePage> {
   List<Fish> _fishs = [];
 
   bool _errorWishRequest = false;
+
+  double _fishDistanceThreshold =
+      4000; // Distance max à laquelle on garde les fishs en m
 
   @override
   void initState() {
@@ -147,16 +151,13 @@ class SonarePageState extends State<SonarePage> {
   void updateFish() async {
     if (_currentPosition == null) return;
 
-    // Distance max à laquelle on garde les fishs en m
-    const double fishDistanceThreshold = 4000;
-
     // Distance min avant nouvel appel API en m
-    const double apiCallDistanceThreshold = fishDistanceThreshold / 10;
+    double apiCallDistanceThreshold = _fishDistanceThreshold / 10;
 
     // filtrage
     _fishs.removeWhere((fish) =>
         calculateDistance(_currentPosition!, fish.position) >
-        fishDistanceThreshold);
+        _fishDistanceThreshold);
 
     if (_lastApiPosition != null) {
       if (calculateDistance(_lastApiPosition!, _currentPosition!) <
@@ -173,8 +174,8 @@ class SonarePageState extends State<SonarePage> {
     }
 
     double latitudeDelta =
-        fishDistanceThreshold / 111000; // Distance en degrés de latitude
-    double longitudeDelta = fishDistanceThreshold /
+        _fishDistanceThreshold / 111000; // Distance en degrés de latitude
+    double longitudeDelta = _fishDistanceThreshold /
         (111000 * cos(_currentPosition!.latitude * pi / 180));
 
     double north = _currentPosition!.latitude + latitudeDelta;
@@ -292,7 +293,6 @@ class SonarePageState extends State<SonarePage> {
     // animationDuration =
     //     animationDuration.clamp(500, 1500);
 
-    //@TODO: à ajuster/ameliorer
     if (speedKmh >= 5) {
       _stoppedCount = 0;
       _movingCount++;
@@ -387,8 +387,7 @@ class SonarePageState extends State<SonarePage> {
             pow(2, _zoomLevel));
 
     // Comparer la distance en pixels avec le rayon du cercle
-    bool result = pixelDistance <= mapRadiusInPixels;
-    return result;
+    return pixelDistance <= mapRadiusInPixels;
   }
 
   void updateFishParams() {
@@ -417,6 +416,15 @@ class SonarePageState extends State<SonarePage> {
             _center!.dx + _blueRadius! * cos(fish.angle),
             _center!.dy + _blueRadius! * sin(fish.angle),
           );
+
+          // Calcul de la taille en fonction de la distance
+          double distance = calculateDistance(_currentPosition!, fish.position);
+          if (distance <= _fishDistanceThreshold) {
+            fish.size = _maxRed -
+                ((_maxRed - _minRed) * (distance / _fishDistanceThreshold));
+          } else {
+            fish.size = _minRed; // Si trop loin, on met la taille minimum
+          }
         }
       });
     }
@@ -495,7 +503,7 @@ class SonarePageState extends State<SonarePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 242, 242, 246),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: Center(
         child: _currentPosition == null
             ? CircularProgressIndicator()
@@ -535,24 +543,7 @@ class SonarePageState extends State<SonarePage> {
 
                           MarkerLayer(
                             markers: [
-                              Marker(
-                                width: 20.0,
-                                height: 20.0,
-                                point: _currentPosition!,
-                                child: Transform.rotate(
-                                  angle: _bearing != null
-                                      ? _bearing! * (pi / 180)
-                                      : 0.0, // rotation inverse pour l'image
-                                  child: Image.asset(
-                                    'assets/navigation.png',
-                                    width:
-                                        10.0, // taille de l'image pour correspondre à l'icône précédente
-                                    height: 10.0,
-                                  ),
-                                ),
-                              ),
-
-                              // Marqueurs pour chaque poisson visible
+                              // Fishs - MARKERS
                               for (var fish in _fishs)
                                 if (fish.visible)
                                   Marker(
@@ -562,7 +553,7 @@ class SonarePageState extends State<SonarePage> {
                                     child: Transform.rotate(
                                       angle: _bearing != null
                                           ? _bearing! * (pi / 180)
-                                          : 0.0, // rotation inverse pour la fleche
+                                          : 0.0, // rotation inverse
                                       child: Icon(
                                         Icons.point_of_sale_outlined,
                                         color: const Color.fromARGB(
@@ -571,45 +562,63 @@ class SonarePageState extends State<SonarePage> {
                                       ),
                                     ),
                                   ),
+
+                              // Icon navigation
+                              Marker(
+                                width: 20.0,
+                                height: 20.0,
+                                point: _currentPosition!,
+                                child: Transform.rotate(
+                                  angle: _bearing != null
+                                      ? _bearing! * (pi / 180)
+                                      : 0.0, // rotation inverse
+                                  child: Image.asset(
+                                    'assets/navigation.png',
+                                    width: 10.0,
+                                    height: 10.0,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ],
                       ),
                     ),
                   ),
-                  // cercle bleu
+                  // cercle bleu (mdr)
                   CustomPaint(
                     size: Size(screenSize!.width, screenSize!.height),
                     painter:
                         CirclePainter(_center!, _blueRadius!, _blueThickness),
                   ),
 
-                  // cercles rouge
+                  // Fishs - CIRCLE
                   for (var fish in _fishs)
                     if (!fish.visible)
                       Positioned(
-                        left: fish.circlePosition.dx - (_redThickness / 2),
-                        top: fish.circlePosition.dy - (_redThickness / 2),
+                        left: fish.circlePosition.dx - (fish.size / 2),
+                        top: fish.circlePosition.dy - (fish.size / 2),
                         child: Container(
-                          width: _redThickness,
-                          height: _redThickness,
+                          width: fish.size,
+                          height: fish.size,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color.fromARGB(255, 98, 190, 239),
+                            color: fish.type == "wish"
+                                ? Color.fromARGB(255, 46, 144, 255)
+                                : (fish.type == "sonare"
+                                    ? Color.fromARGB(255, 255, 139, 56)
+                                    : Colors
+                                        .transparent // Couleur par défaut si aucune condition
+                                ),
                             border: Border.all(
                               color: Colors.white,
-                              width: 3,
+                              width: fish.size / 9,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black
-                                    .withOpacity(0.1), // Couleur de l'ombre
-                                spreadRadius:
-                                    1, // Taille de l'ombre autour du cercle
-                                blurRadius:
-                                    5, // Adoucit l'ombre pour un effet plus subtil
-                                offset: Offset(
-                                    2, 2), // Décalage de l'ombre en x et y
+                                color: Colors.black.withOpacity(0.3),
+                                spreadRadius: 3, // taille de l'ombre
+                                blurRadius: 5,
                               ),
                             ],
                           ),
@@ -631,24 +640,24 @@ class CirclePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Peinture pour l'ombre
-    final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.05) // couleur de l'ombre
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = thickness
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 15); // intensité du flou
+    // // Peinture pour l'ombre
+    // final shadowPaint = Paint()
+    //   ..color = Colors.black.withOpacity(0.05) // couleur de l'ombre
+    //   ..style = PaintingStyle.stroke
+    //   ..strokeWidth = thickness
+    //   ..maskFilter = MaskFilter.blur(BlurStyle.normal, 15); // intensité du flou
 
-    // Dessine l'ombre
-    canvas.drawCircle(center, radius, shadowPaint);
+    // // Dessine l'ombre
+    // canvas.drawCircle(center, radius, shadowPaint);
 
-    // Peinture pour le cercle
-    final circlePaint = Paint()
-      ..color = const Color.fromARGB(255, 255, 255, 255)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = thickness;
+    // // Peinture pour le cercle
+    // final circlePaint = Paint()
+    //   ..color = const Color.fromARGB(255, 255, 255, 255)
+    //   ..style = PaintingStyle.stroke
+    //   ..strokeWidth = thickness;
 
-    // Dessine le cercle principal par-dessus l'ombre
-    canvas.drawCircle(center, radius, circlePaint);
+    // // Dessine le cercle principal par-dessus l'ombre
+    // canvas.drawCircle(center, radius, circlePaint);
   }
 
   @override

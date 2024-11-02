@@ -319,12 +319,12 @@ class _MainPageState extends State<MainPage> {
                                 minimumSize: const Size(40, 40),
                                 padding: EdgeInsets.all(0),
                                 backgroundColor:
-                                    const Color.fromARGB(255, 255, 255, 255),
+                                    const Color.fromARGB(255, 31, 31, 31),
                                 elevation: 4,
                               ),
                               child: Icon(
                                 Icons.map_outlined,
-                                color: const Color.fromARGB(255, 0, 0, 0),
+                                color: const Color.fromARGB(255, 255, 255, 255),
                                 size: 25.0,
                               ),
                             ),
@@ -343,7 +343,7 @@ class _MainPageState extends State<MainPage> {
                                   minimumSize: const Size(40, 40),
                                   padding: EdgeInsets.all(0),
                                   backgroundColor:
-                                      Color.fromARGB(255, 255, 255, 255),
+                                      Color.fromARGB(255, 31, 31, 31),
                                   elevation: 4,
                                 ),
                                 child: Transform.rotate(
@@ -352,7 +352,8 @@ class _MainPageState extends State<MainPage> {
                                     _explorerUserMovedCamera
                                         ? Icons.navigation_outlined
                                         : Icons.navigation,
-                                    color: const Color.fromARGB(255, 0, 0, 0),
+                                    color: const Color.fromARGB(
+                                        255, 255, 255, 255),
                                     size: 25.0,
                                   ),
                                 ),
@@ -367,7 +368,7 @@ class _MainPageState extends State<MainPage> {
                   left: marginRight,
                   child: isBottomSheetOpen
                       ? SizedBox.shrink()
-                      : FloatingActionButton(
+                      : ElevatedButton(
                           onPressed: () {
                             showModalBottomSheet(
                               context: context,
@@ -388,29 +389,40 @@ class _MainPageState extends State<MainPage> {
                               },
                             );
                           },
-                          backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                          child: Icon(
-                            Icons.menu,
-                            size: 28.0,
-                            color: const Color.fromARGB(255, 0, 0, 0),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            minimumSize: const Size(50, 50),
+                            padding: EdgeInsets.all(0),
+                            backgroundColor: _selectedMode == 1
+                                ? Color.fromARGB(255, 31, 31, 31)
+                                : const Color.fromARGB(255, 0, 0, 0),
+                          ),
+                          child: Image.asset(
+                            'assets/menu.png',
+                            width: 28,
+                            height: 28,
+                            fit: BoxFit.contain,
                           ),
                         ),
                 ),
+
                 // REPORT
                 Positioned(
-                  bottom: 16.0,
-                  right: 16.0,
+                  bottom: marginTop,
+                  right: marginRight,
                   child: ElevatedButton(
                     onPressed: _showCustomBottomSheet,
                     style: ElevatedButton.styleFrom(
                       shape: CircleBorder(),
                       padding: EdgeInsets.all(16),
-                      backgroundColor: Colors.white,
+                      backgroundColor: Color.fromARGB(255, 31, 31, 31),
                       elevation: 4,
                     ),
                     child: Icon(
-                      Icons.add,
-                      color: Colors.black,
+                      Icons.add_circle_outline,
+                      color: const Color.fromARGB(255, 255, 255, 255),
                       size: 32.0,
                     ),
                   ),
