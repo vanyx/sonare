@@ -60,12 +60,15 @@ class SonarePageState extends State<SonarePage> {
 
   LatLng? _lastApiPosition;
 
-  List<Fish> _fishs = [];
+  List<Fish> _fishs = [
+    Fish(
+        position: LatLng(47.67812392808644, -2.963056920493416), type: "sonare")
+  ];
 
   bool _errorWishRequest = false;
 
   double _fishDistanceThreshold =
-      4000; // Distance max à laquelle on garde les fishs en m
+      3000; // Distance max à laquelle on garde les fishs en m
 
   @override
   void initState() {
@@ -172,6 +175,8 @@ class SonarePageState extends State<SonarePage> {
         _lastApiPosition = _currentPosition;
       });
     }
+
+    print("j'appelle les copss");
 
     double latitudeDelta =
         _fishDistanceThreshold / 111000; // Distance en degrés de latitude
@@ -419,11 +424,18 @@ class SonarePageState extends State<SonarePage> {
 
           // Calcul de la taille en fonction de la distance
           double distance = calculateDistance(_currentPosition!, fish.position);
-          if (distance <= _fishDistanceThreshold) {
-            fish.size = _maxRed -
-                ((_maxRed - _minRed) * (distance / _fishDistanceThreshold));
+
+          if (distance >= _fishDistanceThreshold) {
+            fish.size = _minRed;
+          } else if (distance <= _fishDistanceThreshold / 5) {
+            fish.size = _maxRed;
           } else {
-            fish.size = _minRed; // Si trop loin, on met la taille minimum
+            // interpolation quadratique
+            double normalizedDistance = 1 -
+                (distance - (_fishDistanceThreshold / 5)) /
+                    (_fishDistanceThreshold - (_fishDistanceThreshold / 5));
+            fish.size =
+                _minRed + (_maxRed - _minRed) * pow(normalizedDistance, 2);
           }
         }
       });
@@ -616,9 +628,9 @@ class SonarePageState extends State<SonarePage> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
-                                spreadRadius: 3, // taille de l'ombre
-                                blurRadius: 5,
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 2, // taille de l'ombre
+                                blurRadius: 8,
                               ),
                             ],
                           ),
