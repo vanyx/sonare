@@ -8,6 +8,7 @@ import 'package:flutter_compass/flutter_compass.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../models/models.dart';
+import '../styles/AppColors.dart';
 
 class SonarePage extends StatefulWidget {
   @override
@@ -527,7 +528,7 @@ class SonarePageState extends State<SonarePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+      backgroundColor: AppColors.background,
       body: Center(
         child: _currentPosition == null
             ? CircularProgressIndicator()

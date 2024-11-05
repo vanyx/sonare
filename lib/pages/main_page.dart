@@ -44,7 +44,7 @@ class _MainPageState extends State<MainPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.greyButton,
+      backgroundColor: AppColors.background.withOpacity(0.97),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
@@ -237,20 +237,22 @@ class _MainPageState extends State<MainPage> {
                 Positioned(
                   bottom: marginTop,
                   right: marginRight,
-                  child: ElevatedButton(
-                    onPressed: _showReportSheet,
-                    style: ElevatedButton.styleFrom(
-                      elevation: _selectedMode == 2 ? 0 : 2,
-                      shape: CircleBorder(),
-                      padding: EdgeInsets.all(16),
-                      backgroundColor: AppColors.greyButton,
-                    ),
-                    child: Icon(
-                      Icons.add_circle_outline,
-                      color: AppColors.white,
-                      size: 32.0,
-                    ),
-                  ),
+                  child: isBottomSheetOpen
+                      ? SizedBox.shrink()
+                      : ElevatedButton(
+                          onPressed: _showReportSheet,
+                          style: ElevatedButton.styleFrom(
+                            elevation: _selectedMode == 2 ? 0 : 2,
+                            shape: CircleBorder(),
+                            padding: EdgeInsets.all(16),
+                            backgroundColor: AppColors.greyButton,
+                          ),
+                          child: Icon(
+                            Icons.add_circle_outline,
+                            color: AppColors.white,
+                            size: 32.0,
+                          ),
+                        ),
                 ),
               ],
             ),

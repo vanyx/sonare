@@ -44,11 +44,11 @@ class SelectModeSheet extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     elevation: 0,
                     shape: CircleBorder(),
-                    backgroundColor: AppColors.grey2Button,
+                    backgroundColor: AppColors.greyButton,
                   ),
                   child: Icon(
                     Icons.close,
-                    color: AppColors.grey2ButtonSeconday,
+                    color: AppColors.greyButtonSeconday,
                     size: 21,
                   ),
                 ),
@@ -92,7 +92,7 @@ class SelectModeSheet extends StatelessWidget {
                               child: Container(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 5.0, horizontal: 8.0),
-                                color: AppColors.grey2Button.withOpacity(0.97),
+                                color: AppColors.greyButton.withOpacity(0.97),
                                 child: Text(
                                   'Explorer',
                                   style: TextStyle(
@@ -141,7 +141,7 @@ class SelectModeSheet extends StatelessWidget {
                               child: Container(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 5.0, horizontal: 8.0),
-                                color: AppColors.grey2Button.withOpacity(0.97),
+                                color: AppColors.greyButton.withOpacity(0.97),
                                 child: Text(
                                   'Sonare',
                                   style: TextStyle(

@@ -6,12 +6,9 @@ class AppColors {
   static const Color sonareFlashi = Color.fromARGB(255, 125, 79, 254);
 
   // Fond
-  static const Color background = Color.fromARGB(255, 0, 0, 0);
+  static const Color background = Color.fromARGB(255, 32, 33, 36);
 
   // Fond bouton 1
-  static const Color greyButton = Color.fromARGB(255, 35, 35, 35);
-
-  // Bouton 2 par dessus bouton 1
-  static const Color grey2Button = Color.fromARGB(255, 53, 52, 57);
-  static const Color grey2ButtonSeconday = Color.fromARGB(255, 161, 162, 168);
+  static const Color greyButton = Color.fromARGB(255, 60, 64, 67);
+  static const Color greyButtonSeconday = Color.fromARGB(255, 182, 185, 190);
 }
