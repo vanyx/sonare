@@ -12,6 +12,7 @@ Prio 1 :
 Prio 2 :
 
 - padding clean dans bottomsheet de chgt de menu
+- peut etre adapter les tailles en fonction du % de l'ecran (notament taille dans les bottoms sheets)
 - notif
 - sons
 - arriere plan
