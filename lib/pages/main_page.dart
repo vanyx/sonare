@@ -45,6 +45,9 @@ class _MainPageState extends State<MainPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.greyButton,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+      ),
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
@@ -116,7 +119,6 @@ class _MainPageState extends State<MainPage> {
       );
     } else {
       currentPage = SonarePage();
-      // currentPage = Test2Page();
     }
 
     return Scaffold(
