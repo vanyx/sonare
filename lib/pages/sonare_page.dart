@@ -36,9 +36,6 @@ class SonarePageState extends State<SonarePage> {
 
   double _blueThickness = 0; //epaisseur cercle bleu
 
-  double _minRed = 10; // taille min fish en bordure
-  double _maxRed = 30; // taille max
-
   DateTime? _lastUpdateTime;
 
   bool _isMovingForSure = false;
@@ -62,7 +59,8 @@ class SonarePageState extends State<SonarePage> {
 
   List<Fish> _fishs = [
     Fish(
-        position: LatLng(47.67812392808644, -2.963056920493416), type: "sonare")
+        position: LatLng(47.67615920008788, -2.8913548477105127),
+        type: "sonare")
   ];
 
   bool _errorWishRequest = false;
@@ -421,19 +419,29 @@ class SonarePageState extends State<SonarePage> {
           );
 
           // Calcul de la taille en fonction de la distance
+          /**
+           * _fishDistanceThreshold distance la plus loin
+           * .
+           * .
+           * .
+           * Seuil : _fishDistanceThreshold / 5
+           * .
+           * Moi
+           */
           double distance = calculateDistance(_currentPosition!, fish.position);
 
           if (distance >= _fishDistanceThreshold) {
-            fish.size = _minRed;
+            fish.size = Fish.minSizeValue;
           } else if (distance <= _fishDistanceThreshold / 5) {
-            fish.size = _maxRed;
+            fish.size = Fish.maxSizeValue;
           } else {
-            // interpolation quadratique
             double normalizedDistance = 1 -
                 (distance - (_fishDistanceThreshold / 5)) /
                     (_fishDistanceThreshold - (_fishDistanceThreshold / 5));
-            fish.size =
-                _minRed + (_maxRed - _minRed) * pow(normalizedDistance, 2);
+
+            fish.size = Fish.minSizeValue +
+                (Fish.maxSizeValue - Fish.minSizeValue) *
+                    pow(normalizedDistance, 4);
           }
         }
       });

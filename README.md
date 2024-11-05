@@ -7,7 +7,7 @@ Prio 1 :
 - bouton +
 - parametres
 - ajouter vitesse
-- bug : des fois à l'arret la boussole ne marche pas car sonare a l'impression d'etre en mouvement (mais à l'arret)
+- bug : des fois à l'arret la boussole ne marche pas car sonare a l'impression d'etre en mouvement (mais à l'arret) (car le calcul de l'arret se fait au bout de 3 positions, qui elles arrivent quand on se deplace mdr)
 
 Prio 2 :
 
