@@ -2,13 +2,16 @@
 
 Prio 1 :
 
+- meilleur anime des fishs
 - supprimer/modifier le circular indicator dans le mode sonare
 - bouton +
 - parametres
 - ajouter vitesse
+- bug : des fois à l'arret la boussole ne marche pas car sonare a l'impression d'etre en mouvement (mais à l'arret)
 
 Prio 2 :
 
+- padding clean dans bottomsheet de chgt de menu
 - notif
 - sons
 - arriere plan

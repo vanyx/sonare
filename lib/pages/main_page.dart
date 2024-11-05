@@ -45,7 +45,7 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  void _showCustomBottomSheet() {
+  void _showReportSheet() {
     setState(() {
       isBottomSheetOpen = true;
     });
@@ -115,7 +115,7 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  void _showBottomSheet() {
+  void _showSelectModeSheet() {
     setState(() {
       isBottomSheetOpen = true;
     });
@@ -123,12 +123,13 @@ class _MainPageState extends State<MainPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Color.fromARGB(255, 35, 35, 35),
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return SingleChildScrollView(
               child: Container(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 60.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -139,16 +140,28 @@ class _MainPageState extends State<MainPage> {
                         Text(
                           'Choisir un mode',
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 255, 255, 255)),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.close),
+                        ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                             setState(() {
                               isBottomSheetOpen = false;
                             });
                           },
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: Size(30, 30),
+                            elevation: 0,
+                            shape: CircleBorder(),
+                            backgroundColor: Color.fromARGB(255, 53, 52, 57),
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            color: Color.fromARGB(255, 161, 162, 168),
+                            size: 21,
+                          ),
                         ),
                       ],
                     ),
@@ -167,8 +180,8 @@ class _MainPageState extends State<MainPage> {
                               borderRadius: BorderRadius.circular(18.0),
                               border: Border.all(
                                 color: _selectedMode == 1
-                                    ? Color.fromARGB(255, 64, 18, 181)
-                                    : Colors.grey,
+                                    ? Color.fromARGB(255, 0, 221, 255)
+                                    : Colors.transparent,
                                 width: 2.0,
                               ),
                             ),
@@ -189,13 +202,14 @@ class _MainPageState extends State<MainPage> {
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
                                           vertical: 5.0, horizontal: 8.0),
-                                      color: Colors.white.withOpacity(0.95),
+                                      color: Color.fromARGB(255, 53, 52, 57)
+                                          .withOpacity(0.97),
                                       child: Text(
                                         'Explorer',
                                         style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
                                         ),
                                         textAlign: TextAlign.left,
                                       ),
@@ -217,8 +231,8 @@ class _MainPageState extends State<MainPage> {
                               borderRadius: BorderRadius.circular(18.0),
                               border: Border.all(
                                 color: _selectedMode == 2
-                                    ? Color.fromARGB(255, 64, 18, 181)
-                                    : Colors.grey,
+                                    ? Color.fromARGB(255, 0, 221, 255)
+                                    : Colors.transparent,
                                 width: 2.0,
                               ),
                             ),
@@ -239,13 +253,16 @@ class _MainPageState extends State<MainPage> {
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
                                           vertical: 5.0, horizontal: 8.0),
-                                      color: Colors.white.withOpacity(0.95),
+                                      color:
+                                          const Color.fromARGB(255, 53, 52, 57)
+                                              .withOpacity(0.97),
                                       child: Text(
                                         'Sonare',
                                         style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
+                                          fontWeight: FontWeight.w100,
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
                                         ),
                                         textAlign: TextAlign.left,
                                       ),
@@ -310,17 +327,17 @@ class _MainPageState extends State<MainPage> {
                             // CHOIX MODE
                             ElevatedButton(
                               onPressed: () {
-                                _showBottomSheet();
+                                _showSelectModeSheet();
                               },
                               style: ElevatedButton.styleFrom(
+                                elevation: _selectedMode == 2 ? 0 : 2,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
                                 minimumSize: const Size(40, 40),
                                 padding: EdgeInsets.all(0),
                                 backgroundColor:
-                                    const Color.fromARGB(255, 31, 31, 31),
-                                elevation: 4,
+                                    const Color.fromARGB(255, 35, 35, 35),
                               ),
                               child: Icon(
                                 Icons.map_outlined,
@@ -337,14 +354,14 @@ class _MainPageState extends State<MainPage> {
                                       ?.animateToCurrentPosition();
                                 },
                                 style: ElevatedButton.styleFrom(
+                                  elevation: _selectedMode == 2 ? 0 : 2,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   minimumSize: const Size(40, 40),
                                   padding: EdgeInsets.all(0),
                                   backgroundColor:
-                                      Color.fromARGB(255, 31, 31, 31),
-                                  elevation: 4,
+                                      Color.fromARGB(255, 35, 35, 35),
                                 ),
                                 child: Transform.rotate(
                                   angle: 45 * 3.14159 / 180,
@@ -390,15 +407,13 @@ class _MainPageState extends State<MainPage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            minimumSize: const Size(50, 50),
-                            padding: EdgeInsets.all(0),
-                            backgroundColor: _selectedMode == 1
-                                ? Color.fromARGB(255, 31, 31, 31)
-                                : const Color.fromARGB(255, 0, 0, 0),
-                          ),
+                              elevation: _selectedMode == 2 ? 0 : 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              minimumSize: const Size(50, 50),
+                              padding: EdgeInsets.all(0),
+                              backgroundColor: Color.fromARGB(255, 35, 35, 35)),
                           child: Image.asset(
                             'assets/menu.png',
                             width: 28,
@@ -413,12 +428,12 @@ class _MainPageState extends State<MainPage> {
                   bottom: marginTop,
                   right: marginRight,
                   child: ElevatedButton(
-                    onPressed: _showCustomBottomSheet,
+                    onPressed: _showReportSheet,
                     style: ElevatedButton.styleFrom(
+                      elevation: _selectedMode == 2 ? 0 : 2,
                       shape: CircleBorder(),
                       padding: EdgeInsets.all(16),
-                      backgroundColor: Color.fromARGB(255, 31, 31, 31),
-                      elevation: 4,
+                      backgroundColor: Color.fromARGB(255, 35, 35, 35),
                     ),
                     child: Icon(
                       Icons.add_circle_outline,

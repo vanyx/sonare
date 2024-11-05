@@ -176,8 +176,6 @@ class SonarePageState extends State<SonarePage> {
       });
     }
 
-    print("j'appelle les copss");
-
     double latitudeDelta =
         _fishDistanceThreshold / 111000; // Distance en degrés de latitude
     double longitudeDelta = _fishDistanceThreshold /
