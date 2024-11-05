@@ -4,6 +4,9 @@ import 'sonare_page.dart';
 import 'test_page.dart';
 import 'test2.dart';
 import './menu_page.dart';
+import '../widgets/selectedBottomSheet.dart';
+import '../widgets/reportSheet.dart';
+import '../styles/AppColors.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -33,15 +36,40 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  void _changeMode(int mode) {
+  void _showSelectModeSheet() {
     setState(() {
-      _selectedMode = mode;
+      isBottomSheetOpen = true;
     });
-    if (mode == 1) {
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.greyButton,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return SelectModeSheet(
+              selectedMode: _selectedMode,
+              onModeSelected: (int mode) {
+                setState(() {
+                  _selectedMode = mode;
+                });
+                setModalState(() {}); // refresh la bottom sheet
+                if (mode == 1) {
+                  setState(() {
+                    _explorerUserMovedCamera = false;
+                  });
+                }
+              },
+            );
+          },
+        );
+      },
+    ).whenComplete(() {
       setState(() {
-        _explorerUserMovedCamera = false;
+        isBottomSheetOpen = false;
       });
-    }
+    });
   }
 
   void _showReportSheet() {
@@ -56,228 +84,12 @@ class _MainPageState extends State<MainPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Qu\'as tu vu ?',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      setState(() {
-                        isBottomSheetOpen = false;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    'Poisson',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Corail',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    ).whenComplete(() {
-      setState(() {
-        isBottomSheetOpen = false;
-      });
-    });
-  }
-
-  void _showSelectModeSheet() {
-    setState(() {
-      isBottomSheetOpen = true;
-    });
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Color.fromARGB(255, 35, 35, 35),
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 60.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Choisir un mode',
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 255, 255, 255)),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            setState(() {
-                              isBottomSheetOpen = false;
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(30, 30),
-                            elevation: 0,
-                            shape: CircleBorder(),
-                            backgroundColor: Color.fromARGB(255, 53, 52, 57),
-                          ),
-                          child: Icon(
-                            Icons.close,
-                            color: Color.fromARGB(255, 161, 162, 168),
-                            size: 21,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _changeMode(1);
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18.0),
-                              border: Border.all(
-                                color: _selectedMode == 1
-                                    ? Color.fromARGB(255, 0, 221, 255)
-                                    : Colors.transparent,
-                                width: 2.0,
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.0),
-                              child: Stack(
-                                children: [
-                                  Image.asset(
-                                    'assets/explorer.png',
-                                    width: 150,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5.0, horizontal: 8.0),
-                                      color: Color.fromARGB(255, 53, 52, 57)
-                                          .withOpacity(0.97),
-                                      child: Text(
-                                        'Explorer',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: const Color.fromARGB(
-                                              255, 255, 255, 255),
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _changeMode(2);
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18.0),
-                              border: Border.all(
-                                color: _selectedMode == 2
-                                    ? Color.fromARGB(255, 0, 221, 255)
-                                    : Colors.transparent,
-                                width: 2.0,
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.0),
-                              child: Stack(
-                                children: [
-                                  Image.asset(
-                                    'assets/sonare.jpg',
-                                    width: 150,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5.0, horizontal: 8.0),
-                                      color:
-                                          const Color.fromARGB(255, 53, 52, 57)
-                                              .withOpacity(0.97),
-                                      child: Text(
-                                        'Sonare',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w100,
-                                          color: const Color.fromARGB(
-                                              255, 255, 255, 255),
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
+        return ReportSheet(
+          onClose: () {
+            Navigator.of(context).pop();
+            setState(() {
+              isBottomSheetOpen = false;
+            });
           },
         );
       },
@@ -335,12 +147,11 @@ class _MainPageState extends State<MainPage> {
                                 ),
                                 minimumSize: const Size(40, 40),
                                 padding: EdgeInsets.all(0),
-                                backgroundColor:
-                                    const Color.fromARGB(255, 35, 35, 35),
+                                backgroundColor: AppColors.greyButton,
                               ),
                               child: Icon(
                                 Icons.map_outlined,
-                                color: const Color.fromARGB(255, 255, 255, 255),
+                                color: AppColors.white,
                                 size: 25.0,
                               ),
                             ),
@@ -359,8 +170,7 @@ class _MainPageState extends State<MainPage> {
                                   ),
                                   minimumSize: const Size(40, 40),
                                   padding: EdgeInsets.all(0),
-                                  backgroundColor:
-                                      Color.fromARGB(255, 35, 35, 35),
+                                  backgroundColor: AppColors.greyButton,
                                 ),
                                 child: Transform.rotate(
                                   angle: 45 * 3.14159 / 180,
@@ -368,8 +178,7 @@ class _MainPageState extends State<MainPage> {
                                     _explorerUserMovedCamera
                                         ? Icons.navigation_outlined
                                         : Icons.navigation,
-                                    color: const Color.fromARGB(
-                                        255, 255, 255, 255),
+                                    color: AppColors.white,
                                     size: 25.0,
                                   ),
                                 ),
@@ -412,7 +221,7 @@ class _MainPageState extends State<MainPage> {
                               ),
                               minimumSize: const Size(50, 50),
                               padding: EdgeInsets.all(0),
-                              backgroundColor: Color.fromARGB(255, 35, 35, 35)),
+                              backgroundColor: AppColors.greyButton),
                           child: Image.asset(
                             'assets/menu.png',
                             width: 28,
@@ -432,11 +241,11 @@ class _MainPageState extends State<MainPage> {
                       elevation: _selectedMode == 2 ? 0 : 2,
                       shape: CircleBorder(),
                       padding: EdgeInsets.all(16),
-                      backgroundColor: Color.fromARGB(255, 35, 35, 35),
+                      backgroundColor: AppColors.greyButton,
                     ),
                     child: Icon(
                       Icons.add_circle_outline,
-                      color: const Color.fromARGB(255, 255, 255, 255),
+                      color: AppColors.white,
                       size: 32.0,
                     ),
                   ),

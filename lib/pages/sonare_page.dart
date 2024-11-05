@@ -59,8 +59,14 @@ class SonarePageState extends State<SonarePage> {
 
   List<Fish> _fishs = [
     Fish(
-        position: LatLng(47.67615920008788, -2.8913548477105127),
-        type: "sonare")
+        position: LatLng(47.665912286639475, -2.751114697461723),
+        type: "sonare"),
+    Fish(
+        position: LatLng(47.65753558200549, -2.78024793555929), type: "sonare"),
+    Fish(
+        position: LatLng(47.66574422497667, -2.7813256055753275),
+        type: "sonare"),
+    Fish(position: LatLng(47.64943911729925, -2.7364523847519364), type: "wish")
   ];
 
   bool _errorWishRequest = false;
