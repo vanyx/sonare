@@ -122,7 +122,13 @@ class _ReportSheetState extends State<ReportSheet> {
                 ),
               ],
             ),
-            SizedBox(height: horizontalPadding * 3),
+            Visibility(
+              visible: selectedCircle == null,
+              child: SizedBox(height: horizontalPadding * 3),
+            ),
+
+            // TODO : Mieux gerer ici, ajouter un margin de 'horizontalPadding' en haut du boutton ?
+            // ou adapter la taille de la size box ?
 
             Visibility(
               visible: selectedCircle != null,
