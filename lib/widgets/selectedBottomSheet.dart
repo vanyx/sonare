@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../styles/AppColors.dart';
+import './closeButton.dart';
 
 class SelectModeSheet extends StatelessWidget {
   final int selectedMode;
@@ -35,22 +36,8 @@ class SelectModeSheet extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: AppColors.white),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(30, 30),
-                    padding: EdgeInsets.zero,
-                    elevation: 0,
-                    shape: CircleBorder(),
-                    backgroundColor: AppColors.greyButton,
-                  ),
-                  child: Icon(
-                    Icons.close,
-                    color: AppColors.greyButtonSeconday,
-                    size: 21,
-                  ),
+                CloseButtonWidget(
+                  onClose: () => Navigator.of(context).pop(),
                 ),
               ],
             ),

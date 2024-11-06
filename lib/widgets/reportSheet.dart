@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../styles/AppColors.dart';
+import './closeButton.dart';
 
 class ReportSheet extends StatelessWidget {
   final VoidCallback onClose;
@@ -7,52 +9,41 @@ class ReportSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Titre et bouton de fermeture
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Qu\'as-tu vu ?',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.close),
-                onPressed: onClose,
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
+    double horizontalPadding = MediaQuery.of(context).size.width * 0.05;
+    double cardWidth =
+        (MediaQuery.of(context).size.width - (horizontalPadding * 2)) / 2;
+    double cardHeight = cardWidth * 10 / 16; //ratio 16/10
 
-          // Options de rapport
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                'Poisson',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(horizontalPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Titre et bouton
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Que voyez-vous ?',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white),
                 ),
-              ),
-              Text(
-                'Corail',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                CloseButtonWidget(
+                  onClose: () => Navigator.of(context).pop(),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+            SizedBox(height: horizontalPadding),
+
+            // TODO
+            Row(),
+            SizedBox(height: horizontalPadding * 3),
+          ],
+        ),
       ),
     );
   }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'explorer_page.dart';
 import 'sonare_page.dart';
-import 'test_page.dart';
-import 'test2.dart';
 import './menu_page.dart';
 import '../widgets/selectedBottomSheet.dart';
 import '../widgets/reportSheet.dart';
@@ -83,8 +81,9 @@ class _MainPageState extends State<MainPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: AppColors.background.withOpacity(0.97),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
       builder: (BuildContext context) {
         return ReportSheet(

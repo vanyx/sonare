@@ -60,14 +60,8 @@ class SonarePageState extends State<SonarePage> {
 
   List<Fish> _fishs = [
     Fish(
-        position: LatLng(47.665912286639475, -2.751114697461723),
+        position: LatLng(47.68087415811055, -3.0033647284866762),
         type: "sonare"),
-    Fish(
-        position: LatLng(47.65753558200549, -2.78024793555929), type: "sonare"),
-    Fish(
-        position: LatLng(47.66574422497667, -2.7813256055753275),
-        type: "sonare"),
-    Fish(position: LatLng(47.64943911729925, -2.7364523847519364), type: "wish")
   ];
 
   bool _errorWishRequest = false;
@@ -436,6 +430,8 @@ class SonarePageState extends State<SonarePage> {
            * Moi
            */
           double distance = calculateDistance(_currentPosition!, fish.position);
+
+          if (fish.type == "sonare") print(distance);
 
           if (distance >= _fishDistanceThreshold) {
             fish.size = Fish.minSizeValue;
