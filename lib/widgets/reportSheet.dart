@@ -24,6 +24,10 @@ class _ReportSheetState extends State<ReportSheet> {
     });
   }
 
+  void report() {
+    // @TODO
+  }
+
   @override
   Widget build(BuildContext context) {
     double horizontalPadding = MediaQuery.of(context).size.width * 0.05;
@@ -122,21 +126,15 @@ class _ReportSheetState extends State<ReportSheet> {
                 ),
               ],
             ),
-            Visibility(
-              visible: selectedCircle == null,
-              child: SizedBox(height: horizontalPadding * 3),
-            ),
-
-            // TODO : Mieux gerer ici, ajouter un margin de 'horizontalPadding' en haut du boutton ?
-            // ou adapter la taille de la size box ?
-
+            SizedBox(height: horizontalPadding),
             Visibility(
               visible: selectedCircle != null,
               child: Container(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    //@TODO
+                    report();
+                    Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.sonareFlashi,
@@ -147,7 +145,7 @@ class _ReportSheetState extends State<ReportSheet> {
                         vertical: horizontalPadding / 2), // Hauteur du bouton
                   ),
                   child: Text(
-                    'Valider',
+                    'Signaler',
                     style: TextStyle(
                       color: AppColors.white,
                       fontSize: 18,
@@ -157,6 +155,7 @@ class _ReportSheetState extends State<ReportSheet> {
                 ),
               ),
             ),
+            SizedBox(height: horizontalPadding * 2),
           ],
         ),
       ),

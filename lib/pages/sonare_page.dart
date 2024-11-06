@@ -59,9 +59,9 @@ class SonarePageState extends State<SonarePage> {
   LatLng? _lastApiPosition;
 
   List<Fish> _fishs = [
-    Fish(
-        position: LatLng(47.68087415811055, -3.0033647284866762),
-        type: "sonare"),
+    // Fish(
+    //     position: LatLng(47.68087415811055, -3.0033647284866762),
+    //     type: "sonare"),
   ];
 
   bool _errorWishRequest = false;

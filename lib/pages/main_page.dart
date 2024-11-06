@@ -81,7 +81,7 @@ class _MainPageState extends State<MainPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.background.withOpacity(0.97),
+      backgroundColor: AppColors.background,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
@@ -199,6 +199,7 @@ class _MainPageState extends State<MainPage> {
                             showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
+                              backgroundColor: AppColors.background,
                               builder: (BuildContext context) {
                                 return DraggableScrollableSheet(
                                   initialChildSize: 1.0,
