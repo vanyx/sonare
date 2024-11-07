@@ -8,6 +8,7 @@ Prio 1 :
 
 Prio 2 :
 
+- supprimer le cercle painter
 - notif
 - sons
 - arriere plan
