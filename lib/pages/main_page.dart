@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'explorer_page.dart';
 import 'sonare_page.dart';
-import './menu_page.dart';
+import 'settings_page.dart';
 import '../widgets/selectedBottomSheet.dart';
 import '../widgets/reportSheet.dart';
 import '../styles/AppColors.dart';
@@ -188,7 +188,7 @@ class _MainPageState extends State<MainPage> {
                           ],
                         ),
                 ),
-                // MENU
+                // SETTINGS
                 Positioned(
                   top: marginTop,
                   left: marginRight,
@@ -209,7 +209,7 @@ class _MainPageState extends State<MainPage> {
                                       ScrollController scrollController) {
                                     return SingleChildScrollView(
                                       controller: scrollController,
-                                      child: MenuPage(),
+                                      child: SettingsPage(),
                                     );
                                   },
                                 );
