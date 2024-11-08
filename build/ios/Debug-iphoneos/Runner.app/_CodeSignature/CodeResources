@@ -46,7 +46,7 @@
 		</data>
 		<key>Frameworks/App.framework/App</key>
 		<data>
-		3elX6rY87tfILhnoPUdDfVIj5oQ=
+		nRZwTQkwXga/ZBh6svqqC8cU68Y=
 		</data>
 		<key>Frameworks/App.framework/Info.plist</key>
 		<data>
@@ -54,7 +54,7 @@
 		</data>
 		<key>Frameworks/App.framework/_CodeSignature/CodeResources</key>
 		<data>
-		qSmwHeAM16lWjcr8cZiSeaZJ7PU=
+		xlShZ5n1Cu1QVN11EVIThhvZvyU=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.bin</key>
 		<data>
@@ -110,7 +110,7 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/kernel_blob.bin</key>
 		<data>
-		j/qTeDGPK3rNMdrdrXSXB9JfkwM=
+		fX6lG9VmRDGmUX/fVYOvfT+ZBnc=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/packages/flutter_map/lib/assets/flutter_map_logo.png</key>
 		<data>
@@ -222,7 +222,7 @@
 		</data>
 		<key>Frameworks/audioplayers_darwin.framework/audioplayers_darwin</key>
 		<data>
-		oCNsua9P9QaOplORnGbRZn7vXSI=
+		vJI0PRIVgZq46CrfOxq7dJ/ldaA=
 		</data>
 		<key>Frameworks/flutter_compass.framework/Info.plist</key>
 		<data>
@@ -234,7 +234,7 @@
 		</data>
 		<key>Frameworks/flutter_compass.framework/flutter_compass</key>
 		<data>
-		uVQr6ZTfGIhwLH+r+9GzozVwagE=
+		LNmEP//VQ75MFGzBUMBxyzZxsiE=
 		</data>
 		<key>Frameworks/geolocator_apple.framework/Info.plist</key>
 		<data>
@@ -246,7 +246,7 @@
 		</data>
 		<key>Frameworks/geolocator_apple.framework/geolocator_apple</key>
 		<data>
-		oZwsxXv8UviK3rVengl363Rj2os=
+		Zn0AWBd8dJ7s/m+n7DBkmWfGdOQ=
 		</data>
 		<key>Frameworks/geolocator_apple.framework/geolocator_apple_privacy.bundle/Info.plist</key>
 		<data>
@@ -266,7 +266,7 @@
 		</data>
 		<key>Frameworks/path_provider_foundation.framework/path_provider_foundation</key>
 		<data>
-		EV+DHNWgno+GlTAz8D+tFy78UsM=
+		zcITHY1lmpCuB3HP5oVWArAD0/s=
 		</data>
 		<key>Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/Info.plist</key>
 		<data>
@@ -286,11 +286,11 @@
 		</data>
 		<key>Runner.debug.dylib</key>
 		<data>
-		QvSHFl920TRZqH6vwKjYkshEmZ0=
+		N80y19BR3q9mgvMi2xQM3gvp0Gc=
 		</data>
 		<key>__preview.dylib</key>
 		<data>
-		+cgV0Rdxgo6BMI9uT4UgtAGUoBE=
+		QJI+bD3cNTPtzQ7cdscuEPrDCNw=
 		</data>
 		<key>embedded.mobileprovision</key>
 		<data>
@@ -373,7 +373,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Ofnc0bdd+o7wFnDIMZ42pTVqwsNs+v3bD9nfra6TUag=
+			eGf+u3kJSjjnSr4RX1gj8STp70P/hqCdCvnvmbdSVgM=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/Info.plist</key>
@@ -387,7 +387,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Uz8aSsMAuGnfLgZuv+mH7uGQWMhxgtLYvAghsbY1xLo=
+			a/f+yrlK+EeTyoB0MEXfIDKziQmmyNGcY3PdItzDGyg=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.bin</key>
@@ -485,7 +485,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			QwVk1/41roaLpTNqdFEsPMTPntv+lzfSxXdHQsf+ULA=
+			yLVVoc+phKlESuRC6nVw1T7FKNc4A7lCPv+3Lp2f398=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/packages/flutter_map/lib/assets/flutter_map_logo.png</key>
@@ -681,7 +681,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			7ysrlYhUEmsHAzgSgaKxsw523w2AnY6n0i52ImIdPlw=
+			Q77QRyEoD7SzhC8vmyXnaAse+899RFgngQec7mzJViM=
 			</data>
 		</dict>
 		<key>Frameworks/flutter_compass.framework/Info.plist</key>
@@ -702,7 +702,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			jtkBjeIeKSnPDzJQ2bYbxb5LOQoLAvoa9+QJAGd8D90=
+			xFP6ivbW4qeWHTr/04bb/DPCyc6GM06NJHi3Pa7qPIY=
 			</data>
 		</dict>
 		<key>Frameworks/geolocator_apple.framework/Info.plist</key>
@@ -723,7 +723,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ZilvJteBf6z2ZzgL+PHSadqMCtECrqHqMJHTaDhK3To=
+			6G9CmQByQ9eLDDASgVTyhhVHage6RPUPuRrMF88csyI=
 			</data>
 		</dict>
 		<key>Frameworks/geolocator_apple.framework/geolocator_apple_privacy.bundle/Info.plist</key>
@@ -758,7 +758,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			dRd2i2t1WGPdJ1AALSbag9YBSAuOn9stjtYqJO03+Eg=
+			wubEFzNX3xuA7nAWaTHR8sxca1z9yO/WbIzn1mDMOCw=
 			</data>
 		</dict>
 		<key>Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/Info.plist</key>
@@ -779,14 +779,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			vFZyMCGe29FiIaCvcOi6e6UvS9EI0Zk0x6L1fJd8JQI=
+			+ApjmejL9zFo8qZfInOQNhNvuNrbOUq28dhXf+ek8aQ=
 			</data>
 		</dict>
 		<key>__preview.dylib</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Hy9sHVQYwoJ8SXyHXTQqsKY99vhQape20a/to+ks7EM=
+			UnsN/WUb3aB68UlRNc8IlgdK+59WT+hmfrNqqDg3nwE=
 			</data>
 		</dict>
 		<key>embedded.mobileprovision</key>

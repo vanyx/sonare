@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../models/models.dart';
 import '../styles/AppColors.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SonarePage extends StatefulWidget {
   @override
@@ -527,7 +528,24 @@ class SonarePageState extends State<SonarePage> {
       backgroundColor: AppColors.background,
       body: Center(
         child: _currentPosition == null
-            ? CircularProgressIndicator()
+            ? Center(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    width: screenSize!.width * _sizeScreenCoef,
+                    height: screenSize!.width * _sizeScreenCoef,
+                    decoration: BoxDecoration(
+                      color: AppColors.greyButton,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 3,
+                      ),
+                    ),
+                  ),
+                ),
+              )
             : Stack(
                 alignment: Alignment.center,
                 children: [

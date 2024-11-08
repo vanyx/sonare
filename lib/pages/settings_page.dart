@@ -63,6 +63,19 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           ListTile(
             leading: Icon(
+              Icons.download_done_rounded,
+              color: AppColors.white,
+            ),
+            title: Text(
+              'Nous contacter',
+              style: TextStyle(
+                color: AppColors.white,
+              ),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(
               Icons.pending,
               color: AppColors.white,
             ),
