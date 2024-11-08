@@ -32,12 +32,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             leading: Icon(
               Icons.settings,
-              color: Colors.white,
+              color: AppColors.white,
             ),
             title: Text(
               'Son et notifications',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
               ),
             ),
             onTap: () {},
@@ -45,12 +45,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             leading: Icon(
               Icons.fifteen_mp,
-              color: Colors.white,
+              color: AppColors.white,
             ),
             title: Text(
               'Lexique',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
               ),
             ),
             onTap: () {
@@ -64,12 +64,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             leading: Icon(
               Icons.pending,
-              color: Colors.white,
+              color: AppColors.white,
             ),
             title: Text(
-              'Nous contacter',
+              'Termes et conditions',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
               ),
             ),
             onTap: () {},

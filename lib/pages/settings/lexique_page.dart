@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../styles/AppColors.dart';
 
 class LexiquePage extends StatelessWidget {
   final List<Map<String, String>> lexiqueItems = [
@@ -19,12 +20,20 @@ class LexiquePage extends StatelessWidget {
     double horizontalPadding = MediaQuery.of(context).size.width * 0.04;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 223, 116, 116),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('Lexique'),
-        backgroundColor: const Color.fromARGB(255, 255, 170, 170),
+        title: Text(
+          'Lexique',
+          style: TextStyle(
+            color: AppColors.white,
+          ),
+        ),
+        backgroundColor: AppColors.background,
         leading: IconButton(
-          icon: Icon(Icons.chevron_left),
+          icon: Icon(
+            Icons.chevron_left,
+            color: AppColors.white,
+          ),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -41,6 +50,7 @@ class LexiquePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
+                color: AppColors.greyButton,
                 child: Padding(
                   padding: EdgeInsets.all(horizontalPadding),
                   child: Column(
@@ -60,8 +70,8 @@ class LexiquePage extends StatelessWidget {
                           Text(
                             item['title'] ?? '',
                             style: TextStyle(
+                              color: AppColors.white,
                               fontSize: 18,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -69,7 +79,7 @@ class LexiquePage extends StatelessWidget {
                       SizedBox(height: 8),
                       Text(
                         item['description'] ?? '',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16, color: AppColors.white),
                       ),
                     ],
                   ),

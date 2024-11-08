@@ -16,3 +16,4 @@ Prio 2 :
 Prio 3 :
 
 - rendre ça bogoss
+- ajouter termes et conditiond les memes que dans radar bot (attention dans certains pays c'est interdit dcp c'est votre faute, à la premiere requete de l'api on considere que vous acceptez les conditions, si ous mourrez c'est pas de notre faute, etc.)
