@@ -371,10 +371,8 @@ class ExplorerPageState extends State<ExplorerPage> {
                         height: _currentZoom > 13 ? 30.0 : 10.0,
                         point: fishPosition,
                         child: _currentZoom > 13
-                            ? Image.asset(
-                                'assets/waze_police.png',
-                                width: 30.0,
-                                height: 30.0,
+                            ? CustomMarker(
+                                size: 30,
                               )
                             : Container(
                                 width: 10.0,
@@ -414,20 +412,21 @@ class ExplorerPageState extends State<ExplorerPage> {
                               ),
                       ),
                     Marker(
+                      width: 25,
+                      height: 25,
                       point: _currentPosition!,
-                      child: CustomMarker(),
-                      // child: Container(
-                      //   width: 30.0,
-                      //   height: 30.0,
-                      //   decoration: BoxDecoration(
-                      //     shape: BoxShape.circle,
-                      //     color: const Color.fromARGB(255, 37, 90, 254),
-                      //     border: Border.all(
-                      //       color: Colors.white,
-                      //       width: 3.5,
-                      //     ),
-                      //   ),
-                      // ),
+                      child: Container(
+                        width: 30.0,
+                        height: 30.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color.fromARGB(255, 37, 90, 254),
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 3.5,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
