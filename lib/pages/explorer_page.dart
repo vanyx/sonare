@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:shimmer/shimmer.dart';
 import 'dart:math';
 import '../widgets/customMarker.dart';
+import '../styles/AppColors.dart';
 
 class ExplorerPage extends StatefulWidget {
   final Function(bool) userMovedCamera;
@@ -26,10 +27,11 @@ class ExplorerPage extends StatefulWidget {
 class ExplorerPageState extends State<ExplorerPage> {
   double _baseZoom = 15.0;
   double _currentZoom = 15.0;
+  double _markerSize = 30;
 
   LatLng? _currentPosition;
-  List<LatLng> _sonare = [];
-  List<LatLng> _waze = [];
+  List<LatLng> _shell = [];
+  List<LatLng> _fish = [];
   int _maxRetry = 3;
   double distanceThreshold = 200.0; // Seuil en m
 
@@ -167,7 +169,7 @@ class ExplorerPageState extends State<ExplorerPage> {
       // _fetchSonare(northEast.latitude, southWest.latitude,
       //     southWest.longitude, northEast.longitude, _maxRetry);
 
-      _fetchWaze(northEast.latitude, southWest.latitude, southWest.longitude,
+      _fetchWish(northEast.latitude, southWest.latitude, southWest.longitude,
           northEast.longitude, _maxRetry);
     });
   }
@@ -194,7 +196,7 @@ class ExplorerPageState extends State<ExplorerPage> {
 
         if (mounted) {
           setState(() {
-            _sonare = newFish;
+            _shell = newFish;
           });
         }
       } else {
@@ -211,7 +213,7 @@ class ExplorerPageState extends State<ExplorerPage> {
     }
   }
 
-  Future<void> _fetchWaze(
+  Future<void> _fetchWish(
       double north, double south, double west, double east, int retries) async {
     String url = 'https://www.waze.com/live-map/api/georss';
 
@@ -245,19 +247,19 @@ class ExplorerPageState extends State<ExplorerPage> {
         }
         if (mounted) {
           setState(() {
-            _waze = newFish;
+            _fish = newFish;
           });
         }
       } else {
         if (retries > 0) {
           await Future.delayed(Duration(milliseconds: 200));
-          _fetchWaze(north, south, west, east, retries - 1);
+          _fetchWish(north, south, west, east, retries - 1);
         }
       }
     } catch (e) {
       if (retries > 0) {
         await Future.delayed(Duration(milliseconds: 200));
-        _fetchWaze(north, south, west, east, retries - 1);
+        _fetchWish(north, south, west, east, retries - 1);
       }
     }
   }
@@ -365,21 +367,25 @@ class ExplorerPageState extends State<ExplorerPage> {
                         'https://a.tiles.mapbox.com/styles/v1/strava/clvman4pm01ga01qr5te2fpma/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3RyYXZhIiwiYSI6ImNtMWp3M2UyZDAydzIyam9zaTh6OTNiZm0ifQ.AOpRu_eeNKWg6r-4GS52Kw'),
                 MarkerLayer(
                   markers: [
-                    for (var fishPosition in _waze)
+                    for (var fishPosition in _fish)
                       Marker(
-                        width: _currentZoom > 13 ? 30.0 : 10.0,
-                        height: _currentZoom > 13 ? 30.0 : 10.0,
+                        width: _currentZoom > 13 ? _markerSize : 10.0,
+                        height: _currentZoom > 13 ? _markerSize : 10.0,
                         point: fishPosition,
                         child: _currentZoom > 13
-                            ? CustomMarker(
-                                size: 30,
-                              )
+                            ? Transform.rotate(
+                                angle: -_mapController.camera.rotation *
+                                    (pi / 180),
+                                child: CustomMarker(
+                                  size: _markerSize,
+                                  type: "fish",
+                                ))
                             : Container(
                                 width: 10.0,
                                 height: 10.0,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Color.fromARGB(255, 98, 190, 239),
+                                  color: AppColors.iconBackgroundFish,
                                   border: Border.all(
                                     color: Colors.white,
                                     width: 2,
@@ -387,23 +393,25 @@ class ExplorerPageState extends State<ExplorerPage> {
                                 ),
                               ),
                       ),
-                    for (var fishPosition in _sonare)
+                    for (var fishPosition in _shell)
                       Marker(
-                        width: _currentZoom > 13 ? 30.0 : 10.0,
-                        height: _currentZoom > 13 ? 30.0 : 10.0,
+                        width: _currentZoom > 13 ? _markerSize : 10.0,
+                        height: _currentZoom > 13 ? _markerSize : 10.0,
                         point: fishPosition,
                         child: _currentZoom > 13
-                            ? Image.asset(
-                                'assets/waze_police.png',
-                                width: 30.0,
-                                height: 30.0,
-                              )
+                            ? Transform.rotate(
+                                angle: -_mapController.camera.rotation *
+                                    (pi / 180),
+                                child: CustomMarker(
+                                  size: _markerSize,
+                                  type: "shell",
+                                ))
                             : Container(
                                 width: 10.0,
                                 height: 10.0,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Color.fromARGB(255, 214, 44, 25),
+                                  color: AppColors.iconBackgroundFish,
                                   border: Border.all(
                                     color: Colors.white,
                                     width: 2,

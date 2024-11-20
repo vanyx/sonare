@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import '../../models/models.dart';
 import '../styles/AppColors.dart';
 import 'package:shimmer/shimmer.dart';
+import '../widgets/customMarker.dart';
 
 class SonarePage extends StatefulWidget {
   @override
@@ -60,9 +61,8 @@ class SonarePageState extends State<SonarePage> {
   LatLng? _lastApiPosition;
 
   List<Fish> _fishs = [
-    // Fish(
-    //     position: LatLng(47.68087415811055, -3.0033647284866762),
-    //     type: "sonare"),
+    Fish(
+        position: LatLng(47.66198126851493, -2.749613181543694), type: "shell"),
   ];
 
   bool _errorWishRequest = false;
@@ -194,7 +194,7 @@ class SonarePageState extends State<SonarePage> {
         visible: false,
         angle: 0.0,
         circlePosition: Offset(0, 0),
-        type: 'wish',
+        type: 'fish',
       ));
     }
 
@@ -432,8 +432,6 @@ class SonarePageState extends State<SonarePage> {
            */
           double distance = calculateDistance(_currentPosition!, fish.position);
 
-          if (fish.type == "sonare") print(distance);
-
           if (distance >= _fishDistanceThreshold) {
             fish.size = Fish.minSizeValue;
           } else if (distance <= _fishDistanceThreshold / 5) {
@@ -586,18 +584,18 @@ class SonarePageState extends State<SonarePage> {
                               for (var fish in _fishs)
                                 if (fish.visible)
                                   Marker(
-                                    width: 25.0,
-                                    height: 25.0,
+                                    width: Fish.maxSizeValue,
+                                    height: Fish.maxSizeValue,
                                     point: fish.position,
                                     child: Transform.rotate(
                                       angle: _bearing != null
                                           ? _bearing! * (pi / 180)
                                           : 0.0, // rotation inverse
-                                      child: Icon(
-                                        Icons.point_of_sale_outlined,
-                                        color: const Color.fromARGB(
-                                            255, 255, 255, 255),
-                                        size: 25.0,
+                                      child: CustomMarker(
+                                        size: Fish.maxSizeValue,
+                                        type: fish.type == "fish"
+                                            ? "fish"
+                                            : "shell",
                                       ),
                                     ),
                                   ),
@@ -642,10 +640,10 @@ class SonarePageState extends State<SonarePage> {
                           height: fish.size,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: fish.type == "wish"
-                                ? Color.fromARGB(255, 46, 144, 255)
-                                : (fish.type == "sonare"
-                                    ? Color.fromARGB(255, 255, 139, 56)
+                            color: fish.type == "fish"
+                                ? AppColors.iconBackgroundFish
+                                : (fish.type == "shell"
+                                    ? AppColors.iconBackgroundShell
                                     : Colors
                                         .transparent // Couleur par défaut si aucune condition
                                 ),

@@ -9,7 +9,7 @@ class Fish {
   String type;
   double size;
 
-  static const List<String> allowedTypes = ['wish', 'sonare'];
+  static const List<String> allowedTypes = ['fish', 'shell'];
 
   static const double minSize = 10.0;
   static const double maxSize = 30.0;

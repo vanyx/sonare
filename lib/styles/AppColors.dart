@@ -11,4 +11,7 @@ class AppColors {
   // Fond bouton 1
   static const Color greyButton = Color.fromARGB(255, 60, 64, 67);
   static const Color greyButtonSeconday = Color.fromARGB(255, 182, 185, 190);
+
+  static const Color iconBackgroundFish = Color.fromARGB(255, 46, 144, 255);
+  static const Color iconBackgroundShell = Color.fromARGB(255, 255, 139, 56);
 }
