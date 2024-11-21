@@ -50,7 +50,8 @@ class SonarePageState extends State<SonarePage> {
   final int _transitionThreshold =
       3; // nombre de confirmations necessaires pour le cap
 
-  Size? screenSize;
+  // Size moyenne, pour eviter erreur null
+  Size? screenSize = Size(414.0, 896.0);
 
   double? _blueRadius;
 
@@ -62,7 +63,8 @@ class SonarePageState extends State<SonarePage> {
 
   List<Fish> _fishs = [
     Fish(
-        position: LatLng(47.66198126851493, -2.749613181543694), type: "shell"),
+        position: LatLng(47.68098199871603, -3.0032001740167646),
+        type: "shell"),
   ];
 
   bool _errorWishRequest = false;
@@ -531,6 +533,8 @@ class SonarePageState extends State<SonarePage> {
                   baseColor: Colors.grey[300]!,
                   highlightColor: Colors.grey[100]!,
                   child: Container(
+                    // @TODO
+                    //ERREUR ICI :
                     width: screenSize!.width * _sizeScreenCoef,
                     height: screenSize!.width * _sizeScreenCoef,
                     decoration: BoxDecoration(

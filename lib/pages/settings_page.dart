@@ -1,3 +1,4 @@
+import 'package:Sonare/pages/settings/sound_notification_page.dart';
 import 'package:flutter/material.dart';
 import '../widgets/closeButton.dart';
 import '../styles/AppColors.dart';
@@ -40,7 +41,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 color: AppColors.white,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SoundNotificationPage(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: Icon(
