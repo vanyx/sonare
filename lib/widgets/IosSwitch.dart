@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+/**
+ * https://github.com/DiarIbrahim/ios_style_switch
+ */
+
 //ignore: must_be_immutable
 class IosSwitch extends StatelessWidget {
   double size;
