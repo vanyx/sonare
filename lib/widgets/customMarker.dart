@@ -43,8 +43,7 @@ class CustomMarker extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black
-                        .withOpacity(0.1), // Couleur de l'ombre (légère)
+                    color: Colors.black.withOpacity(0.1),
                     spreadRadius: 2, // Rayonnement de l'ombre
                     blurRadius: 4, // Flou de l'ombre
                     offset: Offset(0, 3), // Déplacement vertical de l'ombre

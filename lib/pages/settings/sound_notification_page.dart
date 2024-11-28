@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
 import '../../styles/AppColors.dart';
 import '../../widgets/IosSwitch.dart';
 
@@ -19,8 +21,9 @@ class SoundNotificationPage extends StatelessWidget {
         backgroundColor: AppColors.background,
         leading: IconButton(
           icon: Icon(
-            Icons.chevron_left,
-            color: AppColors.white,
+            CupertinoIcons.chevron_back,
+            color: const Color.fromARGB(255, 255, 255, 255),
+            size: 25.0,
           ),
           onPressed: () {
             Navigator.of(context).pop();
@@ -28,28 +31,57 @@ class SoundNotificationPage extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(horizontalPadding),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        padding:
+            EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // "Son" Text on the left side
-            Text(
-              'Son',
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            // Custom toggle button (on/off)
-            Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Son',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                child: IosSwitch(
-                  onChanged: (v) {},
-                )),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: IosSwitch(
+                    onChanged: (v) {},
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+                height: horizontalPadding), // Espacement entre les deux lignes
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Notification',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: IosSwitch(
+                    onChanged: (v) {},
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

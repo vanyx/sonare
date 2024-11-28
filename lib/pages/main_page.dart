@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
 import 'explorer_page.dart';
 import 'sonare_page.dart';
 import 'settings_page.dart';
@@ -151,9 +153,9 @@ class _MainPageState extends State<MainPage> {
                                 backgroundColor: AppColors.greyButton,
                               ),
                               child: Icon(
-                                Icons.map_outlined,
+                                CupertinoIcons.map,
                                 color: AppColors.white,
-                                size: 25.0,
+                                size: 22.0,
                               ),
                             ),
 
@@ -173,15 +175,12 @@ class _MainPageState extends State<MainPage> {
                                   padding: EdgeInsets.all(0),
                                   backgroundColor: AppColors.greyButton,
                                 ),
-                                child: Transform.rotate(
-                                  angle: 45 * 3.14159 / 180,
-                                  child: Icon(
-                                    _explorerUserMovedCamera
-                                        ? Icons.navigation_outlined
-                                        : Icons.navigation,
-                                    color: AppColors.white,
-                                    size: 25.0,
-                                  ),
+                                child: Icon(
+                                  _explorerUserMovedCamera
+                                      ? CupertinoIcons.location
+                                      : CupertinoIcons.location_fill,
+                                  color: AppColors.white,
+                                  size: 22.0,
                                 ),
                               ),
                             ],

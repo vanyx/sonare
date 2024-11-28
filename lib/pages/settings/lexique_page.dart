@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
 import '../../styles/AppColors.dart';
 
 class LexiquePage extends StatelessWidget {
@@ -7,13 +9,27 @@ class LexiquePage extends StatelessWidget {
       'title': 'Poisson',
       'description':
           'azeazeazezaeazeazeaeazeazeazeazeazeaezazeazeazeazeaeazeazeazeazeazeazeazeazezaeae',
+      'image': 'assets/fish.png',
+      'backgroundColor': 'iconBackgroundFish'
     },
     {
       'title': 'Coquillage',
       'description':
           'azeazeazezaeazeazeaeazeazeazeazeazeaezazeazeazeazeaeazeazeazeazeazeazeazeazezaeae',
+      'image': 'assets/shell.png',
+      'backgroundColor': 'iconBackgroundShell'
     }
   ];
+  Color getColor(String? colorName) {
+    switch (colorName) {
+      case 'iconBackgroundFish':
+        return AppColors.iconBackgroundFish;
+      case 'iconBackgroundShell':
+        return AppColors.iconBackgroundShell;
+      default:
+        return AppColors.greyButton;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +47,9 @@ class LexiquePage extends StatelessWidget {
         backgroundColor: AppColors.background,
         leading: IconButton(
           icon: Icon(
-            Icons.chevron_left,
-            color: AppColors.white,
+            CupertinoIcons.chevron_back,
+            color: const Color.fromARGB(255, 255, 255, 255),
+            size: 25.0,
           ),
           onPressed: () {
             Navigator.of(context).pop();
@@ -62,8 +79,22 @@ class LexiquePage extends StatelessWidget {
                             width: 30,
                             height: 30,
                             decoration: BoxDecoration(
+                              color: getColor(item['backgroundColor']),
                               shape: BoxShape.circle,
-                              color: Colors.blue,
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Center(
+                              child: SizedBox(
+                                width: 30 * 0.65,
+                                height: 30 * 0.65,
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Image.asset(item['image'] ?? ''),
+                                ),
+                              ),
                             ),
                           ),
                           SizedBox(width: 8),

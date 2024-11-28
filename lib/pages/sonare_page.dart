@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
@@ -533,8 +535,6 @@ class SonarePageState extends State<SonarePage> {
                   baseColor: Colors.grey[300]!,
                   highlightColor: Colors.grey[100]!,
                   child: Container(
-                    // @TODO
-                    //ERREUR ICI :
                     width: screenSize!.width * _sizeScreenCoef,
                     height: screenSize!.width * _sizeScreenCoef,
                     decoration: BoxDecoration(
@@ -613,10 +613,10 @@ class SonarePageState extends State<SonarePage> {
                                   angle: _bearing != null
                                       ? _bearing! * (pi / 180)
                                       : 0.0, // rotation inverse
-                                  child: Image.asset(
-                                    'assets/navigation.png',
-                                    width: 10.0,
-                                    height: 10.0,
+                                  child: Icon(
+                                    CupertinoIcons.location_north_fill,
+                                    color: const Color.fromARGB(255, 255, 0, 0),
+                                    size: 24.0,
                                   ),
                                 ),
                               ),

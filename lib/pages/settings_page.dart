@@ -1,8 +1,11 @@
-import 'package:Sonare/pages/settings/sound_notification_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
 import '../widgets/closeButton.dart';
 import '../styles/AppColors.dart';
 import './settings/lexique_page.dart';
+import './settings/contact_us.dart';
+import './settings/sound_notification_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -32,8 +35,9 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           ListTile(
             leading: Icon(
-              Icons.settings,
-              color: AppColors.white,
+              CupertinoIcons.bell_fill,
+              color: const Color.fromARGB(255, 255, 255, 255),
+              size: 24.0,
             ),
             title: Text(
               'Son et notifications',
@@ -51,8 +55,9 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           ListTile(
             leading: Icon(
-              Icons.fifteen_mp,
-              color: AppColors.white,
+              CupertinoIcons.book_fill,
+              color: const Color.fromARGB(255, 255, 255, 255),
+              size: 24.0,
             ),
             title: Text(
               'Lexique',
@@ -70,8 +75,9 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           ListTile(
             leading: Icon(
-              Icons.download_done_rounded,
-              color: AppColors.white,
+              CupertinoIcons.mail_solid,
+              color: const Color.fromARGB(255, 255, 255, 255),
+              size: 24.0,
             ),
             title: Text(
               'Nous contacter',
@@ -79,12 +85,19 @@ class _SettingsPageState extends State<SettingsPage> {
                 color: AppColors.white,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ContactUsPage(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: Icon(
-              Icons.pending,
-              color: AppColors.white,
+              CupertinoIcons.doc_fill,
+              color: const Color.fromARGB(255, 255, 255, 255),
+              size: 24.0,
             ),
             title: Text(
               'Termes et conditions',

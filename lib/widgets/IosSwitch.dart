@@ -37,8 +37,8 @@ class IosSwitch extends StatelessWidget {
     this.duration = const Duration(milliseconds: 150),
     this.isActive = true,
     this.size = 35,
-    this.activeBackgroundColor = const Color(0xff00e676),
     this.disableBackgroundColor = const Color(0xffe0e0e0),
+    this.activeBackgroundColor = const Color.fromARGB(255, 52, 200, 90),
     this.activeBorderColor = Colors.grey,
     this.disableBorderColor = Colors.transparent,
     this.activeBorderWidth = 0,
@@ -81,15 +81,15 @@ class IosSwitch extends StatelessWidget {
   dot() {
     return Center(
       child: SizedBox(
-        width: size + size * 0.5,
+        width: size + size * 0.55,
         height: size,
         child: AnimatedAlign(
             duration: duration,
             alignment: isActive ? Alignment.centerRight : Alignment.centerLeft,
             child: AnimatedContainer(
                 duration: duration,
-                width: size - 0.2 * size,
-                height: size - 0.2 * size,
+                width: size - 0.15 * size,
+                height: size - 0.15 * size,
                 decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -97,9 +97,9 @@ class IosSwitch extends StatelessWidget {
                           spreadRadius: 2,
                           color: isActive
                               ? const Color.fromARGB(255, 189, 189, 189)
-                                  .withOpacity(0.4)
+                                  .withOpacity(0.1)
                               : const Color.fromARGB(255, 117, 117, 117)
-                                  .withOpacity(0.6),
+                                  .withOpacity(0.1),
                           offset: Offset(1, 1))
                     ],
                     color: isActive ? dotActiveColor : dotdisableColor,

@@ -81,6 +81,16 @@ class _ReportSheetState extends State<ReportSheet> {
                             width: 3,
                           ),
                         ),
+                        child: Center(
+                          child: SizedBox(
+                            width: circleSize * 0.7,
+                            height: circleSize * 0.7,
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: Image.asset('assets/fish.png'),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 8), // Espacement entre cercle et texte
@@ -110,6 +120,16 @@ class _ReportSheetState extends State<ReportSheet> {
                                 ? AppColors.sonareFlashi
                                 : Colors.transparent,
                             width: 3,
+                          ),
+                        ),
+                        child: Center(
+                          child: SizedBox(
+                            width: circleSize * 0.7,
+                            height: circleSize * 0.7,
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: Image.asset('assets/shell.png'),
+                            ),
                           ),
                         ),
                       ),
