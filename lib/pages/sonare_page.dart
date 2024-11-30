@@ -65,7 +65,7 @@ class SonarePageState extends State<SonarePage> {
 
   List<Fish> _fishs = [
     Fish(
-        position: LatLng(47.68098199871603, -3.0032001740167646),
+        position: LatLng(48.470493295389126, -2.5279055657856144),
         type: "shell"),
   ];
 
@@ -633,7 +633,7 @@ class SonarePageState extends State<SonarePage> {
                         CirclePainter(_center!, _blueRadius!, _blueThickness),
                   ),
 
-                  // Fishs - CIRCLE
+                  // Fishs - POINTS
                   for (var fish in _fishs)
                     if (!fish.visible)
                       Positioned(

@@ -17,6 +17,25 @@ dependencies:
   audioplayers: ^6.1.0
   flutter_compass: ^0.8.0
   cupertino_icons: ^1.0.8
+  flutter_native_splash: ^2.4.3
+  flutter_launcher_icons: ^0.14.1
+
+# Edit here to change the splash screen
+# Then run : flutter pub run flutter_native_splash:create
+flutter_native_splash:
+  color: "#000000"
+  image: assets/logo/icon.png
+  android: true
+  ios: true
+
+# Edit here to change the app logo
+# Logo must be 512px * 512px
+# Then run : flutter pub run flutter_launcher_icons:main 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo/icon_and_background.png"
+
 
 dev_dependencies:
   flutter_test:
