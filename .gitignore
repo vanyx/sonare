@@ -1,56 +1,28 @@
-# Fichiers générés automatiquement par Dart et Flutter
+# Fichiers générés automatiquement
 .dart_tool/
 .packages
-.flutter-plugins
-.flutter-plugins-dependencies
-.flutter-versions
-.melos/
 build/
-
-# Fichiers de logs et de crash
-*.log
-pubspec.lock
 
 # Fichiers relatifs aux IDEs
 .idea/
 *.iml
 .vscode/
 
-# Configurations et cache spécifiques au système d'exploitation
+# Configurations spécifiques
 .DS_Store
 *.swp
-*.lock
 Thumbs.db
-
-# Cache et fichiers temporaires
-*.temp
-*.tmp
-*.bak
 
 # Fichiers spécifiques à Android
 android/.gradle/
-android/app/debug/
-android/app/release/
 android/local.properties
 
 # Fichiers spécifiques à iOS
 ios/Pods/
 ios/.symlinks/
-ios/Flutter/Flutter.framework/
-ios/Flutter/Flutter.podspec
 ios/Flutter/App.framework/
-ios/Flutter/Generated.xcconfig
-ios/.generated/
 
-# Web compilation cache
-web/.dart_tool/
-web/.packages
-
-# Windows build output
+# Windows et Linux build output
 windows/flutter/ephemeral/
-
-# Linux build output
 linux/flutter/ephemeral/
-
-# macOS build output
 macos/flutter/ephemeral/
