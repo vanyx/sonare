@@ -52,8 +52,8 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(
                 'Son et notifications',
                 style: TextStyle(
-                  color: AppColors.white,
-                ),
+                    fontFamily: 'Public_Sans',
+                    color: Color.fromARGB(255, 255, 255, 255)),
               ),
             ),
           ),
