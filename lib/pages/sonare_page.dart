@@ -13,6 +13,7 @@ import '../../models/models.dart';
 import '../styles/AppColors.dart';
 import 'package:shimmer/shimmer.dart';
 import '../widgets/customMarker.dart';
+import '../services/common_functions.dart';
 
 class SonarePage extends StatefulWidget {
   @override
@@ -20,6 +21,8 @@ class SonarePage extends StatefulWidget {
 }
 
 class SonarePageState extends State<SonarePage> {
+  final Common _common = Common();
+
   LatLng? _currentPosition;
 
   MapController _mapController = MapController();
@@ -59,8 +62,6 @@ class SonarePageState extends State<SonarePage> {
 
   Offset? _center;
 
-  int _maxRetry = 3;
-
   LatLng? _lastApiPosition;
 
   List<Fish> _fishs = [
@@ -68,8 +69,6 @@ class SonarePageState extends State<SonarePage> {
         position: LatLng(48.470493295389126, -2.5279055657856144),
         type: "shell"),
   ];
-
-  bool _errorWishRequest = false;
 
   double _fishDistanceThreshold =
       3000; // Distance max à laquelle on garde les fishs en m
@@ -130,7 +129,6 @@ class SonarePageState extends State<SonarePage> {
       if (mounted) {
         LatLng newPosition = LatLng(position.latitude, position.longitude);
 
-        // fils de pute de fonction
         _animateMarker(_currentPosition!, newPosition);
 
         updateFish();
@@ -169,7 +167,7 @@ class SonarePageState extends State<SonarePage> {
     if (_lastApiPosition != null) {
       if (calculateDistance(_lastApiPosition!, _currentPosition!) <
               apiCallDistanceThreshold &&
-          !_errorWishRequest) {
+          !_common.errorWishRequest) {
         return;
       }
     }
@@ -189,10 +187,10 @@ class SonarePageState extends State<SonarePage> {
     double south = _currentPosition!.latitude - latitudeDelta;
     double east = _currentPosition!.longitude + longitudeDelta;
     double west = _currentPosition!.longitude - longitudeDelta;
-    List<LatLng> newFishPositions =
-        await _fetchWish(north, south, west, east, _maxRetry);
+    List<LatLng> wish =
+        await _common.fetchWish(north, south, west, east, _common.maxRetry);
 
-    for (var position in newFishPositions) {
+    for (var position in wish) {
       _fishs.add(Fish(
         position: position,
         visible: false,
@@ -203,75 +201,6 @@ class SonarePageState extends State<SonarePage> {
     }
 
     updateFishParams();
-  }
-
-  Future<List<LatLng>> _fetchWish(
-      double north, double south, double west, double east, int retries) async {
-    String url = 'https://www.waze.com/live-map/api/georss';
-
-    Map<String, String> queryParams = {
-      "top": north.toString(),
-      "bottom": south.toString(),
-      "left": west.toString(),
-      "right": east.toString(),
-      "env": "row",
-      "types": "alerts"
-    };
-
-    try {
-      Uri uri = Uri.parse(url);
-      final finalUri = uri.replace(queryParameters: queryParams);
-
-      final response = await http.get(finalUri);
-
-      if (response.statusCode == 200) {
-        if (!_errorWishRequest) {
-          if (mounted) {
-            setState(() {
-              _errorWishRequest = false;
-            });
-          }
-        }
-
-        var data = json.decode(response.body);
-        List<LatLng> newFish = [];
-
-        if (data['alerts'] != null) {
-          for (var alert in data['alerts']) {
-            var location = alert['location'];
-            if (location != null && alert['type'] == 'POLICE') {
-              LatLng fishPosition = LatLng(location['y'], location['x']);
-              newFish.add(fishPosition);
-            }
-          }
-        }
-        return newFish;
-      } else {
-        if (retries > 0) {
-          await Future.delayed(Duration(milliseconds: 200));
-          return await _fetchWish(north, south, west, east, retries - 1);
-        } else {
-          if (mounted) {
-            setState(() {
-              _errorWishRequest = true;
-            });
-          }
-          return [];
-        }
-      }
-    } catch (e) {
-      if (retries > 0) {
-        await Future.delayed(Duration(milliseconds: 200));
-        return await _fetchWish(north, south, west, east, retries - 1);
-      } else {
-        if (mounted) {
-          setState(() {
-            _errorWishRequest = true;
-          });
-        }
-        return [];
-      }
-    }
   }
 
   void _animateMarker(LatLng from, LatLng to) {
@@ -376,27 +305,6 @@ class SonarePageState extends State<SonarePage> {
     }
   }
 
-  bool checkTargetVisibility(LatLng toCheck) {
-    final double mapRadiusInPixels =
-        (MediaQuery.of(context).size.width * _sizeScreenCoef) / 2;
-
-    // Calcul la distance geographique entre currentPosition et la position cible
-    final distanceInMeters = const Distance().as(
-      LengthUnit.Meter,
-      _currentPosition!,
-      toCheck,
-    );
-
-    // Conversion de la distance en pixels
-    final pixelDistance = distanceInMeters /
-        (156543.03392 *
-            cos(_currentPosition!.latitude * pi / 180) /
-            pow(2, _zoomLevel));
-
-    // Comparer la distance en pixels avec le rayon du cercle
-    return pixelDistance <= mapRadiusInPixels;
-  }
-
   void updateFishParams() {
     if (_currentPosition == null ||
         _bearing == null ||
@@ -452,6 +360,27 @@ class SonarePageState extends State<SonarePage> {
         }
       });
     }
+  }
+
+  bool checkTargetVisibility(LatLng toCheck) {
+    final double mapRadiusInPixels =
+        (MediaQuery.of(context).size.width * _sizeScreenCoef) / 2;
+
+    // Calcul la distance geographique entre currentPosition et la position cible
+    final distanceInMeters = const Distance().as(
+      LengthUnit.Meter,
+      _currentPosition!,
+      toCheck,
+    );
+
+    // Converti de la distance en pixels
+    final pixelDistance = distanceInMeters /
+        (156543.03392 *
+            cos(_currentPosition!.latitude * pi / 180) /
+            pow(2, _zoomLevel));
+
+    // Compare la distance en pixels avec le rayon du cercle
+    return pixelDistance <= mapRadiusInPixels;
   }
 
   /**

@@ -9,6 +9,7 @@ import 'package:shimmer/shimmer.dart';
 import 'dart:math';
 import '../widgets/customMarker.dart';
 import '../styles/AppColors.dart';
+import '../services/common_functions.dart';
 
 class ExplorerPage extends StatefulWidget {
   final Function(bool) userMovedCamera;
@@ -25,6 +26,8 @@ class ExplorerPage extends StatefulWidget {
 }
 
 class ExplorerPageState extends State<ExplorerPage> {
+  final Common _common = Common();
+
   double _baseZoom = 15.0;
   double _currentZoom = 15.0;
   double _markerSize = 30;
@@ -32,7 +35,6 @@ class ExplorerPageState extends State<ExplorerPage> {
   LatLng? _currentPosition;
   List<LatLng> _shell = [];
   List<LatLng> _fish = [];
-  int _maxRetry = 3;
   double distanceThreshold = 200.0; // Seuil en m
 
   MapController _mapController = MapController();
@@ -123,102 +125,18 @@ class ExplorerPageState extends State<ExplorerPage> {
       var northEast = bounds.northEast;
       var southWest = bounds.southWest;
 
-      // _fetchSonare(northEast.latitude, southWest.latitude,
-      //     southWest.longitude, northEast.longitude, _maxRetry);
-
-      _fetchWish(northEast.latitude, southWest.latitude, southWest.longitude,
-          northEast.longitude, _maxRetry);
-    });
-  }
-
-  Future<void> _fetchSonare(
-      double north, double south, double west, double east, int retries) async {
-    String url =
-        'http://192.168.1.40:8000/sonare/all/${north}/${south}/${west}/${east}';
-
-    try {
-      Uri uri = Uri.parse(url);
-
-      final response = await http.get(uri);
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body) as List;
-        List<LatLng> newFish = [];
-
-        for (var item in data) {
-          double latitude = item['latitude'];
-          double longitude = item['longitude'];
-          LatLng fishPosition = LatLng(latitude, longitude);
-          newFish.add(fishPosition);
-        }
-
-        if (mounted) {
-          setState(() {
-            _shell = newFish;
-          });
-        }
-      } else {
-        if (retries > 0) {
-          await Future.delayed(Duration(milliseconds: 200));
-          _fetchSonare(north, south, west, east, retries - 1);
-        }
-      }
-    } catch (e) {
-      if (retries > 0) {
-        await Future.delayed(Duration(milliseconds: 200));
-        _fetchSonare(north, south, west, east, retries - 1);
-      }
-    }
-  }
-
-  Future<void> _fetchWish(
-      double north, double south, double west, double east, int retries) async {
-    String url = 'https://www.waze.com/live-map/api/georss';
-
-    Map<String, String> queryParams = {
-      "top": north.toString(),
-      "bottom": south.toString(),
-      "left": west.toString(),
-      "right": east.toString(),
-      "env": "row",
-      "types": "alerts"
-    };
-
-    try {
-      Uri uri = Uri.parse(url);
-      final finalUri = uri.replace(queryParameters: queryParams);
-
-      final response = await http.get(finalUri);
-
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        List<LatLng> newFish = [];
-
-        if (data['alerts'] != null) {
-          for (var alert in data['alerts']) {
-            var location = alert['location'];
-            if (location != null && alert['type'] == 'POLICE') {
-              LatLng fishPosition = LatLng(location['y'], location['x']);
-              newFish.add(fishPosition);
-            }
-          }
-        }
+      // Call Wish
+      _common
+          .fetchWish(northEast.latitude, southWest.latitude,
+              southWest.longitude, northEast.longitude, _common.maxRetry)
+          .then((newFish) {
         if (mounted) {
           setState(() {
             _fish = newFish;
           });
         }
-      } else {
-        if (retries > 0) {
-          await Future.delayed(Duration(milliseconds: 200));
-          _fetchWish(north, south, west, east, retries - 1);
-        }
-      }
-    } catch (e) {
-      if (retries > 0) {
-        await Future.delayed(Duration(milliseconds: 200));
-        _fetchWish(north, south, west, east, retries - 1);
-      }
-    }
+      });
+    });
   }
 
   void _animateMarker(LatLng from, LatLng to) {

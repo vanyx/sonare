@@ -1,8 +1,15 @@
 # TODO
 
+
+params :
+https://api.flutter.dev/flutter/cupertino/CupertinoListSection-class.html?_gl=1*14tv5cv*_ga*MjExMTE0Njc0LjE3Mjg0MDYwOTE.*_ga_04YGWK0175*MTczMzQxODQxMC4xMC4xLjE3MzM0MTg0NDQuMC4wLjA.
+
+pour les toggle button : voir general > appareil photo et voir tout en bas pour la presentation
+
+=> mode noir !
+
 - Faire common functions
 - faire background service
-- clean un peu explorer page
 - memoire persistante pour garder les parametres
 - son
 - bien tout commenter
