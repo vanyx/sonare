@@ -36,51 +36,92 @@ class SoundNotificationPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Son',
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.overBackground,
+                borderRadius: BorderRadius.circular(13),
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding,
+                vertical: horizontalPadding * 0.6,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Son',
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(30),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: IosSwitch(
+                      onChanged: (v) {},
+                    ),
                   ),
-                  child: IosSwitch(
-                    onChanged: (v) {},
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-            SizedBox(
-                height: horizontalPadding), // Espacement entre les deux lignes
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Notification',
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+            SizedBox(height: horizontalPadding * 0.5),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: Text(
+                "Emettre une alerte lorsque vous approchez d'un danger et que l'application est active.",
+                style: TextStyle(
+                  color: AppColors.buttonMain,
+                  fontSize: 12,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+            SizedBox(height: horizontalPadding * 1.2),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.overBackground,
+                borderRadius: BorderRadius.circular(13),
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding,
+                vertical: horizontalPadding * 0.6,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Notification',
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  child: IosSwitch(
-                    onChanged: (v) {},
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: IosSwitch(
+                      onChanged: (v) {},
+                    ),
                   ),
+                ],
+              ),
+            ),
+            SizedBox(height: horizontalPadding * 0.5),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: Text(
+                "Recevez des notifications en arrière-plan lorsque vous approchez d'un danger.",
+                style: TextStyle(
+                  color: AppColors.buttonMain,
+                  fontSize: 12,
                 ),
-              ],
+              ),
             ),
           ],
         ),

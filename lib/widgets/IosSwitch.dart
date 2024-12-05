@@ -38,7 +38,7 @@ class IosSwitch extends StatelessWidget {
     this.isActive = true,
     this.size = 35,
     this.disableBackgroundColor = const Color(0xffe0e0e0),
-    this.activeBackgroundColor = const Color.fromARGB(255, 52, 200, 90),
+    this.activeBackgroundColor = const Color.fromARGB(255, 48, 209, 88),
     this.activeBorderColor = Colors.grey,
     this.disableBorderColor = Colors.transparent,
     this.activeBorderWidth = 0,
