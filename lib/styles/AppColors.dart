@@ -3,14 +3,21 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color white = Color.fromARGB(255, 255, 255, 255);
 
-  static const Color sonareFlashi = Color.fromARGB(255, 0, 132, 255);
+  static const Color sonareFlashi = Color.fromARGB(255, 10, 132, 255);
 
-  // Fond
-  static const Color background = Color.fromARGB(255, 32, 33, 36);
+  // Noir
+  static const Color background = Color.fromARGB(255, 0, 0, 0);
 
-  // Fond bouton 1
-  static const Color greyButton = Color.fromARGB(255, 60, 64, 67);
-  static const Color greyButtonSeconday = Color.fromARGB(255, 182, 185, 190);
+  // Fond gris par dessus le noir pour un element
+  static const Color overBackground = Color.fromARGB(255, 28, 28, 30);
+
+  // 2e fond gris, qui passe par dessus le noir
+  static const Color background2 = Color.fromARGB(255, 33, 34, 31);
+
+  static const Color button = Color.fromARGB(255, 53, 53, 55);
+  static const Color buttonMain = Color.fromARGB(255, 162, 162, 170);
+
+  static const Color greyTransparent = Color.fromARGB(255, 51, 59, 67);
 
   static const Color iconBackgroundFish = Color.fromARGB(255, 46, 144, 255);
   static const Color iconBackgroundShell = Color.fromARGB(255, 255, 139, 56);

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../styles/AppColors.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
 
 class CloseButtonWidget extends StatelessWidget {
   final VoidCallback onClose;
@@ -15,12 +17,12 @@ class CloseButtonWidget extends StatelessWidget {
         padding: EdgeInsets.zero,
         elevation: 0,
         shape: CircleBorder(),
-        backgroundColor: AppColors.greyButton,
+        backgroundColor: AppColors.button,
       ),
       child: Icon(
-        Icons.close,
-        color: AppColors.greyButtonSeconday,
-        size: 21,
+        CupertinoIcons.clear,
+        color: AppColors.buttonMain,
+        size: 22.0,
       ),
     );
   }

@@ -467,7 +467,7 @@ class SonarePageState extends State<SonarePage> {
                     width: screenSize!.width * _sizeScreenCoef,
                     height: screenSize!.width * _sizeScreenCoef,
                     decoration: BoxDecoration(
-                      color: AppColors.greyButton,
+                      color: AppColors.sonareFlashi,
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: Colors.white,

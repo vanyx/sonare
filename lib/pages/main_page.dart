@@ -44,7 +44,7 @@ class _MainPageState extends State<MainPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.background.withOpacity(0.97),
+      backgroundColor: AppColors.background2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
@@ -83,7 +83,7 @@ class _MainPageState extends State<MainPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
@@ -150,7 +150,7 @@ class _MainPageState extends State<MainPage> {
                                 ),
                                 minimumSize: const Size(40, 40),
                                 padding: EdgeInsets.all(0),
-                                backgroundColor: AppColors.greyButton,
+                                backgroundColor: AppColors.button,
                               ),
                               child: Icon(
                                 CupertinoIcons.map,
@@ -173,7 +173,7 @@ class _MainPageState extends State<MainPage> {
                                   ),
                                   minimumSize: const Size(40, 40),
                                   padding: EdgeInsets.all(0),
-                                  backgroundColor: AppColors.greyButton,
+                                  backgroundColor: AppColors.button,
                                 ),
                                 child: Icon(
                                   _explorerUserMovedCamera
@@ -222,7 +222,7 @@ class _MainPageState extends State<MainPage> {
                               ),
                               minimumSize: const Size(50, 50),
                               padding: EdgeInsets.all(0),
-                              backgroundColor: AppColors.greyButton),
+                              backgroundColor: AppColors.button),
                           child: Image.asset(
                             'assets/menu.png',
                             width: 28,
@@ -244,7 +244,7 @@ class _MainPageState extends State<MainPage> {
                             elevation: _selectedMode == 2 ? 0 : 2,
                             shape: CircleBorder(),
                             padding: EdgeInsets.all(16),
-                            backgroundColor: AppColors.greyButton,
+                            backgroundColor: AppColors.button,
                           ),
                           child: Icon(
                             Icons.add_circle_outline,

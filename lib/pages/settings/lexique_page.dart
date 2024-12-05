@@ -27,7 +27,7 @@ class LexiquePage extends StatelessWidget {
       case 'iconBackgroundShell':
         return AppColors.iconBackgroundShell;
       default:
-        return AppColors.greyButton;
+        return AppColors.sonareFlashi;
     }
   }
 
@@ -67,7 +67,7 @@ class LexiquePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
-                color: AppColors.greyButton,
+                color: AppColors.overBackground,
                 child: Padding(
                   padding: EdgeInsets.all(horizontalPadding),
                   child: Column(

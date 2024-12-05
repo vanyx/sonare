@@ -96,13 +96,13 @@ class _ContactUsPageState extends State<ContactUsPage> {
                 maxLines: 5,
                 decoration: InputDecoration(
                   hintText: 'Écrivez votre message ici...',
-                  hintStyle: TextStyle(color: AppColors.greyButton),
+                  hintStyle: TextStyle(color: AppColors.sonareFlashi),
                   filled: true,
                   fillColor: AppColors.background,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     borderSide: BorderSide(
-                      color: AppColors.greyButton,
+                      color: AppColors.sonareFlashi,
                       width: 1.0,
                     ),
                   ),
