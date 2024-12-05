@@ -19,6 +19,8 @@ class AppColors {
 
   static const Color greyTransparent = Color.fromARGB(255, 51, 59, 67);
 
+  static const Color longPressed = Color.fromARGB(255, 58, 58, 60);
+
   static const Color iconBackgroundFish = Color.fromARGB(255, 46, 144, 255);
   static const Color iconBackgroundShell = Color.fromARGB(255, 255, 139, 56);
 }

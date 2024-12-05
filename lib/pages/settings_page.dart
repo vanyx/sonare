@@ -33,18 +33,9 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
           ),
-          ListTile(
-            leading: Icon(
-              CupertinoIcons.bell_fill,
-              color: const Color.fromARGB(255, 255, 255, 255),
-              size: 24.0,
-            ),
-            title: Text(
-              'Son et notifications',
-              style: TextStyle(
-                color: AppColors.white,
-              ),
-            ),
+          InkWell(
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: AppColors.longPressed,
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -52,19 +43,23 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               );
             },
-          ),
-          ListTile(
-            leading: Icon(
-              CupertinoIcons.book_fill,
-              color: const Color.fromARGB(255, 255, 255, 255),
-              size: 24.0,
-            ),
-            title: Text(
-              'Lexique',
-              style: TextStyle(
-                color: AppColors.white,
+            child: ListTile(
+              leading: Icon(
+                CupertinoIcons.bell_fill,
+                color: const Color.fromARGB(255, 255, 255, 255),
+                size: 24.0,
+              ),
+              title: Text(
+                'Son et notifications',
+                style: TextStyle(
+                  color: AppColors.white,
+                ),
               ),
             ),
+          ),
+          InkWell(
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: AppColors.longPressed,
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -72,19 +67,23 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               );
             },
-          ),
-          ListTile(
-            leading: Icon(
-              CupertinoIcons.mail_solid,
-              color: const Color.fromARGB(255, 255, 255, 255),
-              size: 24.0,
-            ),
-            title: Text(
-              'Nous contacter',
-              style: TextStyle(
-                color: AppColors.white,
+            child: ListTile(
+              leading: Icon(
+                CupertinoIcons.book_fill,
+                color: const Color.fromARGB(255, 255, 255, 255),
+                size: 24.0,
+              ),
+              title: Text(
+                'Lexique',
+                style: TextStyle(
+                  color: AppColors.white,
+                ),
               ),
             ),
+          ),
+          InkWell(
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: AppColors.longPressed,
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -92,21 +91,38 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               );
             },
-          ),
-          ListTile(
-            leading: Icon(
-              CupertinoIcons.doc_fill,
-              color: const Color.fromARGB(255, 255, 255, 255),
-              size: 24.0,
-            ),
-            title: Text(
-              'Termes et conditions',
-              style: TextStyle(
-                color: AppColors.white,
+            child: ListTile(
+              leading: Icon(
+                CupertinoIcons.mail_solid,
+                color: const Color.fromARGB(255, 255, 255, 255),
+                size: 24.0,
+              ),
+              title: Text(
+                'Nous contacter',
+                style: TextStyle(
+                  color: AppColors.white,
+                ),
               ),
             ),
-            onTap: () {},
           ),
+          InkWell(
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: AppColors.longPressed,
+            onTap: () {},
+            child: ListTile(
+              leading: Icon(
+                CupertinoIcons.doc_fill,
+                color: const Color.fromARGB(255, 255, 255, 255),
+                size: 24.0,
+              ),
+              title: Text(
+                'Termes et conditions',
+                style: TextStyle(
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
