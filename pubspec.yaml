@@ -19,6 +19,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_native_splash: ^2.4.3
   flutter_launcher_icons: ^0.14.1
+  flutter_background_service: ^5.0.10
+  flutter_local_notifications: ^18.0.1
 
 # Edit here to change the splash screen
 # Then run : flutter pub run flutter_native_splash:create

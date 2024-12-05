@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'pages/main_page.dart';
+import 'services/background_service.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp]); // Desactiver la rotation de l'ecran
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  initializeService();
   runApp(MyApp());
 }
 

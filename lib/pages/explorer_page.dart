@@ -99,49 +99,6 @@ class ExplorerPageState extends State<ExplorerPage> {
     });
   }
 
-  void _animateMarker(LatLng from, LatLng to) {
-    DateTime now = DateTime.now();
-
-    if (_lastUpdateTime == null) {
-      _lastUpdateTime = now;
-      if (mounted) {
-        setState(() {
-          _currentPosition = to;
-        });
-        return;
-      }
-    }
-
-    // double animationDuration =
-    //     (timeElapsed * 0.8).toDouble(); // Animation à 80% du temps écoulé
-    // // Limite la durée de l'animation pour éviter des animations trop longues ou trop courtes
-    // animationDuration =
-    //     animationDuration.clamp(500, 1500);
-
-    double animationDuration = 1000;
-
-    const int steps = 30;
-    double stepDuration = animationDuration / steps; // Duree par étape
-
-    for (int i = 0; i <= steps; i++) {
-      Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
-        double t = i / steps;
-        LatLng interpolatedPosition = lerp(from, to, t);
-        if (mounted) {
-          setState(() {
-            _currentPosition = interpolatedPosition;
-          });
-        }
-
-        if (!widget.explorerUserMovedCamera) {
-          _mapController.move(interpolatedPosition, _currentZoom);
-        }
-      });
-    }
-
-    _lastUpdateTime = now;
-  }
-
   void _onMapChanged(MapCamera camera, bool? hasGesture) {
     if (mounted) {
       setState(() {
@@ -264,6 +221,49 @@ class ExplorerPageState extends State<ExplorerPage> {
     }
   }
 
+  void _animateMarker(LatLng from, LatLng to) {
+    DateTime now = DateTime.now();
+
+    if (_lastUpdateTime == null) {
+      _lastUpdateTime = now;
+      if (mounted) {
+        setState(() {
+          _currentPosition = to;
+        });
+        return;
+      }
+    }
+
+    // double animationDuration =
+    //     (timeElapsed * 0.8).toDouble(); // Animation à 80% du temps écoulé
+    // // Limite la durée de l'animation pour éviter des animations trop longues ou trop courtes
+    // animationDuration =
+    //     animationDuration.clamp(500, 1500);
+
+    double animationDuration = 1000;
+
+    const int steps = 30;
+    double stepDuration = animationDuration / steps; // Duree par étape
+
+    for (int i = 0; i <= steps; i++) {
+      Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
+        double t = i / steps;
+        LatLng interpolatedPosition = lerp(from, to, t);
+        if (mounted) {
+          setState(() {
+            _currentPosition = interpolatedPosition;
+          });
+        }
+
+        if (!widget.explorerUserMovedCamera) {
+          _mapController.move(interpolatedPosition, _currentZoom);
+        }
+      });
+    }
+
+    _lastUpdateTime = now;
+  }
+
   Future<void> animateToCurrentPosition() async {
     if (_currentPosition != null) {
       final LatLng targetPosition = _currentPosition!;
@@ -282,7 +282,7 @@ class ExplorerPageState extends State<ExplorerPage> {
       for (int i = 0; i <= steps; i++) {
         double t = i / steps;
 
-        // Interpolation linéaire pour le centre
+        // Interpolation pour le centre
         double interpolatedLat = currentCenter.latitude +
             (targetPosition.latitude - currentCenter.latitude) * t;
         double interpolatedLng = currentCenter.longitude +

@@ -2,10 +2,32 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
+
+	<key>UIBackgroundModes</key>
+<array>
+    <string>location</string>
+    <string>fetch</string>
+</array>
+<key>NSUserTrackingUsageDescription</key>
+<string>Nous utilisons cette autorisation pour vous envoyer des notifications.</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>Nous avons besoin de votre localisation pour envoyer des alertes.</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Nous avons besoin de votre localisation pour suivre votre position.</string>
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Nous avons besoin de votre localisation pour suivre votre position même lorsque l'application est en arrière-plan.</string>
+
+
+
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Nous avons besoin de votre position pour vous notifier des changements.</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Nous avons besoin de votre position pour vous notifier des changements.</string>
+
 		<key>NSMotionUsageDescription</key>
 		<string>Donne accès aux capteurs batard</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>:)</string>
+		<string>donne accès batard</string>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
 		<key>CFBundleDevelopmentRegion</key>
