@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import '../../styles/AppColors.dart';
 import '../../widgets/IosSwitch.dart';
+import '../../styles/AppFonts.dart';
 
 class SoundNotificationPage extends StatelessWidget {
   @override
@@ -14,9 +15,7 @@ class SoundNotificationPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Son et notification',
-          style: TextStyle(
-            color: AppColors.white,
-          ),
+          style: AppFonts.settingsTitle,
         ),
         backgroundColor: AppColors.background,
         leading: IconButton(
@@ -42,19 +41,15 @@ class SoundNotificationPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(13),
               ),
               padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: horizontalPadding * 0.6,
+                horizontal: horizontalPadding * 0.8,
+                vertical: horizontalPadding * 0.5,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Son',
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppFonts.settingsNotif,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -73,10 +68,7 @@ class SoundNotificationPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: Text(
                 "Emettre une alerte lorsque vous approchez d'un danger et que l'application est active.",
-                style: TextStyle(
-                  color: AppColors.buttonMain,
-                  fontSize: 12,
-                ),
+                style: AppFonts.settingsNotifSubtitle,
               ),
             ),
             SizedBox(height: horizontalPadding * 1.2),
@@ -86,19 +78,14 @@ class SoundNotificationPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(13),
               ),
               padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: horizontalPadding * 0.6,
-              ),
+                  horizontal: horizontalPadding * 0.8,
+                  vertical: horizontalPadding * 0.5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Notification',
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppFonts.settingsNotif,
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -117,10 +104,7 @@ class SoundNotificationPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: Text(
                 "Recevez des notifications en arrière-plan lorsque vous approchez d'un danger.",
-                style: TextStyle(
-                  color: AppColors.buttonMain,
-                  fontSize: 12,
-                ),
+                style: AppFonts.settingsNotifSubtitle,
               ),
             ),
           ],

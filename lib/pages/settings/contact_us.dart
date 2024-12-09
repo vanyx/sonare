@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import '../../styles/AppColors.dart';
+import '../../styles/AppFonts.dart';
 
 class ContactUsPage extends StatefulWidget {
   @override
@@ -53,9 +54,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
       appBar: AppBar(
         title: Text(
           'Nous contacter',
-          style: TextStyle(
-            color: AppColors.white,
-          ),
+          style: AppFonts.settingsTitle,
         ),
         backgroundColor: AppColors.background,
         leading: IconButton(

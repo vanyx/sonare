@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import '../widgets/closeButton.dart';
 import '../styles/AppColors.dart';
+import '../styles/AppFonts.dart';
 import './settings/lexique_page.dart';
 import './settings/contact_us.dart';
 import './settings/sound_notification_page.dart';
@@ -51,9 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               title: Text(
                 'Son et notifications',
-                style: TextStyle(
-                    fontFamily: 'Public_Sans',
-                    color: Color.fromARGB(255, 255, 255, 255)),
+                style: AppFonts.settingsList,
               ),
             ),
           ),
@@ -75,9 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               title: Text(
                 'Lexique',
-                style: TextStyle(
-                  color: AppColors.white,
-                ),
+                style: AppFonts.settingsList,
               ),
             ),
           ),
@@ -99,9 +96,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               title: Text(
                 'Nous contacter',
-                style: TextStyle(
-                  color: AppColors.white,
-                ),
+                style: AppFonts.settingsList,
               ),
             ),
           ),
@@ -117,9 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               title: Text(
                 'Termes et conditions',
-                style: TextStyle(
-                  color: AppColors.white,
-                ),
+                style: AppFonts.settingsList,
               ),
             ),
           )

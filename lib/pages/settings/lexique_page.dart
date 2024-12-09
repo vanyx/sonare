@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import '../../styles/AppColors.dart';
+import '../../styles/AppFonts.dart';
 
 class LexiquePage extends StatelessWidget {
   final List<Map<String, String>> lexiqueItems = [
@@ -40,9 +41,7 @@ class LexiquePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Lexique',
-          style: TextStyle(
-            color: AppColors.white,
-          ),
+          style: AppFonts.settingsTitle,
         ),
         backgroundColor: AppColors.background,
         leading: IconButton(
@@ -100,17 +99,14 @@ class LexiquePage extends StatelessWidget {
                           SizedBox(width: 8),
                           Text(
                             item['title'] ?? '',
-                            style: TextStyle(
-                              color: AppColors.white,
-                              fontSize: 18,
-                            ),
+                            style: AppFonts.settingsLexiqueTitle,
                           ),
                         ],
                       ),
                       SizedBox(height: 8),
                       Text(
                         item['description'] ?? '',
-                        style: TextStyle(fontSize: 16, color: AppColors.white),
+                        style: AppFonts.settingsLexiqueText,
                       ),
                     ],
                   ),
