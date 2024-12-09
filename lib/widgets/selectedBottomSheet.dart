@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../styles/AppColors.dart';
 import './closeButton.dart';
+import '../../styles/AppFonts.dart';
 
 class SelectModeSheet extends StatelessWidget {
   final int selectedMode;
@@ -25,16 +26,12 @@ class SelectModeSheet extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Titre et bouton
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Choisir un mode',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.white),
+                  style: AppFonts.sheetTitle,
                 ),
                 CloseButtonWidget(
                   onClose: () => Navigator.of(context).pop(),
@@ -42,12 +39,10 @@ class SelectModeSheet extends StatelessWidget {
               ],
             ),
             SizedBox(height: horizontalPadding),
-
-            // Options de mode (cartes)
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Premiere carte
+                // EXPLORER
                 Expanded(
                   child: GestureDetector(
                     onTap: () => onModeSelected(1),
@@ -83,10 +78,7 @@ class SelectModeSheet extends StatelessWidget {
                                     AppColors.greyTransparent.withOpacity(0.97),
                                 child: Text(
                                   'Explorer',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.white,
-                                  ),
+                                  style: AppFonts.sheetMode,
                                   textAlign: TextAlign.left,
                                 ),
                               ),
@@ -97,7 +89,7 @@ class SelectModeSheet extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Deuxieme carte
+                // SONARE
                 Expanded(
                   child: GestureDetector(
                     onTap: () => onModeSelected(2),
@@ -133,10 +125,7 @@ class SelectModeSheet extends StatelessWidget {
                                     AppColors.greyTransparent.withOpacity(0.97),
                                 child: Text(
                                   'Sonare',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.white,
-                                  ),
+                                  style: AppFonts.sheetMode,
                                   textAlign: TextAlign.left,
                                 ),
                               ),

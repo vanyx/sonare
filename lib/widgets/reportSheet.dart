@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../styles/AppColors.dart';
 import './closeButton.dart';
+import '../../styles/AppFonts.dart';
 
 class ReportSheet extends StatefulWidget {
   final VoidCallback onClose;
@@ -40,16 +41,12 @@ class _ReportSheetState extends State<ReportSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Titre et bouton
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Que voyez-vous ?',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.white),
+                  style: AppFonts.sheetTitle,
                 ),
                 CloseButtonWidget(
                   onClose: () => Navigator.of(context).pop(),
@@ -57,8 +54,6 @@ class _ReportSheetState extends State<ReportSheet> {
               ],
             ),
             SizedBox(height: horizontalPadding),
-
-            // Row avec les deux cercles
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -96,10 +91,7 @@ class _ReportSheetState extends State<ReportSheet> {
                     SizedBox(height: 8), // Espacement entre cercle et texte
                     Text(
                       'Poisson',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 16,
-                      ),
+                      style: AppFonts.sheetReportItem,
                     ),
                   ],
                 ),
@@ -137,10 +129,7 @@ class _ReportSheetState extends State<ReportSheet> {
                     SizedBox(height: 8),
                     Text(
                       'Coquillage',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 16,
-                      ),
+                      style: AppFonts.sheetReportItem,
                     ),
                   ],
                 ),
@@ -166,11 +155,7 @@ class _ReportSheetState extends State<ReportSheet> {
                   ),
                   child: Text(
                     'Signaler',
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppFonts.sheetReportButton,
                   ),
                 ),
               ),
