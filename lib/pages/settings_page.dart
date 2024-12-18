@@ -5,7 +5,6 @@ import '../widgets/closeButton.dart';
 import '../styles/AppColors.dart';
 import '../styles/AppFonts.dart';
 import './settings/lexique_page.dart';
-import './settings/contact_us.dart';
 import './settings/sound_notification_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -74,28 +73,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               title: Text(
                 'Lexique',
-                style: AppFonts.settingsList,
-              ),
-            ),
-          ),
-          InkWell(
-            splashFactory: NoSplash.splashFactory,
-            highlightColor: AppColors.longPressed,
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => ContactUsPage(),
-                ),
-              );
-            },
-            child: ListTile(
-              leading: Icon(
-                CupertinoIcons.mail_solid,
-                color: const Color.fromARGB(255, 255, 255, 255),
-                size: 24.0,
-              ),
-              title: Text(
-                'Nous contacter',
                 style: AppFonts.settingsList,
               ),
             ),
