@@ -48,14 +48,6 @@ flutter:
   assets:
     - assets/
   fonts:
-    - family: Public_Sans
+    - family: sf-pro-display-regular
       fonts:
-        - asset: fonts/Public_Sans/static/PublicSans-Regular.ttf
-        - asset: fonts/Public_Sans/static/PublicSans-ExtraLight.ttf
-          weight: 100
-        - asset: fonts/Public_Sans/static/PublicSans-Thin.ttf
-          weight: 200
-        - asset: fonts/Public_Sans/static/PublicSans-ExtraBold.ttf
-          weight: 900
-        - asset: fonts/Public_Sans/static/PublicSans-ExtraBold.ttf
-          weight: 900
+        - asset: fonts/SF-PRO/SF-Pro-Display-Regular.otf

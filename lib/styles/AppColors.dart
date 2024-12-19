@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color white = Color.fromARGB(255, 255, 255, 255);
 
-  static const Color sonareFlashi = Color.fromARGB(255, 166, 255, 0);
+  static const Color sonareFlashi = Color.fromARGB(255, 10, 132, 255);
 
   // Noir
   static const Color background = Color.fromARGB(255, 0, 0, 0);

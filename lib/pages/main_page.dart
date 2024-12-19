@@ -131,13 +131,35 @@ class _MainPageState extends State<MainPage> {
               children: [
                 currentPage,
                 Positioned(
-                  top: marginTop,
+                  bottom: marginTop,
                   right: marginRight,
                   child: isBottomSheetOpen
                       ? Container()
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            //REPORT
+                            ElevatedButton(
+                              onPressed: () {
+                                _showReportSheet();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                elevation: _selectedMode == 2 ? 0 : 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                minimumSize: const Size(45, 45),
+                                padding: EdgeInsets.all(0),
+                                backgroundColor: AppColors.button,
+                              ),
+                              child: Icon(
+                                CupertinoIcons.plus,
+                                color: AppColors.white,
+                                size: 25.0,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+
                             // CHOIX MODE
                             ElevatedButton(
                               onPressed: () {
@@ -148,17 +170,17 @@ class _MainPageState extends State<MainPage> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
-                                minimumSize: const Size(40, 40),
+                                minimumSize: const Size(45, 45),
                                 padding: EdgeInsets.all(0),
                                 backgroundColor: AppColors.button,
                               ),
                               child: Icon(
                                 CupertinoIcons.map,
                                 color: AppColors.white,
-                                size: 22.0,
+                                size: 25.0,
                               ),
                             ),
-
+                            const SizedBox(height: 5),
                             // FLECHE (Dispo uniquement en mode explorer)
                             if (_selectedMode == 1) ...[
                               ElevatedButton(
@@ -171,7 +193,7 @@ class _MainPageState extends State<MainPage> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
-                                  minimumSize: const Size(40, 40),
+                                  minimumSize: const Size(45, 45),
                                   padding: EdgeInsets.all(0),
                                   backgroundColor: AppColors.button,
                                 ),
@@ -180,30 +202,10 @@ class _MainPageState extends State<MainPage> {
                                       ? CupertinoIcons.location
                                       : CupertinoIcons.location_fill,
                                   color: AppColors.white,
-                                  size: 22.0,
+                                  size: 25.0,
                                 ),
                               ),
                             ],
-                            //REPORT
-                            ElevatedButton(
-                              onPressed: () {
-                                _showReportSheet();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                elevation: _selectedMode == 2 ? 0 : 2,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                minimumSize: const Size(40, 40),
-                                padding: EdgeInsets.all(0),
-                                backgroundColor: AppColors.button,
-                              ),
-                              child: Icon(
-                                CupertinoIcons.map_pin_ellipse,
-                                color: AppColors.white,
-                                size: 22.0,
-                              ),
-                            ),
                           ],
                         ),
                 ),

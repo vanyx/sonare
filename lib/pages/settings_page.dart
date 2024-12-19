@@ -53,6 +53,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 'Son et notifications',
                 style: AppFonts.settingsList,
               ),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                color: AppColors.buttonMain,
+                size: 16.0,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 16.0), // ListTile a 16 de padding par defaut
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color: AppColors.button,
             ),
           ),
           InkWell(
@@ -75,6 +89,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 'Lexique',
                 style: AppFonts.settingsList,
               ),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                color: AppColors.buttonMain,
+                size: 16.0,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 16.0), // ListTile a 16 de padding par defaut
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color: AppColors.button,
             ),
           ),
           InkWell(
@@ -91,8 +119,22 @@ class _SettingsPageState extends State<SettingsPage> {
                 'Termes et conditions',
                 style: AppFonts.settingsList,
               ),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                color: AppColors.buttonMain,
+                size: 16.0,
+              ),
             ),
-          )
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 16.0), // ListTile a 16 de padding par defaut
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color: AppColors.button,
+            ),
+          ),
         ],
       ),
     );
