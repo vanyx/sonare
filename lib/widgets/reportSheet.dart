@@ -148,10 +148,10 @@ class _ReportSheetState extends State<ReportSheet> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.sonareFlashi,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    padding: EdgeInsets.symmetric(
-                        vertical: horizontalPadding / 2), // Hauteur du bouton
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15), // Hauteur du bouton
                   ),
                   child: Text(
                     'Signaler',

@@ -36,7 +36,7 @@ flutter_native_splash:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/logo/icon_and_background2.png"
+  image_path: "assets/logo/icon_and_background.png"
 
 
 dev_dependencies:

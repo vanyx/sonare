@@ -22,8 +22,8 @@ class AppFonts {
 
   static const sheetReportButton = TextStyle(
       fontFamily: 'Public_Sans',
-      fontSize: 16,
-      color: Color.fromARGB(255, 255, 255, 255));
+      fontSize: 18,
+      color: Color.fromARGB(255, 0, 0, 0));
 
   // settings
 
@@ -35,7 +35,7 @@ class AppFonts {
 
   static const settingsTitle = TextStyle(
       fontFamily: 'Public_Sans',
-      fontSize: 20,
+      fontSize: 18,
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const settingsNotif = TextStyle(

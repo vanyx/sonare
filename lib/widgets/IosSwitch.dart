@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../styles/AppColors.dart';
 
 /**
  * https://github.com/DiarIbrahim/ios_style_switch
@@ -36,7 +37,7 @@ class IosSwitch extends StatelessWidget {
     required this.onChanged,
     this.duration = const Duration(milliseconds: 150),
     this.isActive = true,
-    this.size = 35,
+    this.size = 32,
     this.disableBackgroundColor = const Color.fromARGB(255, 57, 56, 61),
     this.activeBackgroundColor = const Color.fromARGB(255, 48, 209, 88),
     this.activeBorderColor = Colors.grey,

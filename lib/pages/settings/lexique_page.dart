@@ -47,8 +47,8 @@ class LexiquePage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.chevron_back,
-            color: const Color.fromARGB(255, 255, 255, 255),
-            size: 25.0,
+            color: AppColors.sonareFlashi,
+            size: 30,
           ),
           onPressed: () {
             Navigator.of(context).pop();
