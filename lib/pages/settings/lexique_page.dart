@@ -80,10 +80,6 @@ class LexiquePage extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: getColor(item['backgroundColor']),
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: const Color.fromARGB(255, 255, 255, 255),
-                                width: 1.5,
-                              ),
                             ),
                             child: Center(
                               child: SizedBox(
