@@ -184,6 +184,26 @@ class _MainPageState extends State<MainPage> {
                                 ),
                               ),
                             ],
+                            //REPORT
+                            ElevatedButton(
+                              onPressed: () {
+                                _showReportSheet();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                elevation: _selectedMode == 2 ? 0 : 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                minimumSize: const Size(40, 40),
+                                padding: EdgeInsets.all(0),
+                                backgroundColor: AppColors.button,
+                              ),
+                              child: Icon(
+                                CupertinoIcons.map_pin_ellipse,
+                                color: AppColors.white,
+                                size: 22.0,
+                              ),
+                            ),
                           ],
                         ),
                 ),
@@ -228,28 +248,6 @@ class _MainPageState extends State<MainPage> {
                             width: 28,
                             height: 28,
                             fit: BoxFit.contain,
-                          ),
-                        ),
-                ),
-
-                // REPORT
-                Positioned(
-                  bottom: marginTop,
-                  right: marginRight,
-                  child: isBottomSheetOpen
-                      ? SizedBox.shrink()
-                      : ElevatedButton(
-                          onPressed: _showReportSheet,
-                          style: ElevatedButton.styleFrom(
-                            elevation: _selectedMode == 2 ? 0 : 2,
-                            shape: CircleBorder(),
-                            padding: EdgeInsets.all(16),
-                            backgroundColor: AppColors.button,
-                          ),
-                          child: Icon(
-                            Icons.add_circle_outline,
-                            color: AppColors.white,
-                            size: 32.0,
                           ),
                         ),
                 ),

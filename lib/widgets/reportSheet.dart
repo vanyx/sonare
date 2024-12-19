@@ -151,7 +151,7 @@ class _ReportSheetState extends State<ReportSheet> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     padding:
-                        EdgeInsets.symmetric(vertical: 15), // Hauteur du bouton
+                        EdgeInsets.symmetric(vertical: 13), // Hauteur du bouton
                   ),
                   child: Text(
                     'Signaler',
