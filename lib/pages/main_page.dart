@@ -4,7 +4,7 @@ import 'package:cupertino_icons/cupertino_icons.dart';
 import 'explorer_page.dart';
 import 'sonare_page.dart';
 import 'settings_page.dart';
-import '../widgets/selectedBottomSheet.dart';
+import '../widgets/selectModeSheet.dart';
 import '../widgets/reportSheet.dart';
 import '../styles/AppColors.dart';
 
