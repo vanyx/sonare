@@ -27,7 +27,7 @@ dependencies:
 # Then run : flutter pub run flutter_native_splash:create
 flutter_native_splash:
   color: "#000000"
-  image: assets/logo/icon.png
+  image: assets/images/logo/icon.png
   android: true
   ios: true
 
@@ -37,7 +37,7 @@ flutter_native_splash:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/logo/icon_and_background.png"
+  image_path: "assets/images/logo/icon_and_background.png"
 
 
 dev_dependencies:
@@ -47,7 +47,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/
+    - assets/images/
   fonts:
     - family: sf-pro-display-light
       fonts:

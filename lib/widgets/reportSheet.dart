@@ -44,7 +44,7 @@ class _ReportSheetState extends State<ReportSheet> {
     });
 
     // Delai avant de fermer la sheet
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(milliseconds: 2500), () {
       widget.onClose();
     });
   }
