@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../styles/AppColors.dart';
+import 'package:flutter/services.dart';
 
 /**
  * https://github.com/DiarIbrahim/ios_style_switch
@@ -59,6 +60,7 @@ class IosSwitch extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         setstate(() {
+          HapticFeedback.lightImpact();
           isActive = !isActive;
           onChanged.call(isActive);
         });

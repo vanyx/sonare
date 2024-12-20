@@ -53,7 +53,9 @@ class CustomMarker extends StatelessWidget {
             ),
             Positioned(
               child: Image.asset(
-                type == 'fish' ? 'assets/fish.png' : 'assets/shell.png',
+                type == 'fish'
+                    ? 'assets/images/fish.png'
+                    : 'assets/imagesets/shell.png',
                 width: size * 0.6,
                 height: size * 0.6,
               ),

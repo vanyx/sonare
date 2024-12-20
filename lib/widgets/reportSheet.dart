@@ -4,6 +4,7 @@ import 'package:cupertino_icons/cupertino_icons.dart';
 import '../styles/AppColors.dart';
 import './closeButton.dart';
 import '../../styles/AppFonts.dart';
+import 'package:flutter/services.dart';
 
 class ReportSheet extends StatefulWidget {
   final VoidCallback onClose;
@@ -34,7 +35,7 @@ class _ReportSheetState extends State<ReportSheet> {
       // Lance le fondu
       opacity = 0.0;
     });
-
+    HapticFeedback.mediumImpact();
     // Delai avant de changer l'affichage
     Future.delayed(Duration(milliseconds: 400), () {
       setState(() {
@@ -111,7 +112,8 @@ class _ReportSheetState extends State<ReportSheet> {
                                       height: circleSize * 0.7,
                                       child: FittedBox(
                                         fit: BoxFit.contain,
-                                        child: Image.asset('assets/fish.png'),
+                                        child: Image.asset(
+                                            'assets/images/fish.png'),
                                       ),
                                     ),
                                   ),
@@ -151,7 +153,8 @@ class _ReportSheetState extends State<ReportSheet> {
                                       height: circleSize * 0.7,
                                       child: FittedBox(
                                         fit: BoxFit.contain,
-                                        child: Image.asset('assets/shell.png'),
+                                        child: Image.asset(
+                                            'assets/images/shell.png'),
                                       ),
                                     ),
                                   ),

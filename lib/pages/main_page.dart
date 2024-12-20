@@ -181,7 +181,7 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ),
                             const SizedBox(height: 5),
-                            // FLECHE (Dispo uniquement en mode explorer)
+                            // FLECHE (dispo uniquement en mode explorer)
                             if (_selectedMode == 1) ...[
                               ElevatedButton(
                                 onPressed: () {
@@ -246,7 +246,7 @@ class _MainPageState extends State<MainPage> {
                               padding: EdgeInsets.all(0),
                               backgroundColor: AppColors.button),
                           child: Image.asset(
-                            'assets/menu.png',
+                            'assets/images/menu.png',
                             width: 28,
                             height: 28,
                             fit: BoxFit.contain,

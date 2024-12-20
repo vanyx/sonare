@@ -13,8 +13,8 @@ class CloseButtonWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onClose,
       child: Container(
-        width: 30.0,
-        height: 30.0,
+        width: 28.0,
+        height: 28.0,
         decoration: BoxDecoration(
           color: AppColors.button,
           shape: BoxShape.circle,
@@ -22,7 +22,7 @@ class CloseButtonWidget extends StatelessWidget {
         child: Icon(
           CupertinoIcons.clear,
           color: AppColors.buttonMain,
-          size: 22.0,
+          size: 17.0,
         ),
       ),
     );
