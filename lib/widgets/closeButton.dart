@@ -10,19 +10,20 @@ class CloseButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onClose,
-      style: ElevatedButton.styleFrom(
-        minimumSize: Size(30, 30),
-        padding: EdgeInsets.zero,
-        elevation: 0,
-        shape: CircleBorder(),
-        backgroundColor: AppColors.button,
-      ),
-      child: Icon(
-        CupertinoIcons.clear,
-        color: AppColors.buttonMain,
-        size: 22.0,
+    return GestureDetector(
+      onTap: onClose,
+      child: Container(
+        width: 30.0,
+        height: 30.0,
+        decoration: BoxDecoration(
+          color: AppColors.button,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          CupertinoIcons.clear,
+          color: AppColors.buttonMain,
+          size: 22.0,
+        ),
       ),
     );
   }

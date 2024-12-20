@@ -23,7 +23,7 @@ class SelectModeSheet extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding,
-          vertical: horizontalPadding * 0.5,
+          vertical: horizontalPadding,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +141,7 @@ class SelectModeSheet extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: horizontalPadding * 4),
+            SizedBox(height: horizontalPadding * 3),
           ],
         ),
       ),

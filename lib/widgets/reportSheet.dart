@@ -59,7 +59,7 @@ class _ReportSheetState extends State<ReportSheet> {
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding,
-          vertical: horizontalPadding * 0.5,
+          vertical: horizontalPadding,
         ),
         child: AnimatedOpacity(
             duration: Duration(milliseconds: 200), // Delai de fondu
@@ -188,7 +188,7 @@ class _ReportSheetState extends State<ReportSheet> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 50),
+                      SizedBox(height: 40),
                     ],
                   )
                 // Ecran de confirmation
@@ -196,7 +196,7 @@ class _ReportSheetState extends State<ReportSheet> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(height: 20),
+                        SizedBox(height: 10),
                         Container(
                           width: 50,
                           height: 50,
@@ -212,13 +212,13 @@ class _ReportSheetState extends State<ReportSheet> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 15),
+                        SizedBox(height: 10),
                         Text(
                           'Signalement ajouté à la carte.',
                           style: AppFonts.sheetReportConfirmationText,
                           textAlign: TextAlign.center,
                         ),
-                        SizedBox(height: 50),
+                        SizedBox(height: 40),
                       ],
                     ),
                   )),
