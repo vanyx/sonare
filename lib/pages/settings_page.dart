@@ -30,7 +30,8 @@ class _SettingsPageState extends State<SettingsPage> {
         children: [
           SizedBox(height: 40.0),
           Padding(
-            padding: EdgeInsets.all(horizontalPadding),
+            padding: EdgeInsets.symmetric(
+                horizontal: 5, vertical: horizontalPadding),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

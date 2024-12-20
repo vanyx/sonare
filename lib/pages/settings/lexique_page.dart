@@ -70,7 +70,7 @@ class LexiquePage extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 20,
-                    vertical: 15,
+                    vertical: 20,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,16 +78,16 @@ class LexiquePage extends StatelessWidget {
                       Row(
                         children: [
                           Container(
-                            width: 30,
-                            height: 30,
+                            width: 35,
+                            height: 35,
                             decoration: BoxDecoration(
                               color: getColor(item['backgroundColor']),
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                               child: SizedBox(
-                                width: 30 * 0.65,
-                                height: 30 * 0.65,
+                                width: 35 * 0.75,
+                                height: 35 * 0.75,
                                 child: FittedBox(
                                   fit: BoxFit.contain,
                                   child: Image.asset(item['image'] ?? ''),
@@ -95,7 +95,7 @@ class LexiquePage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: 10),
                           Text(
                             item['title'] ?? '',
                             style: AppFonts.settingsLexiqueTitle,

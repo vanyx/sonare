@@ -5,22 +5,22 @@ class AppFonts {
   // sheet
 
   static const sheetTitle = TextStyle(
-      fontFamily: 'sf-pro-display-regular',
-      fontSize: 22,
+      fontFamily: 'sf-pro-display-black',
+      fontSize: 23,
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const sheetMode = TextStyle(
-      fontFamily: 'sf-pro-display-regular',
+      fontFamily: 'sf-pro-display-bold',
       fontSize: 16,
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const sheetReportItem = TextStyle(
-      fontFamily: 'sf-pro-display-regular',
+      fontFamily: 'sf-pro-display-bold',
       fontSize: 16,
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const sheetReportButton = TextStyle(
-      fontFamily: 'sf-pro-display-regular',
+      fontFamily: 'sf-pro-display-heavy',
       fontSize: 18,
       color: Color.fromARGB(255, 255, 255, 255));
 
@@ -42,17 +42,17 @@ class AppFonts {
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const settingsNotifSubtitle = TextStyle(
-      fontFamily: 'sf-pro-display-semibold',
-      fontSize: 13.5,
+      fontFamily: 'sf-pro-display-bold',
+      fontSize: 13,
       color: AppColors.legendText);
 
   static const settingsLexiqueTitle = TextStyle(
-      fontFamily: 'sf-pro-display-bold',
-      fontSize: 18,
+      fontFamily: 'sf-pro-display-heavy',
+      fontSize: 17,
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const settingsLexiqueText = TextStyle(
       fontFamily: 'sf-pro-display-semibold',
-      fontSize: 15,
-      color: AppColors.textOverCard);
+      fontSize: 14,
+      color: Color.fromARGB(255, 255, 255, 255));
 }

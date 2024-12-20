@@ -21,7 +21,10 @@ class SelectModeSheet extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(horizontalPadding),
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: horizontalPadding * 0.5,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -49,7 +52,7 @@ class SelectModeSheet extends StatelessWidget {
                     child: Container(
                       margin: EdgeInsets.only(right: horizontalPadding / 2),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18.0),
+                        borderRadius: BorderRadius.circular(12.0),
                         border: Border.all(
                           color: selectedMode == 1
                               ? AppColors.sonareFlashi
@@ -58,7 +61,7 @@ class SelectModeSheet extends StatelessWidget {
                         ),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         child: Stack(
                           children: [
                             Image.asset(
@@ -73,7 +76,7 @@ class SelectModeSheet extends StatelessWidget {
                               right: 0,
                               child: Container(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 5.0, horizontal: 8.0),
+                                    vertical: 5.0, horizontal: 10.0),
                                 color:
                                     AppColors.greyTransparent.withOpacity(0.97),
                                 child: Text(
@@ -96,7 +99,7 @@ class SelectModeSheet extends StatelessWidget {
                     child: Container(
                       margin: EdgeInsets.only(left: horizontalPadding / 2),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18.0),
+                        borderRadius: BorderRadius.circular(12.0),
                         border: Border.all(
                           color: selectedMode == 2
                               ? AppColors.sonareFlashi
@@ -105,7 +108,7 @@ class SelectModeSheet extends StatelessWidget {
                         ),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         child: Stack(
                           children: [
                             Image.asset(
@@ -138,7 +141,7 @@ class SelectModeSheet extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: horizontalPadding * 3),
+            SizedBox(height: horizontalPadding * 4),
           ],
         ),
       ),

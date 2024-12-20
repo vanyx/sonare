@@ -36,7 +36,10 @@ class _ReportSheetState extends State<ReportSheet> {
 
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(horizontalPadding),
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: horizontalPadding * 0.5,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -53,7 +56,7 @@ class _ReportSheetState extends State<ReportSheet> {
                 ),
               ],
             ),
-            SizedBox(height: horizontalPadding),
+            SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -135,7 +138,7 @@ class _ReportSheetState extends State<ReportSheet> {
                 ),
               ],
             ),
-            SizedBox(height: horizontalPadding),
+            SizedBox(height: 20),
             Visibility(
               visible: selectedCircle != null,
               child: Container(
@@ -160,7 +163,7 @@ class _ReportSheetState extends State<ReportSheet> {
                 ),
               ),
             ),
-            SizedBox(height: horizontalPadding * 2),
+            SizedBox(height: 50),
           ],
         ),
       ),

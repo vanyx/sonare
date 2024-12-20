@@ -1,5 +1,9 @@
 # TODO
 
+- dans settings: aligner à droite la croix et les fleches des listes ?
+
+- modifier les textes des autorisation
+
 - center dans les param l'icon retour avec le titre
 
 - faire background service
