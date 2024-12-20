@@ -17,6 +17,13 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     double horizontalPadding = MediaQuery.of(context).size.width * 0.04;
 
+    const double iconWidthPadding = 16.0;
+    const double iconHeightPadding = 0.0;
+    const double iconWidth = 22.0;
+    const double spacing = 16.0;
+
+    const double dividerStart = iconWidthPadding + iconWidth + spacing;
+
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -44,10 +51,15 @@ class _SettingsPageState extends State<SettingsPage> {
               );
             },
             child: ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: iconWidthPadding,
+                vertical: iconHeightPadding,
+              ),
               leading: Icon(
-                CupertinoIcons.bell_fill,
+                CupertinoIcons.bell,
                 color: const Color.fromARGB(255, 255, 255, 255),
-                size: 24.0,
+                size: iconWidth,
               ),
               title: Text(
                 'Son et notifications',
@@ -61,12 +73,11 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-                left: 16.0), // ListTile a 16 de padding par defaut
+            padding: const EdgeInsets.only(left: dividerStart),
             child: Divider(
-              height: 1,
-              thickness: 1,
-              color: AppColors.button,
+              height: 0.5,
+              thickness: 0.5,
+              color: AppColors.divider,
             ),
           ),
           InkWell(
@@ -80,10 +91,15 @@ class _SettingsPageState extends State<SettingsPage> {
               );
             },
             child: ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: iconWidthPadding,
+                vertical: iconHeightPadding,
+              ),
               leading: Icon(
-                CupertinoIcons.book_fill,
+                CupertinoIcons.book,
                 color: const Color.fromARGB(255, 255, 255, 255),
-                size: 24.0,
+                size: iconWidth,
               ),
               title: Text(
                 'Lexique',
@@ -97,12 +113,11 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-                left: 16.0), // ListTile a 16 de padding par defaut
+            padding: const EdgeInsets.only(left: dividerStart),
             child: Divider(
-              height: 1,
-              thickness: 1,
-              color: AppColors.button,
+              height: 0.5,
+              thickness: 0.5,
+              color: AppColors.divider,
             ),
           ),
           InkWell(
@@ -110,10 +125,15 @@ class _SettingsPageState extends State<SettingsPage> {
             highlightColor: AppColors.longPressed,
             onTap: () {},
             child: ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: iconWidthPadding,
+                vertical: iconHeightPadding,
+              ),
               leading: Icon(
-                CupertinoIcons.doc_fill,
+                CupertinoIcons.doc,
                 color: const Color.fromARGB(255, 255, 255, 255),
-                size: 24.0,
+                size: iconWidth,
               ),
               title: Text(
                 'Termes et conditions',
@@ -127,12 +147,11 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-                left: 16.0), // ListTile a 16 de padding par defaut
+            padding: const EdgeInsets.only(left: dividerStart),
             child: Divider(
-              height: 1,
-              thickness: 1,
-              color: AppColors.button,
+              height: 0.5,
+              thickness: 0.5,
+              color: AppColors.divider,
             ),
           ),
         ],

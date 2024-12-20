@@ -21,6 +21,11 @@ class AppColors {
 
   static const Color longPressed = Color.fromARGB(255, 58, 58, 60);
 
+  static const Color divider = Color.fromARGB(255, 50, 50, 53);
+
+  // Petit texte gris par dessus le noir
+  static const Color legendText = Color.fromARGB(255, 142, 142, 147);
+
   static const Color iconBackgroundFish = Color.fromARGB(255, 46, 144, 255);
   static const Color iconBackgroundShell = Color.fromARGB(255, 255, 139, 56);
 }

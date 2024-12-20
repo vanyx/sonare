@@ -48,6 +48,25 @@ flutter:
   assets:
     - assets/
   fonts:
+    - family: sf-pro-display-light
+      fonts:
+        - asset: fonts/SF-PRO/SF-Pro-Display-Light.otf
     - family: sf-pro-display-regular
       fonts:
         - asset: fonts/SF-PRO/SF-Pro-Display-Regular.otf
+    - family: sf-pro-display-medium
+      fonts:
+        - asset: fonts/SF-PRO/SF-Pro-Display-Medium.otf
+    - family: sf-pro-display-semibold
+      fonts:
+        - asset: fonts/SF-PRO/SF-Pro-Display-Semibold.otf
+    - family: sf-pro-display-bold
+      fonts:
+        - asset: fonts/SF-PRO/SF-Pro-Display-bold.otf
+    - family: sf-pro-display-heavy
+      fonts:
+        - asset: fonts/SF-PRO/SF-Pro-Display-Heavy.otf
+    - family: sf-pro-display-black
+      fonts:
+        - asset: fonts/SF-PRO/SF-Pro-Display-Black.otf
+        

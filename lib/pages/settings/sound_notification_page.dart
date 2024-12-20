@@ -38,11 +38,11 @@ class SoundNotificationPage extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 color: AppColors.overBackground,
-                borderRadius: BorderRadius.circular(13),
+                borderRadius: BorderRadius.circular(10),
               ),
               padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding * 0.8,
-                vertical: horizontalPadding * 0.5,
+                horizontal: 20,
+                vertical: 7,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,23 +63,21 @@ class SoundNotificationPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: horizontalPadding * 0.5),
+            SizedBox(height: 5),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Emettre une alerte lorsque vous approchez d'un danger et que l'application est active.",
+                "Emettre un son lorsque vous approchez d'un danger.",
                 style: AppFonts.settingsNotifSubtitle,
               ),
             ),
-            SizedBox(height: horizontalPadding * 1.2),
+            SizedBox(height: 20),
             Container(
               decoration: BoxDecoration(
                 color: AppColors.overBackground,
-                borderRadius: BorderRadius.circular(13),
+                borderRadius: BorderRadius.circular(10),
               ),
-              padding: EdgeInsets.symmetric(
-                  horizontal: horizontalPadding * 0.8,
-                  vertical: horizontalPadding * 0.5),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -99,9 +97,9 @@ class SoundNotificationPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: horizontalPadding * 0.5),
+            SizedBox(height: 5),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 "Recevez des notifications en arrière-plan lorsque vous approchez d'un danger.",
                 style: AppFonts.settingsNotifSubtitle,

@@ -99,7 +99,7 @@ class LexiquePage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 10),
                       Text(
                         item['description'] ?? '',
                         style: AppFonts.settingsLexiqueText,
