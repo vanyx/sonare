@@ -52,7 +52,7 @@ class AppFonts {
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const settingsLexiqueText = TextStyle(
-      fontFamily: 'sf-pro-display-regular',
+      fontFamily: 'sf-pro-display-semibold',
       fontSize: 15,
-      color: Color.fromARGB(255, 255, 255, 255));
+      color: AppColors.textOverCard);
 }

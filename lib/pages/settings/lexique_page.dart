@@ -63,12 +63,15 @@ class LexiquePage extends StatelessWidget {
               padding: EdgeInsets.only(bottom: horizontalPadding),
               child: Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 elevation: 0,
                 color: AppColors.overBackground,
                 child: Padding(
-                  padding: EdgeInsets.all(horizontalPadding),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 15,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

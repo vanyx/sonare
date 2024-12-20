@@ -23,6 +23,9 @@ class AppColors {
 
   static const Color divider = Color.fromARGB(255, 50, 50, 53);
 
+  // Text gris par dessus le overBackground
+  static const Color textOverCard = Color.fromARGB(255, 153, 152, 158);
+
   // Petit texte gris par dessus le noir
   static const Color legendText = Color.fromARGB(255, 142, 142, 147);
 
