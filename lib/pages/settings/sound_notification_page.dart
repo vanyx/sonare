@@ -1,11 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../styles/AppColors.dart';
 import '../../widgets/IosSwitch.dart';
 import '../../styles/AppFonts.dart';
 
-class SoundNotificationPage extends StatelessWidget {
+class SoundNotificationPage extends StatefulWidget {
+  @override
+  _SoundNotificationPageState createState() => _SoundNotificationPageState();
+}
+
+class _SoundNotificationPageState extends State<SoundNotificationPage> {
+  bool _isSoundEnabled = true;
+  bool _isNotificationsEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  void _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isSoundEnabled = prefs.getBool('soundEnabled') ?? true;
+      _isNotificationsEnabled = prefs.getBool('notificationsEnabled') ?? true;
+    });
+  }
+
+  Future<void> _setSoundEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('soundEnabled', enabled);
+  }
+
+  Future<void> _setNotificationsEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('notificationsEnabled', enabled);
+  }
+
   @override
   Widget build(BuildContext context) {
     double horizontalPadding = MediaQuery.of(context).size.width * 0.04;
@@ -40,10 +73,7 @@ class SoundNotificationPage extends StatelessWidget {
                 color: AppColors.overBackground,
                 borderRadius: BorderRadius.circular(10),
               ),
-              padding: EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 7,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -57,7 +87,13 @@ class SoundNotificationPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: IosSwitch(
-                      onChanged: (v) {},
+                      isActive: _isSoundEnabled,
+                      onChanged: (v) {
+                        setState(() {
+                          _isSoundEnabled = v;
+                        });
+                        _setSoundEnabled(v);
+                      },
                     ),
                   ),
                 ],
@@ -91,7 +127,13 @@ class SoundNotificationPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: IosSwitch(
-                      onChanged: (v) {},
+                      isActive: _isNotificationsEnabled,
+                      onChanged: (v) {
+                        setState(() {
+                          _isNotificationsEnabled = v;
+                        });
+                        _setNotificationsEnabled(v);
+                      },
                     ),
                   ),
                 ],

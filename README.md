@@ -3,7 +3,6 @@
 
 - modifier les textes des autorisation
 
-- center dans les param l'icon retour avec le titre
 
 - faire background service
 - memoire persistante pour garder les parametres

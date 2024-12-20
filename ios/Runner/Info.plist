@@ -1,77 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-	<dict>
-
-	<key>UIBackgroundModes</key>
-<array>
-    <string>location</string>
-    <string>fetch</string>
-</array>
-<key>NSUserTrackingUsageDescription</key>
-<string>Nous utilisons cette autorisation pour vous envoyer des notifications.</string>
-<key>NSLocationAlwaysUsageDescription</key>
-<string>Nous avons besoin de votre localisation pour envoyer des alertes.</string>
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>Nous avons besoin de votre localisation pour suivre votre position.</string>
-<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-<string>Nous avons besoin de votre localisation pour suivre votre position même lorsque l'application est en arrière-plan.</string>
-
-
-
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-<string>Nous avons besoin de votre position pour vous notifier des changements.</string>
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>Nous avons besoin de votre position pour vous notifier des changements.</string>
-
-		<key>NSMotionUsageDescription</key>
-		<string>Donne accès aux capteurs batard</string>
-		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>donne accès batard</string>
-		<key>CADisableMinimumFrameDurationOnPhone</key>
-		<true/>
-		<key>CFBundleDevelopmentRegion</key>
-		<string>$(DEVELOPMENT_LANGUAGE)</string>
-		<key>CFBundleDisplayName</key>
-		<string>Sonare</string>
-		<key>CFBundleExecutable</key>
-		<string>$(EXECUTABLE_NAME)</string>
-		<key>CFBundleIdentifier</key>
-		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-		<key>CFBundleInfoDictionaryVersion</key>
-		<string>6.0</string>
-		<key>CFBundleName</key>
-		<string>sonare</string>
-		<key>CFBundlePackageType</key>
-		<string>APPL</string>
-		<key>CFBundleShortVersionString</key>
-		<string>$(FLUTTER_BUILD_NAME)</string>
-		<key>CFBundleSignature</key>
-		<string>????</string>
-		<key>CFBundleVersion</key>
-		<string>$(FLUTTER_BUILD_NUMBER)</string>
-		<key>LSRequiresIPhoneOS</key>
-		<true/>
-		<key>UIApplicationSupportsIndirectInputEvents</key>
-		<true/>
-		<key>UILaunchStoryboardName</key>
-		<string>LaunchScreen</string>
-		<key>UIMainStoryboardFile</key>
-		<string>Main</string>
-		<key>UIStatusBarHidden</key>
-		<false/>
-		<key>UISupportedInterfaceOrientations</key>
-		<array>
-			<string>UIInterfaceOrientationPortrait</string>
-			<string>UIInterfaceOrientationLandscapeLeft</string>
-			<string>UIInterfaceOrientationLandscapeRight</string>
-		</array>
-		<key>UISupportedInterfaceOrientations~ipad</key>
-		<array>
-			<string>UIInterfaceOrientationPortrait</string>
-			<string>UIInterfaceOrientationPortraitUpsideDown</string>
-			<string>UIInterfaceOrientationLandscapeLeft</string>
-			<string>UIInterfaceOrientationLandscapeRight</string>
-		</array>
-	</dict>
+    <dict>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>location</string>
+            <string>fetch</string>
+        </array>
+        
+        <!-- Autorisation pour la localisation -->
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>Nous avons besoin de votre localisation pour envoyer des alertes.</string>
+        
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Nous avons besoin de votre localisation pour suivre votre position.</string>
+        
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>Nous avons besoin de votre localisation pour suivre votre position même lorsque l'application est en arrière-plan.</string>
+        
+        <!-- Autorisation pour le suivi de l'utilisateur -->
+        <key>NSUserTrackingUsageDescription</key>
+        <string>Nous utilisons cette autorisation pour vous envoyer des notifications.</string>
+        
+        <!-- Autorisation pour l'accès aux capteurs -->
+        <key>NSMotionUsageDescription</key>
+        <string>Donne accès aux capteurs du téléphone.</string>
+        
+        <!-- Configuration de l'application -->
+        <key>CFBundleDevelopmentRegion</key>
+        <string>$(DEVELOPMENT_LANGUAGE)</string>
+        
+        <key>CFBundleDisplayName</key>
+        <string>Sonare</string>
+        
+        <key>CFBundleExecutable</key>
+        <string>$(EXECUTABLE_NAME)</string>
+        
+        <key>CFBundleIdentifier</key>
+        <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+        
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+        
+        <key>CFBundleName</key>
+        <string>sonare</string>
+        
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        
+        <key>CFBundleShortVersionString</key>
+        <string>$(FLUTTER_BUILD_NAME)</string>
+        
+        <key>CFBundleVersion</key>
+        <string>$(FLUTTER_BUILD_NUMBER)</string>
+        
+        <key>LSRequiresIPhoneOS</key>
+        <true/>
+        
+        <key>UIApplicationSupportsIndirectInputEvents</key>
+        <true/>
+        
+        <key>UILaunchStoryboardName</key>
+        <string>LaunchScreen</string>
+        
+        <key>UIMainStoryboardFile</key>
+        <string>Main</string>
+        
+        <key>UIStatusBarHidden</key>
+        <false/>
+        
+        <key>UISupportedInterfaceOrientations</key>
+        <array>
+            <string>UIInterfaceOrientationPortrait</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string>
+            <string>UIInterfaceOrientationLandscapeRight</string>
+        </array>
+        
+        <key>UISupportedInterfaceOrientations~ipad</key>
+        <array>
+            <string>UIInterfaceOrientationPortrait</string>
+            <string>UIInterfaceOrientationPortraitUpsideDown</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string>
+            <string>UIInterfaceOrientationLandscapeRight</string>
+        </array>
+    	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+</dict>
 </plist>
