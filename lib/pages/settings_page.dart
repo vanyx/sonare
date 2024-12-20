@@ -20,18 +20,17 @@ class _SettingsPageState extends State<SettingsPage> {
     const double iconWidthPadding = 16.0;
     const double iconHeightPadding = 0.0;
     const double iconWidth = 22.0;
-    const double spacing = 16.0;
 
-    const double dividerStart = iconWidthPadding + iconWidth + spacing;
+    const double dividerStart = iconWidthPadding * 2 + iconWidth;
 
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 40.0),
+          SizedBox(height: 50.0),
           Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: 5, vertical: horizontalPadding),
+                horizontal: horizontalPadding, vertical: horizontalPadding),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -57,6 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 horizontal: iconWidthPadding,
                 vertical: iconHeightPadding,
               ),
+              horizontalTitleGap: horizontalPadding,
               leading: Icon(
                 CupertinoIcons.bell,
                 color: const Color.fromARGB(255, 255, 255, 255),
@@ -97,6 +97,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 horizontal: iconWidthPadding,
                 vertical: iconHeightPadding,
               ),
+              horizontalTitleGap: horizontalPadding,
               leading: Icon(
                 CupertinoIcons.book,
                 color: const Color.fromARGB(255, 255, 255, 255),
@@ -131,6 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 horizontal: iconWidthPadding,
                 vertical: iconHeightPadding,
               ),
+              horizontalTitleGap: horizontalPadding,
               leading: Icon(
                 CupertinoIcons.doc,
                 color: const Color.fromARGB(255, 255, 255, 255),

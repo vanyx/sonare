@@ -1,6 +1,5 @@
 # TODO
 
-- dans settings: aligner à droite la croix et les fleches des listes ?
 
 - modifier les textes des autorisation
 

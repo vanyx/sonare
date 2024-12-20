@@ -24,6 +24,11 @@ class AppFonts {
       fontSize: 18,
       color: Color.fromARGB(255, 255, 255, 255));
 
+  static const sheetReportConfirmationText = TextStyle(
+      fontFamily: 'sf-pro-display-semibold',
+      fontSize: 18,
+      color: Color.fromARGB(255, 255, 255, 255));
+
   // settings
 
   static const settingsList = TextStyle(
@@ -54,5 +59,5 @@ class AppFonts {
   static const settingsLexiqueText = TextStyle(
       fontFamily: 'sf-pro-display-semibold',
       fontSize: 14,
-      color: Color.fromARGB(255, 255, 255, 255));
+      color: AppColors.textOverCard);
 }

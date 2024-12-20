@@ -78,16 +78,16 @@ class LexiquePage extends StatelessWidget {
                       Row(
                         children: [
                           Container(
-                            width: 35,
-                            height: 35,
+                            width: 40,
+                            height: 40,
                             decoration: BoxDecoration(
                               color: getColor(item['backgroundColor']),
                               shape: BoxShape.circle,
                             ),
                             child: Center(
                               child: SizedBox(
-                                width: 35 * 0.75,
-                                height: 35 * 0.75,
+                                width: 40 * 0.75,
+                                height: 40 * 0.75,
                                 child: FittedBox(
                                   fit: BoxFit.contain,
                                   child: Image.asset(item['image'] ?? ''),
