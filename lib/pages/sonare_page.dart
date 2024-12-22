@@ -214,12 +214,11 @@ class SonarePageState extends State<SonarePage> {
 
     int timeElapsed = now.difference(_lastUpdateTime!).inMilliseconds;
 
-    double distance = calculateDistance(from, to); // en m
+    double distance = calculateDistance(from, to);
 
-    double speed = distance / (timeElapsed / 1000); // vitesse en m/s
-    double speedKmh = speed * 3.6; // en km/h
+    double speedKmh = (distance / (timeElapsed / 1000)) * 3.6;
 
-    if (speedKmh >= 4) {
+    if (speedKmh >= 5) {
       _movingCount++;
 
       // l'user se deplace
@@ -527,20 +526,42 @@ class SonarePageState extends State<SonarePage> {
 
                               // Icon navigation
                               Marker(
-                                width: 20.0,
-                                height: 20.0,
+                                width: 35.0,
+                                height: 35.0,
                                 point: _currentPosition!,
                                 child: Transform.rotate(
                                   angle: _bearing != null
                                       ? _bearing! * (pi / 180)
-                                      : 0.0, // rotation inverse
-                                  child: Icon(
-                                    CupertinoIcons.location_north_fill,
-                                    color: const Color.fromARGB(255, 255, 0, 0),
-                                    size: 24.0,
+                                      : 0.0,
+                                  child: Container(
+                                    width: 35.0,
+                                    height: 35.0,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.sonareFlashi,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 2.0,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.3),
+                                          offset: Offset(0, 2),
+                                          blurRadius: 3.0,
+                                          spreadRadius: 0.0,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        CupertinoIcons.location_north_fill,
+                                        color: Colors.white,
+                                        size: 22.0,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                              )
                             ],
                           ),
                         ],
@@ -601,26 +622,7 @@ class CirclePainter extends CustomPainter {
   CirclePainter(this.center, this.radius, this.thickness);
 
   @override
-  void paint(Canvas canvas, Size size) {
-    // // Peinture pour l'ombre
-    // final shadowPaint = Paint()
-    //   ..color = Colors.black.withOpacity(0.05) // couleur de l'ombre
-    //   ..style = PaintingStyle.stroke
-    //   ..strokeWidth = thickness
-    //   ..maskFilter = MaskFilter.blur(BlurStyle.normal, 15); // intensité du flou
-
-    // // Dessine l'ombre
-    // canvas.drawCircle(center, radius, shadowPaint);
-
-    // // Peinture pour le cercle
-    // final circlePaint = Paint()
-    //   ..color = const Color.fromARGB(255, 255, 255, 255)
-    //   ..style = PaintingStyle.stroke
-    //   ..strokeWidth = thickness;
-
-    // // Dessine le cercle principal par-dessus l'ombre
-    // canvas.drawCircle(center, radius, circlePaint);
-  }
+  void paint(Canvas canvas, Size size) {}
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {

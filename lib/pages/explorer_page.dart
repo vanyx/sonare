@@ -273,7 +273,7 @@ class ExplorerPageState extends State<ExplorerPage> {
                 // ),
                 TileLayer(
                     urlTemplate:
-                        'https://a.tiles.mapbox.com/styles/v1/strava/clvman4pm01ga01qr5te2fpma/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3RyYXZhIiwiYSI6ImNtMWp3M2UyZDAydzIyam9zaTh6OTNiZm0ifQ.AOpRu_eeNKWg6r-4GS52Kw'),
+                        'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiamVzdWlzc2FsYW0iLCJhIjoiY200enM3Y3ViMTF3cjJtcXZqNmVvNmJvbyJ9.Bf_qF4-viLmfy7POh6dE5w'),
                 MarkerLayer(
                   markers: [
                     for (var fishPosition in _fish)
@@ -307,7 +307,7 @@ class ExplorerPageState extends State<ExplorerPage> {
                         width: _currentZoom > 12.5 ? _markerSize : 10.0,
                         height: _currentZoom > 12.5 ? _markerSize : 10.0,
                         point: fishPosition,
-                        child: _currentZoom > 12.5
+                        child: _currentZoom > 13
                             ? Transform.rotate(
                                 angle: -_mapController.camera.rotation *
                                     (pi / 180),

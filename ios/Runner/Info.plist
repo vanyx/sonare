@@ -9,6 +9,9 @@
         </array>
         
         <!-- Autorisation pour la localisation -->
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Autorisation nécessaire pour déterminer votre position.</string>
+        
         <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
         <string>Autorisation nécessaire pour déterminer votre position.</string>
         
