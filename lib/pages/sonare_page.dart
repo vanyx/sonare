@@ -53,7 +53,7 @@ class SonarePageState extends State<SonarePage> {
   int _stoppedCount = 0;
 
   final int _transitionThreshold =
-      4; // nombre de confirmations necessaires pour le cap
+      3; // nombre de confirmations necessaires pour le cap
 
   // Size moyenne à l'initialisation, pour eviter erreur null
   Size? screenSize = Size(414.0, 896.0);
@@ -66,8 +66,7 @@ class SonarePageState extends State<SonarePage> {
 
   List<Wildlife> _wildlife = [];
 
-  double _fishDistanceThreshold =
-      3000; // Distance max à laquelle on garde les fishs en m
+  double _fishDistanceThreshold = 3000; // Seuil le plus loin
 
   @override
   void initState() {
@@ -214,12 +213,15 @@ class SonarePageState extends State<SonarePage> {
 
     int timeElapsed = now.difference(_lastUpdateTime!).inMilliseconds;
 
-    double distance = calculateDistance(from, to);
+    double distance = calculateDistance(from, to); //distance en m
 
     double speedKmh = (distance / (timeElapsed / 1000)) * 3.6;
 
-    if (speedKmh >= 5) {
-      _movingCount++;
+    if (speedKmh >= 4 && distance > 2) {
+      setState(() {
+        _stoppedCount = 0;
+        _movingCount++;
+      });
 
       // l'user se deplace
       if (_movingCount >= _transitionThreshold && !_isMovingForSure) {
@@ -231,13 +233,11 @@ class SonarePageState extends State<SonarePage> {
           });
         }
       }
-
-      if (_isMovingForSure) {
-        double newBearing = calculateBearing(from, to);
-        _animateBearing(_bearing ?? 0, newBearing);
-      }
     } else {
-      _stoppedCount++;
+      setState(() {
+        _stoppedCount++;
+        _movingCount = 0;
+      });
 
       //l'user est arreté
       if (_stoppedCount >= _transitionThreshold && _isMovingForSure) {
@@ -249,6 +249,11 @@ class SonarePageState extends State<SonarePage> {
           });
         }
       }
+    }
+
+    if (_isMovingForSure) {
+      double newBearing = calculateBearing(from, to);
+      _animateBearing(_bearing ?? 0, newBearing);
     }
 
     double animationDuration = 1000;
@@ -329,7 +334,7 @@ class SonarePageState extends State<SonarePage> {
            * .
            * .
            * .
-           * Seuil : _fishDistanceThreshold / 5
+           * Seuil median : _fishDistanceThreshold / 5
            * .
            * Moi
            */
@@ -575,6 +580,7 @@ class SonarePageState extends State<SonarePage> {
                         CirclePainter(_center!, _blueRadius!, _blueThickness),
                   ),
 
+                  // boutons zoom / dezoom
                   Positioned(
                     left: 0,
                     right: 0,
@@ -591,7 +597,7 @@ class SonarePageState extends State<SonarePage> {
                               color: Colors.white,
                             ),
                             onPressed: () {
-                              if (_zoomLevel > 10.0) {
+                              if (_zoomLevel > 12.0) {
                                 setState(() {
                                   _zoomLevel -= 0.5;
                                   _mapController.move(

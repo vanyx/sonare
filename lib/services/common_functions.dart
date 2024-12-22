@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Common {
+  /**************** FISHS ****************/
   int maxRetry = 3;
 
   bool errorWishRequest = false;
@@ -104,4 +106,26 @@ class Common {
   //     }
   //   }
   // }
+
+  /**************** SOUNDS ****************/
+
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  Future<void> play5kmWarning() async {
+    try {
+      await _audioPlayer.play(AssetSource('sounds/5km.mp3'));
+    } catch (e) {}
+  }
+
+  Future<void> play500mWarning() async {
+    try {
+      await _audioPlayer.play(AssetSource('sounds/500m.mp3'));
+    } catch (e) {}
+  }
+
+  Future<void> play100mWarning() async {
+    try {
+      await _audioPlayer.play(AssetSource('sounds/100m.mp3'));
+    } catch (e) {}
+  }
 }
