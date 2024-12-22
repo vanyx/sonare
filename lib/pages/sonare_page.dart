@@ -597,7 +597,7 @@ class SonarePageState extends State<SonarePage> {
                               color: Colors.white,
                             ),
                             onPressed: () {
-                              if (_zoomLevel > 12.0) {
+                              if (_zoomLevel > 13.0) {
                                 setState(() {
                                   _zoomLevel -= 0.5;
                                   _mapController.move(
@@ -612,7 +612,7 @@ class SonarePageState extends State<SonarePage> {
                               color: const Color.fromARGB(255, 255, 255, 255),
                             ),
                             onPressed: () {
-                              if (_zoomLevel < 18.0) {
+                              if (_zoomLevel < 17.5) {
                                 setState(() {
                                   _zoomLevel += 0.5;
                                   _mapController.move(

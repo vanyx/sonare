@@ -18,8 +18,8 @@ class _MainPageState extends State<MainPage> {
   bool _explorerUserMovedCamera = false;
   bool isBottomSheetOpen = false;
 
-  double marginTop = 0.0;
-  double marginRight = 0.0;
+  double marginTop = 40;
+  double marginRight = 20;
 
   final GlobalKey<ExplorerPageState> _explorerKey =
       GlobalKey<ExplorerPageState>();
@@ -27,13 +27,13 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final screenSize = MediaQuery.of(context).size;
-      setState(() {
-        marginTop = screenSize.height * 0.06;
-        marginRight = screenSize.width * 0.05;
-      });
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   final screenSize = MediaQuery.of(context).size;
+    //   setState(() {
+    //     marginTop = screenSize.height * 0.06;
+    //     marginRight = screenSize.width * 0.05;
+    //   });
+    // });
   }
 
   void _showSelectModeSheet() {
@@ -211,7 +211,7 @@ class _MainPageState extends State<MainPage> {
                 ),
                 // SETTINGS
                 Positioned(
-                  top: marginTop,
+                  top: marginTop * 1.2,
                   left: marginRight,
                   child: isBottomSheetOpen
                       ? SizedBox.shrink()
