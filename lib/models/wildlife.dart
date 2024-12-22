@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'dart:ui';
 
-class Fish {
+class Wildlife {
   LatLng position;
   bool visible;
   double angle;
@@ -15,7 +15,7 @@ class Fish {
   static const double maxSize = 30.0;
   static const double defaultSize = 15.0;
 
-  Fish(
+  Wildlife(
       {required this.position,
       this.visible = false,
       this.angle = 0.0,

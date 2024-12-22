@@ -82,7 +82,6 @@ class ExplorerPageState extends State<ExplorerPage> {
       if (mounted) {
         LatLng newPosition = LatLng(position.latitude, position.longitude);
 
-        // fils de pute de fonction
         _animateMarker(_currentPosition!, newPosition);
 
         // Check automatiquement les fish si l'user se deplace
@@ -151,12 +150,6 @@ class ExplorerPageState extends State<ExplorerPage> {
         return;
       }
     }
-
-    // double animationDuration =
-    //     (timeElapsed * 0.8).toDouble(); // Animation à 80% du temps écoulé
-    // // Limite la durée de l'animation pour éviter des animations trop longues ou trop courtes
-    // animationDuration =
-    //     animationDuration.clamp(500, 1500);
 
     double animationDuration = 1000;
 
@@ -233,12 +226,10 @@ class ExplorerPageState extends State<ExplorerPage> {
 
   double calculateDistance(LatLng start, LatLng end) {
     const double R = 6371000; // Rayon de la Terre en m
-    double lat1 = start.latitude * (3.141592653589793 / 180.0);
-    double lat2 = end.latitude * (3.141592653589793 / 180.0);
-    double deltaLat =
-        (end.latitude - start.latitude) * (3.141592653589793 / 180.0);
-    double deltaLon =
-        (end.longitude - start.longitude) * (3.141592653589793 / 180.0);
+    double lat1 = start.latitude * (pi / 180.0);
+    double lat2 = end.latitude * (pi / 180.0);
+    double deltaLat = (end.latitude - start.latitude) * (pi / 180.0);
+    double deltaLon = (end.longitude - start.longitude) * (pi / 180.0);
 
     double a = (sin(deltaLat / 2) * sin(deltaLat / 2)) +
         cos(lat1) * cos(lat2) * (sin(deltaLon / 2) * sin(deltaLon / 2));
@@ -287,10 +278,10 @@ class ExplorerPageState extends State<ExplorerPage> {
                   markers: [
                     for (var fishPosition in _fish)
                       Marker(
-                        width: _currentZoom > 13 ? _markerSize : 10.0,
-                        height: _currentZoom > 13 ? _markerSize : 10.0,
+                        width: _currentZoom > 12.5 ? _markerSize : 10.0,
+                        height: _currentZoom > 12.5 ? _markerSize : 10.0,
                         point: fishPosition,
-                        child: _currentZoom > 13
+                        child: _currentZoom > 12.5
                             ? Transform.rotate(
                                 angle: -_mapController.camera.rotation *
                                     (pi / 180),
@@ -313,10 +304,10 @@ class ExplorerPageState extends State<ExplorerPage> {
                       ),
                     for (var fishPosition in _shell)
                       Marker(
-                        width: _currentZoom > 13 ? _markerSize : 10.0,
-                        height: _currentZoom > 13 ? _markerSize : 10.0,
+                        width: _currentZoom > 12.5 ? _markerSize : 10.0,
+                        height: _currentZoom > 12.5 ? _markerSize : 10.0,
                         point: fishPosition,
-                        child: _currentZoom > 13
+                        child: _currentZoom > 12.5
                             ? Transform.rotate(
                                 angle: -_mapController.camera.rotation *
                                     (pi / 180),
