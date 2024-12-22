@@ -9,22 +9,16 @@
         </array>
         
         <!-- Autorisation pour la localisation -->
-        <key>NSLocationAlwaysUsageDescription</key>
-        <string>Nous avons besoin de votre localisation pour envoyer des alertes.</string>
-        
-        <key>NSLocationWhenInUseUsageDescription</key>
-        <string>Nous avons besoin de votre localisation pour suivre votre position.</string>
-        
         <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-        <string>Nous avons besoin de votre localisation pour suivre votre position même lorsque l'application est en arrière-plan.</string>
+        <string>Autorisation nécessaire pour déterminer votre position.</string>
         
         <!-- Autorisation pour le suivi de l'utilisateur -->
         <key>NSUserTrackingUsageDescription</key>
-        <string>Nous utilisons cette autorisation pour vous envoyer des notifications.</string>
+        <string>Autorisation nécessaire pour vous envoyer des notifications.</string>
         
         <!-- Autorisation pour l'accès aux capteurs -->
         <key>NSMotionUsageDescription</key>
-        <string>Donne accès aux capteurs du téléphone.</string>
+        <string>Autorisation nécessaire pour avoir accès à la boussole.</string>
         
         <!-- Configuration de l'application -->
         <key>CFBundleDevelopmentRegion</key>
