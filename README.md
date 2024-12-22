@@ -8,13 +8,14 @@
 
 # TODO
 
-Est ce que les notifis par defaut font un son ?
-=> Si oui changer par le mien ?
+- Background service
+        - Est ce que les notifis par defaut font un son ? Remplacer par le mien ?
+        - Tenir compte des params
+        
+- Ajout des sons d'avertissement
+        - Tenir compte des params
 
-- faire background service
-- son/notif
-- voix IA pour signaler un danger à X km
-- changer icons / images (poisson, shell et images de select mode)
+- changer icons / images : poisson, coquillage et images de selection
 
 ## Quand j'aurais l'api
 - token mapbox
@@ -25,4 +26,4 @@ Est ce que les notifis par defaut font un son ?
 
 ## A tester sur android :
 - textes des autorisation
-- notif, sons, vibrations qui fonctionnement correctement
+- notif, sons, boussole, vibrations qui fonctionnement correctement
