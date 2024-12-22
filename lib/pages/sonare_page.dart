@@ -575,6 +575,50 @@ class SonarePageState extends State<SonarePage> {
                         CirclePainter(_center!, _blueRadius!, _blueThickness),
                   ),
 
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: MediaQuery.of(context).size.height / 2 +
+                        ((screenSize!.width * _sizeScreenCoef) / 2),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              CupertinoIcons.minus,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              if (_zoomLevel > 10.0) {
+                                setState(() {
+                                  _zoomLevel -= 0.5;
+                                  _mapController.move(
+                                      _currentPosition!, _zoomLevel);
+                                });
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              CupertinoIcons.plus,
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                            ),
+                            onPressed: () {
+                              if (_zoomLevel < 18.0) {
+                                setState(() {
+                                  _zoomLevel += 0.5;
+                                  _mapController.move(
+                                      _currentPosition!, _zoomLevel);
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   // Fishs - POINTS
                   for (var fish in _wildlife)
                     if (!fish.visible)
