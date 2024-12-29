@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class Common {
-  /**************** FISHS ****************/
+  /**************** WILD LIFE ****************/
   int maxRetry = 3;
 
   bool errorWishRequest = false;
@@ -13,8 +13,6 @@ class Common {
 
   Future<List<LatLng>> fetchWish(
       double north, double south, double west, double east, int retries) async {
-    String wishUrl = 'https://www.waze.com/live-map/api/georss';
-
     Map<String, String> queryParams = {
       "top": north.toString(),
       "bottom": south.toString(),
@@ -111,9 +109,9 @@ class Common {
 
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  Future<void> play5kmWarning() async {
+  Future<void> play3kmWarning() async {
     try {
-      await _audioPlayer.play(AssetSource('sounds/5km.mp3'));
+      await _audioPlayer.play(AssetSource('sounds/3km.mp3'));
     } catch (e) {}
   }
 

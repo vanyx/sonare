@@ -99,7 +99,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               horizontalTitleGap: horizontalPadding,
               leading: Icon(
-                CupertinoIcons.book,
+                CupertinoIcons.lightbulb,
                 color: const Color.fromARGB(255, 255, 255, 255),
                 size: iconWidth,
               ),

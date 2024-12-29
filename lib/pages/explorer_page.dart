@@ -10,6 +10,7 @@ import 'dart:math';
 import '../widgets/customMarker.dart';
 import '../styles/AppColors.dart';
 import '../services/common_functions.dart';
+import '../services/settings.dart';
 
 class ExplorerPage extends StatefulWidget {
   final Function(bool) userMovedCamera;
@@ -267,13 +268,7 @@ class ExplorerPageState extends State<ExplorerPage> {
                 onLongPress: (tapPosition, point) {},
               ),
               children: [
-                // TileLayer(
-                //   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                //   userAgentPackageName: 'com.vanyx.sonare',
-                // ),
-                TileLayer(
-                    urlTemplate:
-                        'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiamVzdWlzc2FsYW0iLCJhIjoiY200enM3Y3ViMTF3cjJtcXZqNmVvNmJvbyJ9.Bf_qF4-viLmfy7POh6dE5w'),
+                TileLayer(urlTemplate: Settings.mapUrl),
                 MarkerLayer(
                   markers: [
                     for (var fishPosition in _fish)

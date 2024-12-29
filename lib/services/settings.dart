@@ -1,6 +1,18 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Settings {
+  /**************** CONF ****************/
+
+  static double furthestThreshold =
+      3000; // seuil d'alerte le plus loin (distance en m)
+  static double medianThreshold = 500; // seuil d'alerte median (distance en m)
+  static double urgentThreshold =
+      100; // seuil d'alerte urgent loin (distance en m)
+
+  static String mapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+  /**************** SETTINGS ****************/
+
   static const String soundKey = 'soundEnabled';
   static const String notificationsKey = 'notificationsEnabled';
 

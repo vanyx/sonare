@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../styles/AppColors.dart';
 import '../../widgets/IosSwitch.dart';
 import '../../styles/AppFonts.dart';
+import '../../services/settings.dart'; // Importation de Settings
 
 class SoundNotificationPage extends StatefulWidget {
   @override
@@ -22,21 +23,13 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
   }
 
   void _loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
+    bool sound = await Settings.getSoundEnabled();
+    bool notif = await Settings.getNotificationsEnabled();
+
     setState(() {
-      _isSoundEnabled = prefs.getBool('soundEnabled') ?? true;
-      _isNotificationsEnabled = prefs.getBool('notificationsEnabled') ?? true;
+      _isSoundEnabled = sound;
+      _isNotificationsEnabled = notif;
     });
-  }
-
-  Future<void> _setSoundEnabled(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('soundEnabled', enabled);
-  }
-
-  Future<void> _setNotificationsEnabled(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('notificationsEnabled', enabled);
   }
 
   @override
@@ -92,7 +85,7 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
                         setState(() {
                           _isSoundEnabled = v;
                         });
-                        _setSoundEnabled(v);
+                        Settings.setSoundEnabled(v);
                       },
                     ),
                   ),
@@ -103,7 +96,7 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Emettre un son lorsque vous approchez d'un danger.",
+                "Émettre un son lorsque vous approchez d'une présence.",
                 style: AppFonts.settingsNotifSubtitle,
               ),
             ),
@@ -132,7 +125,7 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
                         setState(() {
                           _isNotificationsEnabled = v;
                         });
-                        _setNotificationsEnabled(v);
+                        Settings.setNotificationsEnabled(v);
                       },
                     ),
                   ),
@@ -143,7 +136,7 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Recevez des notifications en arrière-plan lorsque vous approchez d'un danger.",
+                "Recevez des notifications en arrière-plan lorsque vous approchez d'une présence.",
                 style: AppFonts.settingsNotifSubtitle,
               ),
             ),

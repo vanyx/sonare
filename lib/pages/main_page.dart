@@ -6,7 +6,9 @@ import 'sonare_page.dart';
 import 'settings_page.dart';
 import '../widgets/selectModeSheet.dart';
 import '../widgets/reportSheet.dart';
+import '../widgets/updateDialog.dart';
 import '../styles/AppColors.dart';
+import 'package:package_info_plus/package_info_plus.dart'; // Pour obtenir la version de l'app
 
 class MainPage extends StatefulWidget {
   @override
@@ -27,6 +29,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    _checkAppVersion();
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   final screenSize = MediaQuery.of(context).size;
     //   setState(() {
@@ -34,6 +37,36 @@ class _MainPageState extends State<MainPage> {
     //     marginRight = screenSize.width * 0.05;
     //   });
     // });
+  }
+
+  Future<String> _getVersionFromAPI() async {
+    // FONCTION TMP
+    // SIMULE APPEL API
+    await Future.delayed(Duration(seconds: 1));
+    return '0.1.0';
+  }
+
+  Future<void> _checkAppVersion() async {
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final String currentVersion = packageInfo.version;
+
+    // @TODO: vrai appel API ici pour avoir la derniere version
+    final String apiVersion = await _getVersionFromAPI();
+
+    if (apiVersion != currentVersion) {
+      _showUpdateDialog();
+    }
+  }
+
+  void _showUpdateDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible:
+          false, // empeche la fermeture en cliquant en dehors du dialog
+      builder: (BuildContext context) {
+        return UpdateDialog();
+      },
+    );
   }
 
   void _showSelectModeSheet() {
@@ -211,7 +244,7 @@ class _MainPageState extends State<MainPage> {
                 ),
                 // SETTINGS
                 Positioned(
-                  top: marginTop * 1.2,
+                  top: marginTop * 1.3,
                   left: marginRight,
                   child: isBottomSheetOpen
                       ? SizedBox.shrink()
@@ -242,13 +275,14 @@ class _MainPageState extends State<MainPage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
-                              minimumSize: const Size(50, 50),
+                              minimumSize: const Size(45, 45),
                               padding: EdgeInsets.all(0),
                               backgroundColor: AppColors.button),
                           child: Image.asset(
-                            'assets/images/menu.png',
-                            width: 28,
-                            height: 28,
+                            'assets/images/icons/burgermenu.png',
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            width: 25,
+                            height: 25,
                             fit: BoxFit.contain,
                           ),
                         ),

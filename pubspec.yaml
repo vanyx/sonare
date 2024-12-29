@@ -1,5 +1,5 @@
 name: Sonare
-description: "Avec Sonare, naviguez sous les radars."
+description: "L'application pour naviguer sous les radars."
 publish_to: 'none'
 version: 0.1.0
 
@@ -23,6 +23,7 @@ dependencies:
   shared_preferences: ^2.3.4
   flutter_vibrate: ^1.3.0
   audioplayers: ^6.1.0
+  package_info_plus: ^8.1.2
 
 # Edit here to change the splash screen
 # Then run : flutter pub run flutter_native_splash:create
@@ -49,27 +50,29 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/icons/
+    - assets/images/logo/
     - assets/sounds/
   fonts:
     - family: sf-pro-display-light
       fonts:
-        - asset: fonts/SF-PRO/SF-Pro-Display-Light.otf
+        - asset: assets/fonts/sf-pro-display/sf-pro-display-light.otf
     - family: sf-pro-display-regular
       fonts:
-        - asset: fonts/SF-PRO/SF-Pro-Display-Regular.otf
+        - asset: assets/fonts/sf-pro-display/sf-pro-display-regular.otf
     - family: sf-pro-display-medium
       fonts:
-        - asset: fonts/SF-PRO/SF-Pro-Display-Medium.otf
+        - asset: assets/fonts/sf-pro-display/sf-pro-display-medium.otf
     - family: sf-pro-display-semibold
       fonts:
-        - asset: fonts/SF-PRO/SF-Pro-Display-Semibold.otf
+        - asset: assets/fonts/sf-pro-display/sf-pro-display-semibold.otf
     - family: sf-pro-display-bold
       fonts:
-        - asset: fonts/SF-PRO/SF-Pro-Display-bold.otf
+        - asset: assets/fonts/sf-pro-display/sf-pro-display-bold.otf
     - family: sf-pro-display-heavy
       fonts:
-        - asset: fonts/SF-PRO/SF-Pro-Display-Heavy.otf
+        - asset: assets/fonts/sf-pro-display/sf-pro-display-heavy.otf
     - family: sf-pro-display-black
       fonts:
-        - asset: fonts/SF-PRO/SF-Pro-Display-Black.otf
+        - asset: assets/fonts/sf-pro-display/sf-pro-display-black.otf
         

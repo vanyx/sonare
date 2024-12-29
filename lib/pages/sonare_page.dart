@@ -14,6 +14,7 @@ import '../styles/AppColors.dart';
 import 'package:shimmer/shimmer.dart';
 import '../widgets/customMarker.dart';
 import '../services/common_functions.dart';
+import '../services/settings.dart';
 
 class SonarePage extends StatefulWidget {
   @override
@@ -65,8 +66,6 @@ class SonarePageState extends State<SonarePage> {
   LatLng? _lastApiPosition;
 
   List<Wildlife> _wildlife = [];
-
-  double _fishDistanceThreshold = 3000; // Seuil le plus loin
 
   @override
   void initState() {
@@ -152,12 +151,12 @@ class SonarePageState extends State<SonarePage> {
     if (_currentPosition == null) return;
 
     // Distance min avant nouvel appel API en m
-    double apiCallDistanceThreshold = _fishDistanceThreshold / 10;
+    double apiCallDistanceThreshold = Settings.furthestThreshold / 10;
 
     // filtrage
     _wildlife.removeWhere((fish) =>
         calculateDistance(_currentPosition!, fish.position) >
-        _fishDistanceThreshold);
+        Settings.furthestThreshold);
 
     if (_lastApiPosition != null) {
       if (calculateDistance(_lastApiPosition!, _currentPosition!) <
@@ -174,8 +173,8 @@ class SonarePageState extends State<SonarePage> {
     }
 
     double latitudeDelta =
-        _fishDistanceThreshold / 111000; // Distance en degrés de latitude
-    double longitudeDelta = _fishDistanceThreshold /
+        Settings.furthestThreshold / 111000; // Distance en degrés de latitude
+    double longitudeDelta = Settings.furthestThreshold /
         (111000 * cos(_currentPosition!.latitude * pi / 180));
 
     double north = _currentPosition!.latitude + latitudeDelta;
@@ -252,8 +251,7 @@ class SonarePageState extends State<SonarePage> {
     }
 
     if (_isMovingForSure) {
-      double newBearing = calculateBearing(from, to);
-      _animateBearing(_bearing ?? 0, newBearing);
+      _animateBearing(_bearing ?? 0, calculateBearing(from, to));
     }
 
     double animationDuration = 1000;
@@ -330,24 +328,25 @@ class SonarePageState extends State<SonarePage> {
 
           // Calcul de la taille en fonction de la distance
           /**
-           * _fishDistanceThreshold distance la plus loin
+           * Settings.furthestThreshold : distance la plus loin
            * .
            * .
            * .
-           * Seuil median : _fishDistanceThreshold / 5
+           * Seuil median : Settings.furthestThreshold / 5
            * .
            * Moi
            */
           double distance = calculateDistance(_currentPosition!, fish.position);
 
-          if (distance >= _fishDistanceThreshold) {
+          if (distance >= Settings.furthestThreshold) {
             fish.size = Wildlife.minSizeValue;
-          } else if (distance <= _fishDistanceThreshold / 5) {
+          } else if (distance <= Settings.furthestThreshold / 5) {
             fish.size = Wildlife.maxSizeValue;
           } else {
             double normalizedDistance = 1 -
-                (distance - (_fishDistanceThreshold / 5)) /
-                    (_fishDistanceThreshold - (_fishDistanceThreshold / 5));
+                (distance - (Settings.furthestThreshold / 5)) /
+                    (Settings.furthestThreshold -
+                        (Settings.furthestThreshold / 5));
 
             fish.size = Wildlife.minSizeValue +
                 (Wildlife.maxSizeValue - Wildlife.minSizeValue) *
@@ -497,16 +496,7 @@ class SonarePageState extends State<SonarePage> {
                           ),
                         ),
                         children: [
-                          // TileLayer(
-                          //   urlTemplate:
-                          //       'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          //   userAgentPackageName: 'com.vanyx.sonare',
-                          // ),
-
-                          TileLayer(
-                              urlTemplate:
-                                  'https://a.tiles.mapbox.com/styles/v1/strava/clvman4pm01ga01qr5te2fpma/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3RyYXZhIiwiYSI6ImNtMWp3M2UyZDAydzIyam9zaTh6OTNiZm0ifQ.AOpRu_eeNKWg6r-4GS52Kw'),
-
+                          TileLayer(urlTemplate: Settings.mapUrl),
                           MarkerLayer(
                             markers: [
                               // Fishs - MARKERS

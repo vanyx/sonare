@@ -2,9 +2,14 @@
 
 ## Seuils
 
-- Avertissemnt **Le plus loin** : 3 km
-- Avertissemnt **median** : 500m
-- Avertissemnt **urgent** : 100m
+- Avertissement **le plus loin** : 3 km
+- Avertissement **median** : 500m
+- Avertissement **urgent** : 100m
+
+## Avantage PREMIUM
+
+- Carte stylé
+- Possibilité de connecter un boitier
 
 # TODO
 
@@ -17,8 +22,11 @@
 
 - changer icons / images : poisson, coquillage et images de selection
 
+- Waze fishs : demander uniquement POLICE au lieu de alerte ?
+
 ## Quand j'aurais l'api
-- token mapbox
+- activer/desactiver des options à distance
+- url tiles map
 - url wish
 - integration sonare radars
 - ajouter termes et conditions les memes que dans radar bot (attention dans certains pays c'est interdit dcp c'est votre faute, à la premiere requete de l'api on considere que vous acceptez les conditions, si ous mourrez c'est pas de notre faute, on fait ca seulement à but de securité routiere, etc.)
