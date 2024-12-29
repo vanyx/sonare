@@ -1,6 +1,8 @@
 import 'package:latlong2/latlong.dart';
 import 'dart:ui';
 
+// Pour le mode Sonare
+
 class Wildlife {
   LatLng position;
   bool visible;
