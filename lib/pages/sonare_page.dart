@@ -65,7 +65,7 @@ class SonarePageState extends State<SonarePage> {
 
   LatLng? _lastApiPosition;
 
-  List<Wildlife> _wildlife = [];
+  List<FaunaSonare> _FaunaSonare = [];
 
   @override
   void initState() {
@@ -87,7 +87,7 @@ class SonarePageState extends State<SonarePage> {
   }
 
   void _onMapReady() {
-    updateFish();
+    initFish();
     _listeningToLocationChanges();
     _listenToCompass();
   }
@@ -147,6 +147,46 @@ class SonarePageState extends State<SonarePage> {
     });
   }
 
+  void initFish() async {
+    if (_currentPosition == null) return;
+
+    if (mounted) {
+      setState(() {
+        _lastApiPosition = _currentPosition;
+      });
+    }
+
+    double latitudeDelta =
+        Settings.furthestThreshold / 111000; // Distance en degrés de latitude
+    double longitudeDelta = Settings.furthestThreshold /
+        (111000 * cos(_currentPosition!.latitude * pi / 180));
+
+    double north = _currentPosition!.latitude + latitudeDelta;
+    double south = _currentPosition!.latitude - latitudeDelta;
+    double east = _currentPosition!.longitude + longitudeDelta;
+    double west = _currentPosition!.longitude - longitudeDelta;
+    List<LatLng> wish =
+        await _common.fetchWish(north, south, west, east, _common.maxRetry);
+
+    for (var position in wish) {
+      _FaunaSonare.add(FaunaSonare(
+          position: position,
+          visible: false,
+          angle: 0.0,
+          circlePosition: Offset(0, 0),
+          type: 'fish',
+          level: getFaunaSonareLevel(_currentPosition!, position)));
+    }
+
+    updateFishParams();
+
+    int firstMaxLevel = getMaxLevelFauna(_FaunaSonare);
+
+    if (firstMaxLevel != -1) {
+      _common.playWarningByLevel(firstMaxLevel);
+    }
+  }
+
   void updateFish() async {
     if (_currentPosition == null) return;
 
@@ -154,7 +194,7 @@ class SonarePageState extends State<SonarePage> {
     double apiCallDistanceThreshold = Settings.furthestThreshold / 10;
 
     // filtrage
-    _wildlife.removeWhere((fish) =>
+    _FaunaSonare.removeWhere((fish) =>
         calculateDistance(_currentPosition!, fish.position) >
         Settings.furthestThreshold);
 
@@ -185,16 +225,37 @@ class SonarePageState extends State<SonarePage> {
         await _common.fetchWish(north, south, west, east, _common.maxRetry);
 
     for (var position in wish) {
-      _wildlife.add(Wildlife(
-        position: position,
-        visible: false,
-        angle: 0.0,
-        circlePosition: Offset(0, 0),
-        type: 'fish',
-      ));
+      _FaunaSonare.add(FaunaSonare(
+          position: position,
+          visible: false,
+          angle: 0.0,
+          circlePosition: Offset(0, 0),
+          type: 'fish',
+          level: getFaunaSonareLevel(_currentPosition!, position)));
     }
 
     updateFishParams();
+  }
+
+  int getMaxLevelFauna(List<FaunaSonare> _FaunaSonare) {
+    // A prendre en compte dans l'appel de la fonction
+    if (_FaunaSonare.isEmpty) return -1;
+
+    return _FaunaSonare.map((fauna) => fauna.level)
+        .reduce((a, b) => a < b ? a : b);
+  }
+
+  int getFaunaSonareLevel(LatLng me, LatLng FaunaSonare) {
+    double distance = calculateDistance(me, FaunaSonare);
+
+    if (distance <= Settings.urgentThreshold) {
+      return 1;
+    } else if (distance <= Settings.medianThreshold) {
+      return 2;
+    } else if (distance <= Settings.furthestThreshold) {
+      return 3;
+    }
+    return 3;
   }
 
   void _animateMarker(LatLng from, LatLng to) {
@@ -306,9 +367,12 @@ class SonarePageState extends State<SonarePage> {
         _blueRadius == null) {
       return;
     }
+
+    List<int> levelsToAnnounce = [];
+
     if (mounted) {
       setState(() {
-        for (var fish in _wildlife) {
+        for (var fish in _FaunaSonare) {
           // Visibilité
           fish.visible = checkTargetVisibility(fish.position);
 
@@ -339,21 +403,37 @@ class SonarePageState extends State<SonarePage> {
           double distance = calculateDistance(_currentPosition!, fish.position);
 
           if (distance >= Settings.furthestThreshold) {
-            fish.size = Wildlife.minSizeValue;
+            fish.size = FaunaSonare.minSizeValue;
           } else if (distance <= Settings.furthestThreshold / 5) {
-            fish.size = Wildlife.maxSizeValue;
+            fish.size = FaunaSonare.maxSizeValue;
           } else {
             double normalizedDistance = 1 -
                 (distance - (Settings.furthestThreshold / 5)) /
                     (Settings.furthestThreshold -
                         (Settings.furthestThreshold / 5));
 
-            fish.size = Wildlife.minSizeValue +
-                (Wildlife.maxSizeValue - Wildlife.minSizeValue) *
+            fish.size = FaunaSonare.minSizeValue +
+                (FaunaSonare.maxSizeValue - FaunaSonare.minSizeValue) *
                     pow(normalizedDistance, 4);
+          }
+
+          // Calcul level + sons a eventuellement annoncer
+          int newLevel = getFaunaSonareLevel(_currentPosition!, fish.position);
+
+          if (newLevel < fish.level) {
+            levelsToAnnounce.add(newLevel);
+          }
+          if (newLevel != fish.level) {
+            fish.level = newLevel;
           }
         }
       });
+    }
+
+    // Annonce eventuelle d'un level
+    if (levelsToAnnounce.isNotEmpty) {
+      _common
+          .playWarningByLevel(levelsToAnnounce.reduce((a, b) => a < b ? a : b));
     }
   }
 
@@ -500,18 +580,18 @@ class SonarePageState extends State<SonarePage> {
                           MarkerLayer(
                             markers: [
                               // Fishs - MARKERS
-                              for (var fish in _wildlife)
+                              for (var fish in _FaunaSonare)
                                 if (fish.visible)
                                   Marker(
-                                    width: Wildlife.maxSizeValue,
-                                    height: Wildlife.maxSizeValue,
+                                    width: FaunaSonare.maxSizeValue,
+                                    height: FaunaSonare.maxSizeValue,
                                     point: fish.position,
                                     child: Transform.rotate(
                                       angle: _bearing != null
                                           ? _bearing! * (pi / 180)
                                           : 0.0, // rotation inverse
                                       child: CustomMarker(
-                                        size: Wildlife.maxSizeValue,
+                                        size: FaunaSonare.maxSizeValue,
                                         type: fish.type == "fish"
                                             ? "fish"
                                             : "shell",
@@ -616,7 +696,7 @@ class SonarePageState extends State<SonarePage> {
                     ),
                   ),
                   // Fishs - POINTS
-                  for (var fish in _wildlife)
+                  for (var fish in _FaunaSonare)
                     if (!fish.visible)
                       Positioned(
                         left: fish.circlePosition.dx - (fish.size / 2),

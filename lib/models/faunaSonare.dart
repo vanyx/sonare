@@ -3,13 +3,14 @@ import 'dart:ui';
 
 // Pour le mode Sonare
 
-class Wildlife {
+class FaunaSonare {
   LatLng position;
   bool visible;
   double angle;
   Offset circlePosition;
   String type;
   double size;
+  int level; // 1: urgent, 2: medium, 3: far
 
   static const List<String> allowedTypes = ['fish', 'shell'];
 
@@ -17,15 +18,19 @@ class Wildlife {
   static const double maxSize = 30.0;
   static const double defaultSize = 15.0;
 
-  Wildlife(
+  FaunaSonare(
       {required this.position,
       this.visible = false,
       this.angle = 0.0,
       this.circlePosition = Offset.zero,
       required this.type,
+      required this.level,
       this.size = defaultSize}) {
     if (!allowedTypes.contains(type)) {
       throw ArgumentError('Incorrect type.');
+    }
+    if (level > 3) {
+      throw ArgumentError('Level must be less than or equal to 3.');
     }
   }
 

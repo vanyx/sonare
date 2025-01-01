@@ -109,6 +109,14 @@ class Common {
 
   final AudioPlayer _audioPlayer = AudioPlayer();
 
+  Future<void> playWarningByLevel(int level) async {
+    if (level == 1)
+      this.play100mWarning();
+    else if (level == 2)
+      this.play500mWarning();
+    else if (level == 3) this.play3kmWarning();
+  }
+
   Future<void> play3kmWarning() async {
     try {
       await _audioPlayer.play(AssetSource('sounds/3km.mp3'));
