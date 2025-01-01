@@ -3,16 +3,19 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../services/settings.dart';
 
 class Common {
   /**************** WILD LIFE ****************/
-  int maxRetry = 3;
+  static int maxRetry = 3;
 
-  bool errorWishRequest = false;
-  String wishUrl = 'https://www.waze.com/live-map/api/georss';
-
-  Future<List<LatLng>> fetchWish(
+  static Future<List<LatLng>> fetchWish(
       double north, double south, double west, double east, int retries) async {
+    // Return empty si url vide
+    if (Settings.wishUrl.length == 0) {
+      return [];
+    }
     Map<String, String> queryParams = {
       "top": north.toString(),
       "bottom": south.toString(),
@@ -23,16 +26,12 @@ class Common {
     };
 
     try {
-      Uri uri = Uri.parse(wishUrl);
+      Uri uri = Uri.parse(Settings.wishUrl);
       final finalUri = uri.replace(queryParameters: queryParams);
 
       final response = await http.get(finalUri);
 
       if (response.statusCode == 200) {
-        if (errorWishRequest) {
-          errorWishRequest = false;
-        }
-
         var data = json.decode(response.body);
         List<LatLng> newFish = [];
 
@@ -47,91 +46,73 @@ class Common {
         }
         return newFish;
       } else {
-        if (retries > 0) {
-          await Future.delayed(Duration(milliseconds: 200));
-          return await fetchWish(north, south, west, east, retries - 1);
-        } else {
-          errorWishRequest = true;
-          return [];
-        }
+        return [];
       }
     } catch (e) {
       if (retries > 0) {
         await Future.delayed(Duration(milliseconds: 200));
         return await fetchWish(north, south, west, east, retries - 1);
       } else {
-        errorWishRequest = true;
         return [];
       }
     }
   }
 
-  // Future<void> _fetchSonare(
-  //     double north, double south, double west, double east, int retries) async {
-  //   String url =
-  //       'http://192.168.1.40:8000/sonare/all/${north}/${south}/${west}/${east}';
+  /****************  ****************/
 
-  //   try {
-  //     Uri uri = Uri.parse(url);
+  // Sauvegarde des preferences
+  static Future<void> setSoundEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(Settings.soundKey, enabled);
+  }
 
-  //     final response = await http.get(uri);
-  //     if (response.statusCode == 200) {
-  //       var data = json.decode(response.body) as List;
-  //       List<LatLng> newFish = [];
+  static Future<void> setNotificationsEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(Settings.notificationsKey, enabled);
+  }
 
-  //       for (var item in data) {
-  //         double latitude = item['latitude'];
-  //         double longitude = item['longitude'];
-  //         LatLng fishPosition = LatLng(latitude, longitude);
-  //         newFish.add(fishPosition);
-  //       }
+  // Recuperation des preferences
+  static Future<bool> getSoundEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(Settings.soundKey) ?? true; // valeur par defaut
+  }
 
-  //       if (mounted) {
-  //         setState(() {
-  //           _shell = newFish;
-  //         });
-  //       }
-  //     } else {
-  //       if (retries > 0) {
-  //         await Future.delayed(Duration(milliseconds: 200));
-  //         _fetchSonare(north, south, west, east, retries - 1);
-  //       }
-  //     }
-  //   } catch (e) {
-  //     if (retries > 0) {
-  //       await Future.delayed(Duration(milliseconds: 200));
-  //       _fetchSonare(north, south, west, east, retries - 1);
-  //     }
-  //   }
-  // }
+  static Future<bool> getNotificationsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(Settings.notificationsKey) ?? true;
+  }
 
   /**************** SOUNDS ****************/
 
-  final AudioPlayer _audioPlayer = AudioPlayer();
-
-  Future<void> playWarningByLevel(int level) async {
+  static Future<void> playWarningByLevel(int level) async {
     if (level == 1)
-      this.play100mWarning();
+      play100mWarning();
     else if (level == 2)
-      this.play500mWarning();
-    else if (level == 3) this.play3kmWarning();
+      play500mWarning();
+    else if (level == 3) play3kmWarning();
   }
 
-  Future<void> play3kmWarning() async {
+  static Future<void> play3kmWarning() async {
+    final AudioPlayer audioPlayer = AudioPlayer();
+
     try {
-      await _audioPlayer.play(AssetSource('sounds/3km.mp3'));
+      await audioPlayer.play(AssetSource('sounds/3km.mp3'));
     } catch (e) {}
   }
 
-  Future<void> play500mWarning() async {
+  static Future<void> play500mWarning() async {
+    final AudioPlayer audioPlayer = AudioPlayer();
+
     try {
-      await _audioPlayer.play(AssetSource('sounds/500m.mp3'));
+      await audioPlayer.play(AssetSource('sounds/500m.mp3'));
     } catch (e) {}
   }
 
-  Future<void> play100mWarning() async {
+  static Future<void> play100mWarning() async {
+    final AudioPlayer audioPlayer = AudioPlayer();
+
     try {
-      await _audioPlayer.play(AssetSource('sounds/100m.mp3'));
+      await audioPlayer.play(AssetSource('sounds/100m.mp3'));
     } catch (e) {}
   }
 }

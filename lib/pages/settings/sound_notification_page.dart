@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../styles/AppColors.dart';
 import '../../widgets/IosSwitch.dart';
 import '../../styles/AppFonts.dart';
-import '../../services/settings.dart'; // Importation de Settings
+import '../../services/common_functions.dart';
 
 class SoundNotificationPage extends StatefulWidget {
   @override
@@ -23,8 +23,8 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
   }
 
   void _loadPreferences() async {
-    bool sound = await Settings.getSoundEnabled();
-    bool notif = await Settings.getNotificationsEnabled();
+    bool sound = await Common.getSoundEnabled();
+    bool notif = await Common.getNotificationsEnabled();
 
     setState(() {
       _isSoundEnabled = sound;
@@ -85,7 +85,7 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
                         setState(() {
                           _isSoundEnabled = v;
                         });
-                        Settings.setSoundEnabled(v);
+                        Common.setSoundEnabled(v);
                       },
                     ),
                   ),
@@ -125,7 +125,7 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
                         setState(() {
                           _isNotificationsEnabled = v;
                         });
-                        Settings.setNotificationsEnabled(v);
+                        Common.setNotificationsEnabled(v);
                       },
                     ),
                   ),

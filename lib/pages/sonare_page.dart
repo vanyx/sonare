@@ -22,8 +22,6 @@ class SonarePage extends StatefulWidget {
 }
 
 class SonarePageState extends State<SonarePage> {
-  final Common _common = Common();
-
   LatLng? _currentPosition;
 
   MapController _mapController = MapController();
@@ -67,9 +65,17 @@ class SonarePageState extends State<SonarePage> {
 
   List<FaunaSonare> _FaunaSonare = [];
 
+  bool _isSoundEnabled = true;
+
   @override
   void initState() {
     super.initState();
+
+    Common.getSoundEnabled().then((value) {
+      setState(() {
+        _isSoundEnabled = value;
+      });
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
@@ -166,7 +172,7 @@ class SonarePageState extends State<SonarePage> {
     double east = _currentPosition!.longitude + longitudeDelta;
     double west = _currentPosition!.longitude - longitudeDelta;
     List<LatLng> wish =
-        await _common.fetchWish(north, south, west, east, _common.maxRetry);
+        await Common.fetchWish(north, south, west, east, Common.maxRetry);
 
     for (var position in wish) {
       _FaunaSonare.add(FaunaSonare(
@@ -182,8 +188,8 @@ class SonarePageState extends State<SonarePage> {
 
     int firstMaxLevel = getMaxLevelFauna(_FaunaSonare);
 
-    if (firstMaxLevel != -1) {
-      _common.playWarningByLevel(firstMaxLevel);
+    if (firstMaxLevel != -1 && _isSoundEnabled) {
+      Common.playWarningByLevel(firstMaxLevel);
     }
   }
 
@@ -200,8 +206,7 @@ class SonarePageState extends State<SonarePage> {
 
     if (_lastApiPosition != null) {
       if (calculateDistance(_lastApiPosition!, _currentPosition!) <
-              apiCallDistanceThreshold &&
-          !_common.errorWishRequest) {
+          apiCallDistanceThreshold) {
         return;
       }
     }
@@ -222,7 +227,7 @@ class SonarePageState extends State<SonarePage> {
     double east = _currentPosition!.longitude + longitudeDelta;
     double west = _currentPosition!.longitude - longitudeDelta;
     List<LatLng> wish =
-        await _common.fetchWish(north, south, west, east, _common.maxRetry);
+        await Common.fetchWish(north, south, west, east, Common.maxRetry);
 
     for (var position in wish) {
       _FaunaSonare.add(FaunaSonare(
@@ -431,9 +436,9 @@ class SonarePageState extends State<SonarePage> {
     }
 
     // Annonce eventuelle d'un level
-    if (levelsToAnnounce.isNotEmpty) {
-      _common
-          .playWarningByLevel(levelsToAnnounce.reduce((a, b) => a < b ? a : b));
+    if (levelsToAnnounce.isNotEmpty && _isSoundEnabled) {
+      Common.playWarningByLevel(
+          levelsToAnnounce.reduce((a, b) => a < b ? a : b));
     }
   }
 

@@ -30,16 +30,10 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _checkAppVersion();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   final screenSize = MediaQuery.of(context).size;
-    //   setState(() {
-    //     marginTop = screenSize.height * 0.06;
-    //     marginRight = screenSize.width * 0.05;
-    //   });
-    // });
   }
 
   Future<String> _getVersionFromAPI() async {
+    // @TODO
     // FONCTION TMP
     // SIMULE APPEL API
     await Future.delayed(Duration(seconds: 1));

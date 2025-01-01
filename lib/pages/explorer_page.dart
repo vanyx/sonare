@@ -27,8 +27,6 @@ class ExplorerPage extends StatefulWidget {
 }
 
 class ExplorerPageState extends State<ExplorerPage> {
-  final Common _common = Common();
-
   double _baseZoom = 15.0;
   double _currentZoom = 15.0;
   double _markerSize = 30;
@@ -126,9 +124,8 @@ class ExplorerPageState extends State<ExplorerPage> {
       var southWest = bounds.southWest;
 
       // Call Wish
-      _common
-          .fetchWish(northEast.latitude, southWest.latitude,
-              southWest.longitude, northEast.longitude, _common.maxRetry)
+      Common.fetchWish(northEast.latitude, southWest.latitude,
+              southWest.longitude, northEast.longitude, Common.maxRetry)
           .then((newFish) {
         if (mounted) {
           setState(() {
