@@ -7,8 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/settings.dart';
 
 class Common {
-  /**************** WILD LIFE ****************/
-  static int maxRetry = 3;
+  /// -------------------------- FETCH FAUNA --------------------------
+
+  static const int maxRetry = 3;
 
   static Future<List<LatLng>> fetchWish(
       double north, double south, double west, double east, int retries) async {
@@ -58,7 +59,7 @@ class Common {
     }
   }
 
-  /****************  ****************/
+  /// -------------------------- SharedPreferences --------------------------
 
   // Sauvegarde des preferences
   static Future<void> setSoundEnabled(bool enabled) async {
@@ -82,13 +83,13 @@ class Common {
     return prefs.getBool(Settings.notificationsKey) ?? true;
   }
 
-  /**************** SOUNDS ****************/
+  /// -------------------------- SOUNDS --------------------------
 
   static Future<void> playWarningByLevel(int level) async {
     if (level == 1)
-      play100mWarning();
+      play400mWarning();
     else if (level == 2)
-      play500mWarning();
+      play800mWarning();
     else if (level == 3) play3kmWarning();
   }
 
@@ -100,19 +101,19 @@ class Common {
     } catch (e) {}
   }
 
-  static Future<void> play500mWarning() async {
+  static Future<void> play800mWarning() async {
     final AudioPlayer audioPlayer = AudioPlayer();
 
     try {
-      await audioPlayer.play(AssetSource('sounds/500m.mp3'));
+      await audioPlayer.play(AssetSource('sounds/800m.mp3'));
     } catch (e) {}
   }
 
-  static Future<void> play100mWarning() async {
+  static Future<void> play400mWarning() async {
     final AudioPlayer audioPlayer = AudioPlayer();
 
     try {
-      await audioPlayer.play(AssetSource('sounds/100m.mp3'));
+      await audioPlayer.play(AssetSource('sounds/400m.mp3'));
     } catch (e) {}
   }
 }

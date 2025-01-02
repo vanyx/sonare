@@ -96,7 +96,7 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Dans le mode Sonare, émettre un son lorsque vous approchez d'une présence.",
+                "Emettre un signal sonore lorsque vous approchez d'une présence.",
                 style: AppFonts.settingsNotifSubtitle,
               ),
             ),

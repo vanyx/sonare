@@ -162,6 +162,7 @@ class SonarePageState extends State<SonarePage> {
       });
     }
 
+    // fetch
     double latitudeDelta =
         Settings.furthestThreshold / 111000; // Distance en degrés de latitude
     double longitudeDelta = Settings.furthestThreshold /
@@ -181,13 +182,14 @@ class SonarePageState extends State<SonarePage> {
           angle: 0.0,
           circlePosition: Offset(0, 0),
           type: 'fish',
-          level: getFaunaSonareLevel(_currentPosition!, position)));
+          level: getFaunaLevel(_currentPosition!, position)));
     }
 
     updateFishParams();
 
-    int firstMaxLevel = getMaxLevelFauna(_FaunaSonare);
-
+    // Annonce sonore eventuelle du fauna le plus proche
+    int firstMaxLevel =
+        getMaxLevel(_FaunaSonare.map((fauna) => fauna.level).toList());
     if (firstMaxLevel != -1 && _isSoundEnabled) {
       Common.playWarningByLevel(firstMaxLevel);
     }
@@ -229,6 +231,8 @@ class SonarePageState extends State<SonarePage> {
     List<LatLng> wish =
         await Common.fetchWish(north, south, west, east, Common.maxRetry);
 
+    List<int> tmpLevels = [];
+
     for (var position in wish) {
       if (!existPositionInFauna(position)) {
         _FaunaSonare.add(FaunaSonare(
@@ -237,8 +241,17 @@ class SonarePageState extends State<SonarePage> {
             angle: 0.0,
             circlePosition: Offset(0, 0),
             type: 'fish',
-            level: getFaunaSonareLevel(_currentPosition!, position)));
+            level: getFaunaLevel(_currentPosition!, position)));
+
+        // util pour les sons
+        tmpLevels.add(getFaunaLevel(_currentPosition!, position));
       }
+    }
+
+    // Annonce sonore eventuelle du nouveau fauna le plus proche
+    int firstMaxLevel = getMaxLevel(tmpLevels);
+    if (firstMaxLevel != -1 && _isSoundEnabled) {
+      Common.playWarningByLevel(firstMaxLevel);
     }
 
     updateFishParams();
@@ -254,15 +267,15 @@ class SonarePageState extends State<SonarePage> {
     return false;
   }
 
-  int getMaxLevelFauna(List<FaunaSonare> _FaunaSonare) {
+  int getMaxLevel(List<int> levels) {
     // A prendre en compte dans l'appel de la fonction
-    if (_FaunaSonare.isEmpty) return -1;
+    if (levels.isEmpty) return -1;
 
-    return _FaunaSonare.map((fauna) => fauna.level)
-        .reduce((a, b) => a < b ? a : b);
+    return levels.reduce(
+        (currentMin, element) => currentMin < element ? currentMin : element);
   }
 
-  int getFaunaSonareLevel(LatLng me, LatLng FaunaSonare) {
+  int getFaunaLevel(LatLng me, LatLng FaunaSonare) {
     double distance = calculateDistance(me, FaunaSonare);
 
     if (distance <= Settings.urgentThreshold) {
@@ -435,7 +448,7 @@ class SonarePageState extends State<SonarePage> {
           }
 
           // Calcul level + sons a eventuellement annoncer
-          int newLevel = getFaunaSonareLevel(_currentPosition!, fish.position);
+          int newLevel = getFaunaLevel(_currentPosition!, fish.position);
 
           if (newLevel < fish.level) {
             levelsToAnnounce.add(newLevel);
@@ -444,6 +457,9 @@ class SonarePageState extends State<SonarePage> {
             fish.level = newLevel;
           }
         }
+
+        // Tri les fauna du plus petit au plus grand
+        _FaunaSonare.sort((a, b) => a.size.compareTo(b.size));
       });
     }
 
@@ -687,8 +703,6 @@ class SonarePageState extends State<SonarePage> {
                               if (_zoomLevel > 13.0) {
                                 setState(() {
                                   _zoomLevel -= 0.5;
-                                  _mapController.move(
-                                      _currentPosition!, _zoomLevel);
                                 });
                               }
                             },
@@ -702,8 +716,6 @@ class SonarePageState extends State<SonarePage> {
                               if (_zoomLevel < 17.5) {
                                 setState(() {
                                   _zoomLevel += 0.5;
-                                  _mapController.move(
-                                      _currentPosition!, _zoomLevel);
                                 });
                               }
                             },

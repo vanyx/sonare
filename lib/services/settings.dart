@@ -18,11 +18,7 @@ class Settings {
 
   static String termsUrl = 'https://fr.wikipedia.org/wiki/Lorem_ipsum';
 
-  /**************** Map URL ****************/
-
   static String mapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-  /**************** API URLs ****************/
 
   static String wishUrl = '';
 
@@ -32,10 +28,10 @@ class Settings {
   static double furthestThreshold = 3000;
 
   /// Seuil d'alerte médian en m.
-  static double medianThreshold = 500;
+  static double medianThreshold = 800;
 
   /// Seuil d'alerte urgent en m.
-  static double urgentThreshold = 100;
+  static double urgentThreshold = 400;
 
   /**************** Notif sharedPreferences keys ****************/
 

@@ -14,7 +14,6 @@ class AppFonts {
       color: Color.fromARGB(255, 255, 255, 255));
 
   // sheet
-
   static const sheetTitle = TextStyle(
       fontFamily: 'sf-pro-display-black',
       fontSize: 23,
@@ -41,7 +40,6 @@ class AppFonts {
       color: Color.fromARGB(255, 255, 255, 255));
 
   // settings
-
   static const settingsList = TextStyle(
       fontFamily: 'sf-pro-display-bold',
       fontSize: 17,
@@ -68,7 +66,7 @@ class AppFonts {
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const settingsLexiqueText = TextStyle(
-      fontFamily: 'sf-pro-display-semibold',
+      fontFamily: 'sf-pro-display-bold',
       fontSize: 14,
       color: AppColors.textOverCard);
 }
