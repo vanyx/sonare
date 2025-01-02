@@ -14,6 +14,10 @@ class Settings {
 
   /// -------------------------- SETTINGS DATA --------------------------
 
+  static String version = "1.0.0";
+
+  static String termsUrl = 'https://fr.wikipedia.org/wiki/Lorem_ipsum';
+
   /**************** Map URL ****************/
 
   static String mapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';

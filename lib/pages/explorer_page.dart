@@ -11,6 +11,7 @@ import '../widgets/customMarker.dart';
 import '../styles/AppColors.dart';
 import '../services/common_functions.dart';
 import '../services/settings.dart';
+import '../widgets/explorerExpandableMarker.dart';
 
 class ExplorerPage extends StatefulWidget {
   final Function(bool) userMovedCamera;
@@ -29,7 +30,15 @@ class ExplorerPage extends StatefulWidget {
 class ExplorerPageState extends State<ExplorerPage> {
   double _baseZoom = 15.0;
   double _currentZoom = 15.0;
+
+  /// ----------- Sizes -----------
+  double _zoomThreshold = 12.5;
   double _markerSize = 30;
+  double _miniMarkerSize = 11;
+
+  /// -----------------------------
+
+  bool _mapReady = false;
 
   LatLng? _currentPosition;
   List<LatLng> _shell = [];
@@ -55,6 +64,13 @@ class ExplorerPageState extends State<ExplorerPage> {
     _debounceTimer?.cancel();
     _positionSubscription?.cancel();
     super.dispose();
+  }
+
+  void _onMapReady() {
+    _startListeningToLocationChanges();
+    setState(() {
+      _mapReady = true;
+    });
   }
 
   Future<void> _getCurrentLocation() async {
@@ -260,7 +276,7 @@ class ExplorerPageState extends State<ExplorerPage> {
                 minZoom: 7.0,
                 maxZoom: 18.0,
                 onPositionChanged: _onMapChanged,
-                onMapReady: _startListeningToLocationChanges,
+                onMapReady: _onMapReady,
                 onTap: (tapPosition, point) {},
                 onLongPress: (tapPosition, point) {},
               ),
@@ -268,58 +284,51 @@ class ExplorerPageState extends State<ExplorerPage> {
                 TileLayer(urlTemplate: Settings.mapUrl),
                 MarkerLayer(
                   markers: [
-                    for (var fishPosition in _fish)
-                      Marker(
-                        width: _currentZoom > 12.5 ? _markerSize : 10.0,
-                        height: _currentZoom > 12.5 ? _markerSize : 10.0,
-                        point: fishPosition,
-                        child: _currentZoom > 12.5
-                            ? Transform.rotate(
-                                angle: -_mapController.camera.rotation *
-                                    (pi / 180),
-                                child: CustomMarker(
-                                  size: _markerSize,
-                                  type: "fish",
-                                ))
-                            : Container(
-                                width: 10.0,
-                                height: 10.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.iconBackgroundFish,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                      ),
-                    for (var fishPosition in _shell)
-                      Marker(
-                        width: _currentZoom > 12.5 ? _markerSize : 10.0,
-                        height: _currentZoom > 12.5 ? _markerSize : 10.0,
-                        point: fishPosition,
-                        child: _currentZoom > 13
-                            ? Transform.rotate(
-                                angle: -_mapController.camera.rotation *
-                                    (pi / 180),
-                                child: CustomMarker(
-                                  size: _markerSize,
-                                  type: "shell",
-                                ))
-                            : Container(
-                                width: 10.0,
-                                height: 10.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.iconBackgroundFish,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                      ),
+                    // FISH
+                    if (_mapReady)
+                      for (var fishPosition in _fish)
+                        Marker(
+                          width: _currentZoom > _zoomThreshold
+                              ? _markerSize
+                              : _miniMarkerSize,
+                          height: _currentZoom > _zoomThreshold
+                              ? _markerSize
+                              : _miniMarkerSize,
+                          point: fishPosition,
+                          child: ExplorerExpandableMarker(
+                            zoom: _currentZoom,
+                            type: "fish",
+                            color: AppColors.iconBackgroundFish,
+                            position: fishPosition,
+                            rotationAngle: _mapController.camera.rotation,
+                            markerSize: _markerSize,
+                            miniMarkerSize: _miniMarkerSize,
+                            zoomThreshold: _zoomThreshold,
+                          ),
+                        ),
+                    // SHELL
+                    if (_mapReady)
+                      for (var shellPosition in _shell)
+                        Marker(
+                          width: _currentZoom > _zoomThreshold
+                              ? _markerSize
+                              : _miniMarkerSize,
+                          height: _currentZoom > _zoomThreshold
+                              ? _markerSize
+                              : _miniMarkerSize,
+                          point: shellPosition,
+                          child: ExplorerExpandableMarker(
+                            zoom: _currentZoom,
+                            type: "shell",
+                            color: AppColors.iconBackgroundShell,
+                            position: shellPosition,
+                            rotationAngle: _mapController.camera.rotation,
+                            markerSize: _markerSize,
+                            miniMarkerSize: _miniMarkerSize,
+                            zoomThreshold: _zoomThreshold,
+                          ),
+                        ),
+                    // ME
                     Marker(
                       width: 25,
                       height: 25,
@@ -337,7 +346,7 @@ class ExplorerPageState extends State<ExplorerPage> {
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.15),
-                              spreadRadius: 2, // taille de l'ombre
+                              spreadRadius: 2,
                               blurRadius: 8,
                             ),
                           ],

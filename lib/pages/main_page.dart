@@ -1,3 +1,4 @@
+import 'package:Sonare/services/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
@@ -8,7 +9,6 @@ import '../widgets/selectModeSheet.dart';
 import '../widgets/reportSheet.dart';
 import '../widgets/updateDialog.dart';
 import '../styles/AppColors.dart';
-import 'package:package_info_plus/package_info_plus.dart'; // Pour obtenir la version de l'app
 
 class MainPage extends StatefulWidget {
   @override
@@ -37,17 +37,14 @@ class _MainPageState extends State<MainPage> {
     // FONCTION TMP
     // SIMULE APPEL API
     await Future.delayed(Duration(seconds: 1));
-    return '0.1.0';
+    return '1.0.0';
   }
 
   Future<void> _checkAppVersion() async {
-    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    final String currentVersion = packageInfo.version;
-
     // @TODO: vrai appel API ici pour avoir la derniere version
     final String apiVersion = await _getVersionFromAPI();
 
-    if (apiVersion != currentVersion) {
+    if (apiVersion != Settings.version) {
       _showUpdateDialog();
     }
   }

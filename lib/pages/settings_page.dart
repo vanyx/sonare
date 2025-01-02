@@ -1,3 +1,4 @@
+import 'package:Sonare/pages/settings/terms_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
@@ -6,6 +7,7 @@ import '../styles/AppColors.dart';
 import '../styles/AppFonts.dart';
 import './settings/lexique_page.dart';
 import './settings/sound_notification_page.dart';
+import './settings/terms_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -59,7 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
               horizontalTitleGap: horizontalPadding,
               leading: Icon(
                 CupertinoIcons.bell,
-                color: const Color.fromARGB(255, 255, 255, 255),
+                color: AppColors.buttonMain,
                 size: iconWidth,
               ),
               title: Text(
@@ -100,7 +102,7 @@ class _SettingsPageState extends State<SettingsPage> {
               horizontalTitleGap: horizontalPadding,
               leading: Icon(
                 CupertinoIcons.lightbulb,
-                color: const Color.fromARGB(255, 255, 255, 255),
+                color: AppColors.buttonMain,
                 size: iconWidth,
               ),
               title: Text(
@@ -125,7 +127,13 @@ class _SettingsPageState extends State<SettingsPage> {
           InkWell(
             splashFactory: NoSplash.splashFactory,
             highlightColor: AppColors.longPressed,
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => TermsPage(),
+                ),
+              );
+            },
             child: ListTile(
               dense: true,
               contentPadding: EdgeInsets.symmetric(
@@ -135,7 +143,7 @@ class _SettingsPageState extends State<SettingsPage> {
               horizontalTitleGap: horizontalPadding,
               leading: Icon(
                 CupertinoIcons.doc,
-                color: const Color.fromARGB(255, 255, 255, 255),
+                color: AppColors.buttonMain,
                 size: iconWidth,
               ),
               title: Text(

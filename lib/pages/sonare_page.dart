@@ -230,16 +230,28 @@ class SonarePageState extends State<SonarePage> {
         await Common.fetchWish(north, south, west, east, Common.maxRetry);
 
     for (var position in wish) {
-      _FaunaSonare.add(FaunaSonare(
-          position: position,
-          visible: false,
-          angle: 0.0,
-          circlePosition: Offset(0, 0),
-          type: 'fish',
-          level: getFaunaSonareLevel(_currentPosition!, position)));
+      if (!existPositionInFauna(position)) {
+        _FaunaSonare.add(FaunaSonare(
+            position: position,
+            visible: false,
+            angle: 0.0,
+            circlePosition: Offset(0, 0),
+            type: 'fish',
+            level: getFaunaSonareLevel(_currentPosition!, position)));
+      }
     }
 
     updateFishParams();
+  }
+
+  bool existPositionInFauna(LatLng position) {
+    for (var fauna in _FaunaSonare) {
+      if (fauna.position.latitude == position.latitude &&
+          fauna.position.longitude == position.longitude) {
+        return true;
+      }
+    }
+    return false;
   }
 
   int getMaxLevelFauna(List<FaunaSonare> _FaunaSonare) {
@@ -724,9 +736,9 @@ class SonarePageState extends State<SonarePage> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                spreadRadius: 2, // taille de l'ombre
-                                blurRadius: 8,
+                                color: Colors.black.withOpacity(0.3),
+                                blurRadius: 3.0,
+                                spreadRadius: 0.0,
                               ),
                             ],
                           ),
