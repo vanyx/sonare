@@ -7,8 +7,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_compass/flutter_compass.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../../models/models.dart';
 import '../styles/AppColors.dart';
 import 'package:shimmer/shimmer.dart';
@@ -203,11 +201,11 @@ class SonarePageState extends State<SonarePage> {
 
     // filtrage
     _FaunaSonare.removeWhere((fish) =>
-        calculateDistance(_currentPosition!, fish.position) >
+        Common.calculateDistance(_currentPosition!, fish.position) >
         Settings.furthestThreshold);
 
     if (_lastApiPosition != null) {
-      if (calculateDistance(_lastApiPosition!, _currentPosition!) <
+      if (Common.calculateDistance(_lastApiPosition!, _currentPosition!) <
           apiCallDistanceThreshold) {
         return;
       }
@@ -267,6 +265,7 @@ class SonarePageState extends State<SonarePage> {
     return false;
   }
 
+  // Return le plus petit entier d'une liste
   int getMaxLevel(List<int> levels) {
     // A prendre en compte dans l'appel de la fonction
     if (levels.isEmpty) return -1;
@@ -276,7 +275,7 @@ class SonarePageState extends State<SonarePage> {
   }
 
   int getFaunaLevel(LatLng me, LatLng FaunaSonare) {
-    double distance = calculateDistance(me, FaunaSonare);
+    double distance = Common.calculateDistance(me, FaunaSonare);
 
     if (distance <= Settings.urgentThreshold) {
       return 1;
@@ -303,7 +302,7 @@ class SonarePageState extends State<SonarePage> {
 
     int timeElapsed = now.difference(_lastUpdateTime!).inMilliseconds;
 
-    double distance = calculateDistance(from, to); //distance en m
+    double distance = Common.calculateDistance(from, to); //distance en m
 
     double speedKmh = (distance / (timeElapsed / 1000)) * 3.6;
 
@@ -342,7 +341,7 @@ class SonarePageState extends State<SonarePage> {
     }
 
     if (_isMovingForSure) {
-      _animateBearing(_bearing ?? 0, calculateBearing(from, to));
+      _animateBearing(_bearing ?? 0, Common.calculateBearing(from, to));
     }
 
     double animationDuration = 1000;
@@ -353,7 +352,7 @@ class SonarePageState extends State<SonarePage> {
     for (int i = 0; i <= steps; i++) {
       Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
         double t = i / steps;
-        LatLng interpolatedPosition = lerp(from, to, t);
+        LatLng interpolatedPosition = Common.lerp(from, to, t);
         if (mounted) {
           setState(() {
             _currentPosition = interpolatedPosition;
@@ -378,7 +377,7 @@ class SonarePageState extends State<SonarePage> {
         if (!mounted) return;
 
         double t = i / steps;
-        double interpolatedBearing = lerpAngle(from, to, t);
+        double interpolatedBearing = Common.lerpAngle(from, to, t);
         if (mounted) {
           setState(() {
             _bearing = interpolatedBearing;
@@ -407,12 +406,12 @@ class SonarePageState extends State<SonarePage> {
           fish.visible = checkTargetVisibility(fish.position);
 
           // Calcul de l'angle
-          fish.angle = azimutBetweenCenterAndPointRadian(
+          fish.angle = Common.azimutBetweenCenterAndPointRadian(
                   _currentPosition!.latitude,
                   _currentPosition!.longitude,
                   fish.position.latitude,
                   fish.position.longitude) -
-              degreesToRadians(_bearing!);
+              Common.degreesToRadians(_bearing!);
 
           // Position sur le cercle
           fish.circlePosition = Offset(
@@ -430,7 +429,8 @@ class SonarePageState extends State<SonarePage> {
            * .
            * Moi
            */
-          double distance = calculateDistance(_currentPosition!, fish.position);
+          double distance =
+              Common.calculateDistance(_currentPosition!, fish.position);
 
           if (distance >= Settings.furthestThreshold) {
             fish.size = FaunaSonare.minSizeValue;
@@ -489,76 +489,6 @@ class SonarePageState extends State<SonarePage> {
 
     // Compare la distance en pixels avec le rayon du cercle
     return pixelDistance <= mapRadiusInPixels;
-  }
-
-  /**
-   * https://github.com/Ujjwalsharma2210/flutter_map_math/blob/main/lib/flutter_geo_math.dart
-   */
-  double azimutBetweenCenterAndPointRadian(
-      double lat1, double lon1, double lat2, double lon2) {
-    var dLon = degreesToRadians(lon2 - lon1);
-    var y = sin(dLon) * cos(degreesToRadians(lat2));
-    var x = cos(degreesToRadians(lat1)) * sin(degreesToRadians(lat2)) -
-        sin(degreesToRadians(lat1)) * cos(degreesToRadians(lat2)) * cos(dLon);
-    var angle = atan2(y, x);
-    return angle - pi / 2;
-  }
-
-  double degreesToRadians(double degrees) {
-    return degrees * pi / 180;
-  }
-
-  LatLng lerp(LatLng start, LatLng end, double t) {
-    return LatLng(
-      start.latitude + (end.latitude - start.latitude) * t,
-      start.longitude + (end.longitude - start.longitude) * t,
-    );
-  }
-
-  double lerpAngle(double start, double end, double t) {
-    double difference = end - start;
-    if (difference.abs() > 180.0) {
-      if (difference > 0) {
-        start += 360.0;
-      } else {
-        end += 360.0;
-      }
-    }
-    double result = start + (end - start) * t;
-    return result % 360.0;
-  }
-
-  double calculateBearing(LatLng from, LatLng to) {
-    double lat1 = from.latitude * (pi / 180.0);
-    double lon1 = from.longitude * (pi / 180.0);
-    double lat2 = to.latitude * (pi / 180.0);
-    double lon2 = to.longitude * (pi / 180.0);
-
-    double dLon = lon2 - lon1;
-
-    double y = sin(dLon) * cos(lat2);
-    double x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon);
-
-    double bearing = atan2(y, x);
-
-    return (bearing * (180.0 / pi) + 360.0) %
-        360.0; // converti en degres et ramene dans la plage [0, 360]
-  }
-
-  double calculateDistance(LatLng start, LatLng end) {
-    const double R = 6371000; // rayon de la Terre en m
-    double lat1 = start.latitude * (3.141592653589793 / 180.0);
-    double lat2 = end.latitude * (3.141592653589793 / 180.0);
-    double deltaLat =
-        (end.latitude - start.latitude) * (3.141592653589793 / 180.0);
-    double deltaLon =
-        (end.longitude - start.longitude) * (3.141592653589793 / 180.0);
-
-    double a = (sin(deltaLat / 2) * sin(deltaLat / 2)) +
-        cos(lat1) * cos(lat2) * (sin(deltaLon / 2) * sin(deltaLon / 2));
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
-    return R * c; // distance en m
   }
 
   @override

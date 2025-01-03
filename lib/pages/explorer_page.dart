@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
 import 'package:shimmer/shimmer.dart';
 import 'dart:math';
-import '../widgets/customMarker.dart';
 import '../styles/AppColors.dart';
 import '../services/common_functions.dart';
 import '../services/settings.dart';
@@ -32,6 +29,7 @@ class ExplorerPageState extends State<ExplorerPage> {
   double _currentZoom = 15.0;
 
   /// ----------- Sizes -----------
+
   double _zoomThreshold = 12.5;
   double _markerSize = 30;
   double _miniMarkerSize = 11;
@@ -99,9 +97,9 @@ class ExplorerPageState extends State<ExplorerPage> {
 
         _animateMarker(_currentPosition!, newPosition);
 
-        // Check automatiquement les fish si l'user se deplace
+        // Check automatiquement les fauna si l'user se deplace
         if (_lastPosition == null ||
-            calculateDistance(_lastPosition!, _currentPosition!) >
+            Common.calculateDistance(_lastPosition!, _currentPosition!) >
                 distanceThreshold) {
           if (mounted) {
             setState(() {
@@ -173,7 +171,7 @@ class ExplorerPageState extends State<ExplorerPage> {
     for (int i = 0; i <= steps; i++) {
       Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
         double t = i / steps;
-        LatLng interpolatedPosition = lerp(from, to, t);
+        LatLng interpolatedPosition = Common.lerp(from, to, t);
         if (mounted) {
           setState(() {
             _currentPosition = interpolatedPosition;
@@ -229,27 +227,6 @@ class ExplorerPageState extends State<ExplorerPage> {
       }
     }
     widget.userMovedCamera(false);
-  }
-
-  LatLng lerp(LatLng start, LatLng end, double t) {
-    return LatLng(
-      start.latitude + (end.latitude - start.latitude) * t,
-      start.longitude + (end.longitude - start.longitude) * t,
-    );
-  }
-
-  double calculateDistance(LatLng start, LatLng end) {
-    const double R = 6371000; // Rayon de la Terre en m
-    double lat1 = start.latitude * (pi / 180.0);
-    double lat2 = end.latitude * (pi / 180.0);
-    double deltaLat = (end.latitude - start.latitude) * (pi / 180.0);
-    double deltaLon = (end.longitude - start.longitude) * (pi / 180.0);
-
-    double a = (sin(deltaLat / 2) * sin(deltaLat / 2)) +
-        cos(lat1) * cos(lat2) * (sin(deltaLon / 2) * sin(deltaLon / 2));
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
-    return R * c; // Distance en m
   }
 
   @override

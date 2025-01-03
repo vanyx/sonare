@@ -1,90 +1,119 @@
+import 'dart:async';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-Future<void> initializeService() async {
-  final service = FlutterBackgroundService();
-
-  await service.configure(
-    androidConfiguration: AndroidConfiguration(
-      onStart: onStart,
-      isForegroundMode: true,
-    ),
-    iosConfiguration: IosConfiguration(
-      onForeground: onStart,
-      onBackground: onIosBackground,
-    ),
-  );
-
-  service.startService();
-}
-
-bool onIosBackground(ServiceInstance service) {
-  return true;
-}
-
-void onStart(ServiceInstance service) async {
-  if (service is AndroidServiceInstance) {
-    service.setForegroundNotificationInfo(
-      title: "Service Actif",
-      content: "Suivi de localisation en cours...",
-    );
-  }
-
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+class BackgroundService {
+  static final FlutterLocalNotificationsPlugin _flutterLocalNotifications =
       FlutterLocalNotificationsPlugin();
 
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('app_icon');
+  static bool _notificationsAllowed = true;
 
-  const DarwinInitializationSettings initializationSettingsIOS =
-      DarwinInitializationSettings();
+  final FlutterBackgroundService _service = FlutterBackgroundService();
 
-  const InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-    iOS: initializationSettingsIOS,
-  );
+  Future<void> initialize() async {
+    await _service.configure(
+      androidConfiguration: AndroidConfiguration(
+        onStart: _onStart,
+        isForegroundMode: true,
+      ),
+      iosConfiguration: IosConfiguration(
+        onForeground: _onStart,
+        onBackground: _onIosBackground,
+      ),
+    );
+    _service.startService();
+  }
 
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  static bool _onIosBackground(ServiceInstance service) {
+    return true;
+  }
 
-  Position? lastPosition;
-
-  service.on('stopService').listen((event) {
-    service.stopSelf();
-  });
-
-  Geolocator.getPositionStream().listen((Position position) async {
-    if (lastPosition != null) {
-      double distanceInMeters = Geolocator.distanceBetween(
-        lastPosition!.latitude,
-        lastPosition!.longitude,
-        position.latitude,
-        position.longitude,
+  static void _onStart(ServiceInstance service) async {
+    // @TODO : à supprimer ?
+    if (service is AndroidServiceInstance) {
+      service.setForegroundNotificationInfo(
+        title: "Service Actif",
+        content: "Suivi de localisation en cours...",
       );
-
-      if (distanceInMeters > 20) {
-        // Envoi de la notification
-        const AndroidNotificationDetails androidPlatformChannelSpecifics =
-            AndroidNotificationDetails(
-          'channel_id',
-          'channel_name',
-          channelDescription: 'channel_description',
-          importance: Importance.max,
-          priority: Priority.high,
-        );
-
-        const NotificationDetails platformChannelSpecifics =
-            NotificationDetails(android: androidPlatformChannelSpecifics);
-
-        await flutterLocalNotificationsPlugin.show(
-          0,
-          'Notification',
-          'Vous avez bougé de plus de 20 mètres.',
-          platformChannelSpecifics,
-        );
-      }
     }
 
-    lastPosition = position;
-  });
+    await _initializeNotifications();
+
+    _functionTest();
+  }
+
+  /// Test d'envoi de notifications toutes les 5 secondes
+  static void _functionTest() {
+    Timer.periodic(const Duration(seconds: 5), (timer) async {
+      print("Appel de sendMovementNotification via Timer");
+      await _sendNotification("nique ta mere");
+    });
+  }
+
+  static Future<void> _initializeNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await _flutterLocalNotifications.initialize(initializationSettings);
+
+    // Permissions pour IOS
+    final bool? granted = await _flutterLocalNotifications
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+
+    if (granted == false || granted == null) {
+      _notificationsAllowed = false;
+    } else {
+      _notificationsAllowed = true;
+    }
+  }
+
+  static Future<void> _sendNotification(String notifContent) async {
+    if (!_notificationsAllowed) {
+      return;
+    }
+
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'channel_id',
+      'channel_name',
+      channelDescription: 'channel_description',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const DarwinNotificationDetails iosPlatformChannelSpecifics =
+        DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iosPlatformChannelSpecifics,
+    );
+
+    await _flutterLocalNotifications.show(
+      0,
+      'Sonare',
+      notifContent,
+      platformChannelSpecifics,
+    );
+  }
 }

@@ -13,9 +13,11 @@
 
 # TODO
 
+
 factoriser les fonctions de math
 
 - Background service
+        - METTRE DANS UNE CLASS ? static
         - Est ce que les notifis par defaut font un son ? Remplacer par le mien ? OUI !
         - Tenir compte des params
 

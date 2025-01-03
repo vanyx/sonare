@@ -1,4 +1,3 @@
-import 'package:Sonare/pages/settings/terms_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
