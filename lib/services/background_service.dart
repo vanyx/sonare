@@ -43,11 +43,18 @@ class BackgroundService {
     _functionTest();
   }
 
+  /// listenToLocationChanges, qui appel updateFish
+  /// updateFish annonce les fauna si detecté
+  /// si sueil de deplacement ok fait un call api
+  /// => annonce eventuelle des nouveaux sfauna
+  ///
+  ///
+  ///
+
   /// Test d'envoi de notifications toutes les 5 secondes
   static void _functionTest() {
     Timer.periodic(const Duration(seconds: 5), (timer) async {
-      print("Appel de sendMovementNotification via Timer");
-      await _sendNotification("nique ta mere");
+      await _sendNotification("test poli");
     });
   }
 
