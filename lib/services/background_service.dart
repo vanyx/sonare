@@ -2,16 +2,35 @@ import 'dart:async';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:latlong2/latlong.dart';
+
+class Fauna {
+  final String type;
+  final LatLng position;
+
+  Fauna({required this.type, required this.position});
+}
+
+/*
+
+TODO: à l'init, aller chercher les faunas et les annoncer
+*/
 
 class BackgroundService {
-  static final FlutterLocalNotificationsPlugin _flutterLocalNotifications =
+  LatLng? _currentPosition;
+  StreamSubscription<Position>? _positionSubscription;
+
+  List<Fauna> _faunas = [];
+
+  final FlutterLocalNotificationsPlugin _flutterLocalNotifications =
       FlutterLocalNotificationsPlugin();
 
-  static bool _notificationsAllowed = true;
+  bool _notificationsAllowed = true;
 
   final FlutterBackgroundService _service = FlutterBackgroundService();
 
   Future<void> initialize() async {
+    initLocation();
     await _service.configure(
       androidConfiguration: AndroidConfiguration(
         onStart: _onStart,
@@ -25,11 +44,23 @@ class BackgroundService {
     _service.startService();
   }
 
-  static bool _onIosBackground(ServiceInstance service) {
+  bool _onIosBackground(ServiceInstance service) {
     return true;
   }
 
-  static void _onStart(ServiceInstance service) async {
+  Future<void> initLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return;
+    }
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
+
+    _currentPosition = LatLng(position.latitude, position.longitude);
+  }
+
+  void _onStart(ServiceInstance service) async {
     // @TODO : à supprimer ?
     if (service is AndroidServiceInstance) {
       service.setForegroundNotificationInfo(
@@ -39,26 +70,39 @@ class BackgroundService {
     }
 
     await _initializeNotifications();
-
-    _functionTest();
+    _startListeningToLocationChanges();
   }
 
-  /// listenToLocationChanges, qui appel updateFish
-  /// updateFish annonce les fauna si detecté
-  /// si sueil de deplacement ok fait un call api
-  /// => annonce eventuelle des nouveaux sfauna
-  ///
-  ///
-  ///
+  void _startListeningToLocationChanges() {
+    _positionSubscription = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+      ),
+    ).listen((Position position) {
+      _currentPosition = LatLng(position.latitude, position.longitude);
+      updateBackground();
+    });
+  }
+
+  void updateBackground() {
+    /**
+        * 
+        TODO :
+        - Supprimer les wishs existants si plus dans le seuil de distance
+        - anoncer le plus proche si il y a un changement de seuil
+        - call api si seuilApi depassé
+        - les ajouter à faunas
+         */
+  }
 
   /// Test d'envoi de notifications toutes les 5 secondes
-  static void _functionTest() {
+  void _functionTest() {
     Timer.periodic(const Duration(seconds: 5), (timer) async {
       await _sendNotification("test poli");
     });
   }
 
-  static Future<void> _initializeNotifications() async {
+  Future<void> _initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
 
@@ -90,7 +134,7 @@ class BackgroundService {
     }
   }
 
-  static Future<void> _sendNotification(String notifContent) async {
+  Future<void> _sendNotification(String notifContent) async {
     if (!_notificationsAllowed) {
       return;
     }

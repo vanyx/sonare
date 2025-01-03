@@ -95,7 +95,7 @@ class ExplorerPageState extends State<ExplorerPage> {
       if (mounted) {
         LatLng newPosition = LatLng(position.latitude, position.longitude);
 
-        _animateMarker(_currentPosition!, newPosition);
+        animateMarker(_currentPosition!, newPosition);
 
         // Check automatiquement les fauna si l'user se deplace
         if (_lastPosition == null ||
@@ -137,9 +137,8 @@ class ExplorerPageState extends State<ExplorerPage> {
       var northEast = bounds.northEast;
       var southWest = bounds.southWest;
 
-      // Call Wish
-      Common.fetchWish(northEast.latitude, southWest.latitude,
-              southWest.longitude, northEast.longitude, Common.maxRetry)
+      Common.getWishByWindows(northEast.latitude, southWest.latitude,
+              southWest.longitude, northEast.longitude)
           .then((newFish) {
         if (mounted) {
           setState(() {
@@ -150,7 +149,7 @@ class ExplorerPageState extends State<ExplorerPage> {
     });
   }
 
-  void _animateMarker(LatLng from, LatLng to) {
+  void animateMarker(LatLng from, LatLng to) {
     DateTime now = DateTime.now();
 
     if (_lastUpdateTime == null) {

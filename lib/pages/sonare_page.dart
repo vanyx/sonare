@@ -161,17 +161,7 @@ class SonarePageState extends State<SonarePage> {
     }
 
     // fetch
-    double latitudeDelta =
-        Settings.furthestThreshold / 111000; // Distance en degrés de latitude
-    double longitudeDelta = Settings.furthestThreshold /
-        (111000 * cos(_currentPosition!.latitude * pi / 180));
-
-    double north = _currentPosition!.latitude + latitudeDelta;
-    double south = _currentPosition!.latitude - latitudeDelta;
-    double east = _currentPosition!.longitude + longitudeDelta;
-    double west = _currentPosition!.longitude - longitudeDelta;
-    List<LatLng> wish =
-        await Common.fetchWish(north, south, west, east, Common.maxRetry);
+    List<LatLng> wish = await Common.getWishByPosition(_currentPosition!);
 
     for (var position in wish) {
       _FaunaSonare.add(FaunaSonare(
@@ -226,8 +216,7 @@ class SonarePageState extends State<SonarePage> {
     double south = _currentPosition!.latitude - latitudeDelta;
     double east = _currentPosition!.longitude + longitudeDelta;
     double west = _currentPosition!.longitude - longitudeDelta;
-    List<LatLng> wish =
-        await Common.fetchWish(north, south, west, east, Common.maxRetry);
+    List<LatLng> wish = await Common.getWishByPosition(_currentPosition!);
 
     List<int> tmpLevels = [];
 

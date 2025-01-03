@@ -13,13 +13,12 @@
 
 # TODO
 
-
-factoriser les fonctions de math
+ajouter des try catch : api, notif/background, etc ?
 
 - Background service
-        - METTRE DANS UNE CLASS ? static
-        - Est ce que les notifis par defaut font un son ? Remplacer par le mien ? OUI !
+        - Changer son par defaut notif
         - Tenir compte des params
+        - faire mdr
 
 - changer icons / images : poisson, coquillage et images de selection
 

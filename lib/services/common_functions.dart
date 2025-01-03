@@ -8,12 +8,31 @@ import '../services/settings.dart';
 import 'dart:math';
 
 class Common {
-  /// -------------------------- FETCH FAUNA --------------------------
+  /// -------------------------- WEB --------------------------
 
   static const int maxRetry = 3;
 
-  static Future<List<LatLng>> fetchWish(
-      double north, double south, double west, double east, int retries) async {
+  static Future<List<LatLng>> getWishByPosition(LatLng position) async {
+    // Return empty si url vide
+    if (Settings.wishUrl.length == 0) {
+      return [];
+    }
+
+    double latitudeDelta =
+        Settings.furthestThreshold / 111000; // Distance en degrés de latitude
+    double longitudeDelta = Settings.furthestThreshold /
+        (111000 * cos(position.latitude * pi / 180));
+
+    double north = position.latitude + latitudeDelta;
+    double south = position.latitude - latitudeDelta;
+    double east = position.longitude + longitudeDelta;
+    double west = position.longitude - longitudeDelta;
+
+    return getWishByWindows(north, south, west, east);
+  }
+
+  static Future<List<LatLng>> getWishByWindows(
+      double north, double south, double west, double east) async {
     // Return empty si url vide
     if (Settings.wishUrl.length == 0) {
       return [];
@@ -27,33 +46,57 @@ class Common {
       "types": "alerts"
     };
 
+    var data = await fetchRecursive(Settings.wishUrl, queryParams, maxRetry);
+
+    List<LatLng> wish = [];
+
+    if (data is Map<String, dynamic> && data['alerts'] is List) {
+      for (var alert in data['alerts']) {
+        if (alert is Map<String, dynamic>) {
+          var location = alert['location'];
+          if (location is Map<String, dynamic> &&
+              location['y'] is num &&
+              location['x'] is num &&
+              alert['type'] == 'POLICE') {
+            LatLng fishPosition = LatLng(location['y'], location['x']);
+            wish.add(fishPosition);
+          }
+        }
+      }
+    }
+
+    return wish;
+  }
+
+/**
+ * Effectue un appel API avec un nombre maximal de tentatives.
+ * En cas d'échec, la fonction réessaie jusqu'à épuisement du nombre de tentatives spécifié.
+ * 
+ * @param url L'URL cible de l'API (obligatoire).
+ * @param queryParams Une carte (`Map<String, String>`) optionnelle contenant les paramètres
+ *                    de requête à inclure dans l'URL. Si non spécifiée, la requête est 
+ *                    effectuée directement sur l'URL.
+ * @param retries Le nombre maximum de tentatives en cas d'échec.
+ * @return La réponse JSON décodée si le statut HTTP est 200, sinon une liste vide (`[]`).
+ */
+  static Future fetchRecursive(
+      String url, Map<String, String>? queryParams, retries) async {
     try {
-      Uri uri = Uri.parse(Settings.wishUrl);
-      final finalUri = uri.replace(queryParameters: queryParams);
+      Uri uri = Uri.parse(url);
+      final finalUri =
+          queryParams != null ? uri.replace(queryParameters: queryParams) : uri;
 
       final response = await http.get(finalUri);
 
       if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        List<LatLng> newFish = [];
-
-        if (data['alerts'] != null) {
-          for (var alert in data['alerts']) {
-            var location = alert['location'];
-            if (location != null && alert['type'] == 'POLICE') {
-              LatLng fishPosition = LatLng(location['y'], location['x']);
-              newFish.add(fishPosition);
-            }
-          }
-        }
-        return newFish;
+        return json.decode(response.body);
       } else {
         return [];
       }
     } catch (e) {
       if (retries > 0) {
         await Future.delayed(Duration(milliseconds: 200));
-        return await fetchWish(north, south, west, east, retries - 1);
+        return await fetchRecursive(url, queryParams, retries - 1);
       } else {
         return [];
       }
