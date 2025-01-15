@@ -6,14 +6,41 @@ import 'services/settings.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Settings.initialize();
-  final _backgroundService = BackgroundService();
-  _backgroundService.initialize();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(MyApp());
+  await Settings.initialize();
+  runApp(Sonare());
 }
 
-class MyApp extends StatelessWidget {
+class Sonare extends StatefulWidget {
+  @override
+  _SonareState createState() => _SonareState();
+}
+
+class _SonareState extends State<Sonare> with WidgetsBindingObserver {
+  final BackService _backService = BackService();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _backService.stopService();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _backService.onStart();
+    } else if (state == AppLifecycleState.resumed) {
+      _backService.stopService();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -4,7 +4,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:shimmer/shimmer.dart';
-import 'dart:math';
 import '../styles/AppColors.dart';
 import '../services/common_functions.dart';
 import '../services/settings.dart';
@@ -54,6 +53,7 @@ class ExplorerPageState extends State<ExplorerPage> {
   @override
   void initState() {
     super.initState();
+
     _getCurrentLocation();
   }
 
@@ -72,9 +72,8 @@ class ExplorerPageState extends State<ExplorerPage> {
   }
 
   Future<void> _getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
+    if (!Settings.locationPermission) {
+      await Geolocator.openLocationSettings();
       return;
     }
     Position position = await Geolocator.getCurrentPosition(
@@ -87,6 +86,9 @@ class ExplorerPageState extends State<ExplorerPage> {
   }
 
   void _startListeningToLocationChanges() {
+    if (!Settings.locationPermission) {
+      return;
+    }
     _positionSubscription = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
@@ -232,7 +234,7 @@ class ExplorerPageState extends State<ExplorerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body: _currentPosition == null
+      body: !Settings.locationPermission || _currentPosition == null
           ? Center(
               child: Shimmer.fromColors(
                 baseColor: Colors.grey[300]!,

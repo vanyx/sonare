@@ -277,4 +277,28 @@ class Common {
 
     return R * c;
   }
+
+  /// -------------------------- FAUNA --------------------------
+
+  // Return le plus petit entier d'une liste
+  static int getMaxLevel(List<int> levels) {
+    // A prendre en compte dans l'appel de la fonction
+    if (levels.isEmpty) return -1;
+
+    return levels.reduce(
+        (currentMin, element) => currentMin < element ? currentMin : element);
+  }
+
+  static int getFaunaLevel(LatLng me, LatLng FaunaSonare) {
+    double distance = Common.calculateDistance(me, FaunaSonare);
+
+    if (distance <= Settings.urgentThreshold) {
+      return 1;
+    } else if (distance <= Settings.medianThreshold) {
+      return 2;
+    } else if (distance <= Settings.furthestThreshold) {
+      return 3;
+    }
+    return 3;
+  }
 }

@@ -103,6 +103,10 @@ class SonarePageState extends State<SonarePage> {
   }
 
   Future<void> _getCurrentLocation() async {
+    if (!Settings.locationPermission) {
+      await Geolocator.openLocationSettings();
+      return;
+    }
     LocationPermission permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
@@ -119,6 +123,9 @@ class SonarePageState extends State<SonarePage> {
   }
 
   void _listeningToLocationChanges() {
+    if (!Settings.locationPermission) {
+      return;
+    }
     _positionSubscription = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
@@ -135,6 +142,9 @@ class SonarePageState extends State<SonarePage> {
   }
 
   void _listenToCompass() {
+    if (!Settings.locationPermission) {
+      return;
+    }
     FlutterCompass.events!.listen((CompassEvent event) {
       if (mounted && event.heading != null) {
         setState(() {
@@ -164,20 +174,23 @@ class SonarePageState extends State<SonarePage> {
     List<LatLng> wish = await Common.getWishByPosition(_currentPosition!);
 
     for (var position in wish) {
-      _FaunaSonare.add(FaunaSonare(
-          position: position,
-          visible: false,
-          angle: 0.0,
-          circlePosition: Offset(0, 0),
-          type: 'fish',
-          level: getFaunaLevel(_currentPosition!, position)));
+      if (Common.calculateDistance(_currentPosition!, position) <=
+          Settings.furthestThreshold) {
+        _FaunaSonare.add(FaunaSonare(
+            position: position,
+            visible: false,
+            angle: 0.0,
+            circlePosition: Offset(0, 0),
+            type: 'fish',
+            level: Common.getFaunaLevel(_currentPosition!, position)));
+      }
     }
 
     updateFishParams();
 
     // Annonce sonore eventuelle du fauna le plus proche
     int firstMaxLevel =
-        getMaxLevel(_FaunaSonare.map((fauna) => fauna.level).toList());
+        Common.getMaxLevel(_FaunaSonare.map((fauna) => fauna.level).toList());
     if (firstMaxLevel != -1 && _isSoundEnabled) {
       Common.playWarningByLevel(firstMaxLevel);
     }
@@ -207,36 +220,29 @@ class SonarePageState extends State<SonarePage> {
       });
     }
 
-    double latitudeDelta =
-        Settings.furthestThreshold / 111000; // Distance en degrés de latitude
-    double longitudeDelta = Settings.furthestThreshold /
-        (111000 * cos(_currentPosition!.latitude * pi / 180));
-
-    double north = _currentPosition!.latitude + latitudeDelta;
-    double south = _currentPosition!.latitude - latitudeDelta;
-    double east = _currentPosition!.longitude + longitudeDelta;
-    double west = _currentPosition!.longitude - longitudeDelta;
     List<LatLng> wish = await Common.getWishByPosition(_currentPosition!);
 
     List<int> tmpLevels = [];
 
     for (var position in wish) {
-      if (!existPositionInFauna(position)) {
+      if (!existPositionInFauna(position) &&
+          Common.calculateDistance(_currentPosition!, position) <=
+              Settings.furthestThreshold) {
         _FaunaSonare.add(FaunaSonare(
             position: position,
             visible: false,
             angle: 0.0,
             circlePosition: Offset(0, 0),
             type: 'fish',
-            level: getFaunaLevel(_currentPosition!, position)));
+            level: Common.getFaunaLevel(_currentPosition!, position)));
 
         // util pour les sons
-        tmpLevels.add(getFaunaLevel(_currentPosition!, position));
+        tmpLevels.add(Common.getFaunaLevel(_currentPosition!, position));
       }
     }
 
     // Annonce sonore eventuelle du nouveau fauna le plus proche
-    int firstMaxLevel = getMaxLevel(tmpLevels);
+    int firstMaxLevel = Common.getMaxLevel(tmpLevels);
     if (firstMaxLevel != -1 && _isSoundEnabled) {
       Common.playWarningByLevel(firstMaxLevel);
     }
@@ -252,28 +258,6 @@ class SonarePageState extends State<SonarePage> {
       }
     }
     return false;
-  }
-
-  // Return le plus petit entier d'une liste
-  int getMaxLevel(List<int> levels) {
-    // A prendre en compte dans l'appel de la fonction
-    if (levels.isEmpty) return -1;
-
-    return levels.reduce(
-        (currentMin, element) => currentMin < element ? currentMin : element);
-  }
-
-  int getFaunaLevel(LatLng me, LatLng FaunaSonare) {
-    double distance = Common.calculateDistance(me, FaunaSonare);
-
-    if (distance <= Settings.urgentThreshold) {
-      return 1;
-    } else if (distance <= Settings.medianThreshold) {
-      return 2;
-    } else if (distance <= Settings.furthestThreshold) {
-      return 3;
-    }
-    return 3;
   }
 
   void _animateMarker(LatLng from, LatLng to) {
@@ -437,7 +421,7 @@ class SonarePageState extends State<SonarePage> {
           }
 
           // Calcul level + sons a eventuellement annoncer
-          int newLevel = getFaunaLevel(_currentPosition!, fish.position);
+          int newLevel = Common.getFaunaLevel(_currentPosition!, fish.position);
 
           if (newLevel < fish.level) {
             levelsToAnnounce.add(newLevel);
@@ -485,7 +469,7 @@ class SonarePageState extends State<SonarePage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Center(
-        child: _currentPosition == null
+        child: !Settings.locationPermission || _currentPosition == null
             ? Center(
                 child: Shimmer.fromColors(
                   baseColor: Colors.grey[300]!,
