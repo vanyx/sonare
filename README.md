@@ -13,9 +13,8 @@
 
 # TODO
 
-
+LAST !! :
 - mettre en pause l'app (exporer et sonare) si passage en background ?
-
 - modifier son notifications
 
 - changer icons / images : poisson, coquillage et images de selection
@@ -30,4 +29,4 @@
 
 ## A tester sur android :
 - textes des autorisations
-- notif, sons, boussole, vibrations, webview qui fonctionnement correctement
+- notif, sons, boussole, vibrations, webview qui fonctionnement correctement, son des notifs
