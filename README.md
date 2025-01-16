@@ -13,20 +13,12 @@
 
 # TODO
 
-// BOUTON - + qui marche pas 
 
-// Faire pas de bruit de notif si on les annonce sonore
-
-// mettre en pause l'app (exporer et sonare) si passage en background ?
-
-// Check dans sonare page et bckgservice si le param son change
-// en mode sonare on recupere qu'au debut la valeur du param son donc si on joue avec l'option son ça suivra pas
-=> Mettre en place un stream sur ca
-=> Modifier et creer un param static pour la valeur des param, et en meme temps on modifie en dur dans la memoire ?
+- mettre en pause l'app (exporer et sonare) si passage en background ?
 
 - modifier son notifications
 
-ajouter des try catch : api, notif/background, etc ?
+- ajouter des try catch : api, notif/background, etc ?
 
 - Background service
         - Changer son par defaut notif

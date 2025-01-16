@@ -74,45 +74,55 @@ class ExplorerPageState extends State<ExplorerPage> {
   Future<void> _getCurrentLocation() async {
     if (!Settings.locationPermission) {
       await Geolocator.openLocationSettings();
+      // Si permission de position refusee, on ouvre la carte sur Paris
+      if (mounted) {
+        setState(() {
+          _currentPosition = LatLng(48.8566, 2.3522);
+        });
+      }
       return;
     }
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
-    if (mounted) {
-      setState(() {
-        _currentPosition = LatLng(position.latitude, position.longitude);
-      });
-    }
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
+      if (mounted) {
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+        });
+      }
+    } catch (e) {}
   }
 
   void _startListeningToLocationChanges() {
     if (!Settings.locationPermission) {
       return;
     }
-    _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
-    ).listen((Position position) {
-      if (mounted) {
-        LatLng newPosition = LatLng(position.latitude, position.longitude);
+    try {
+      _positionSubscription = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      ).listen((Position position) {
+        if (mounted) {
+          LatLng newPosition = LatLng(position.latitude, position.longitude);
 
-        animateMarker(_currentPosition!, newPosition);
+          animateMarker(_currentPosition!, newPosition);
 
-        // Check automatiquement les fauna si l'user se deplace
-        if (_lastPosition == null ||
-            Common.calculateDistance(_lastPosition!, _currentPosition!) >
-                distanceThreshold) {
-          if (mounted) {
-            setState(() {
-              _lastPosition = _currentPosition;
-            });
+          // Check automatiquement les fauna si l'user se deplace
+          if (_lastPosition == null ||
+              Common.calculateDistance(_lastPosition!, _currentPosition!) >
+                  distanceThreshold) {
+            if (mounted) {
+              setState(() {
+                _lastPosition = _currentPosition;
+              });
+            }
+
+            _onMapChanged(_mapController.camera, false);
           }
-
-          _onMapChanged(_mapController.camera, false);
         }
-      }
-    });
+      });
+    } catch (e) {}
   }
 
   void _onMapChanged(MapCamera camera, bool? hasGesture) {
@@ -234,7 +244,7 @@ class ExplorerPageState extends State<ExplorerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body: !Settings.locationPermission || _currentPosition == null
+      body: _currentPosition == null
           ? Center(
               child: Shimmer.fromColors(
                 baseColor: Colors.grey[300]!,
@@ -307,30 +317,31 @@ class ExplorerPageState extends State<ExplorerPage> {
                           ),
                         ),
                     // ME
-                    Marker(
-                      width: 25,
-                      height: 25,
-                      point: _currentPosition!,
-                      child: Container(
-                        width: 30.0,
-                        height: 30.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color.fromARGB(255, 37, 90, 254),
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 3.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              spreadRadius: 2,
-                              blurRadius: 8,
+                    if (Settings.locationPermission)
+                      Marker(
+                        width: 25,
+                        height: 25,
+                        point: _currentPosition!,
+                        child: Container(
+                          width: 30.0,
+                          height: 30.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color.fromARGB(255, 37, 90, 254),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 3.5,
                             ),
-                          ],
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.15),
+                                spreadRadius: 2,
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ],

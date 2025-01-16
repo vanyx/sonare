@@ -13,7 +13,6 @@ class Common {
   static const int maxRetry = 3;
 
   static Future<List<LatLng>> getWishByPosition(LatLng position) async {
-    return [LatLng(47.662537430234515, -2.7497376082354785)];
     // Return empty si url vide
     if (Settings.wishUrl.length == 0) {
       return [];

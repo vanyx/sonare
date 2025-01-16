@@ -99,58 +99,59 @@ class SonarePageState extends State<SonarePage> {
       await Geolocator.openLocationSettings();
       return;
     }
-    LocationPermission permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      return;
-    }
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    if (mounted) {
-      setState(() {
-        _currentPosition = LatLng(position.latitude, position.longitude);
-      });
-      updateFishParams();
-    }
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      if (mounted) {
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+        });
+        updateFishParams();
+      }
+    } catch (e) {}
   }
 
   void _listeningToLocationChanges() {
     if (!Settings.locationPermission) {
       return;
     }
-    _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
-    ).listen((Position position) {
-      if (mounted) {
-        LatLng newPosition = LatLng(position.latitude, position.longitude);
+    try {
+      _positionSubscription = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      ).listen((Position position) {
+        if (mounted) {
+          LatLng newPosition = LatLng(position.latitude, position.longitude);
 
-        _animateMarker(_currentPosition!, newPosition);
+          _animateMarker(_currentPosition!, newPosition);
 
-        updateFish();
-      }
-    });
+          updateFish();
+        }
+      });
+    } catch (e) {}
   }
 
   void _listenToCompass() {
     if (!Settings.locationPermission) {
       return;
     }
-    FlutterCompass.events!.listen((CompassEvent event) {
-      if (mounted && event.heading != null) {
-        setState(() {
-          _heading = event.heading;
-        });
-        if (!_isMovingForSure && _heading != null) {
+    try {
+      FlutterCompass.events!.listen((CompassEvent event) {
+        if (mounted && event.heading != null) {
           setState(() {
-            _bearing = _heading;
+            _heading = event.heading;
           });
-          updateFishParams();
-          _mapController.rotate(-_heading!);
+          if (!_isMovingForSure && _heading != null) {
+            setState(() {
+              _bearing = _heading;
+            });
+            updateFishParams();
+            _mapController.rotate(-_heading!);
+          }
         }
-      }
-    });
+      });
+    } catch (e) {}
   }
 
   void initFish() async {

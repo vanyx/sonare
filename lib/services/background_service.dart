@@ -25,16 +25,19 @@ class BackService {
   List<Fauna> _faunas = [];
 
   // Constructeur
-  BackService() {
-    _initializeNotifications();
-  }
+  BackService() {}
 
   Future<void> onStart() async {
     if (!Settings.locationPermission) {
       return;
     }
+    await _initializeNotifications();
+    await Future.delayed(Duration(
+        seconds: 2)); //necessite un delai avant l'envoi des premieres notif
 
-    // await _getCurrentLocation();
+    await _getCurrentLocation();
+    await initFaunas();
+
     _startListeningToLocationChanges();
 
     return;
@@ -44,53 +47,57 @@ class BackService {
     _positionSubscription?.cancel();
   }
 
-  // Future<void> _getCurrentLocation() async {
-  //   Position position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.bestForNavigation);
+  Future<void> _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
 
-  //   _currentPosition = LatLng(position.latitude, position.longitude);
-  // }
-
-  void _startListeningToLocationChanges() {
-    _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
-    ).listen((Position position) {
       _currentPosition = LatLng(position.latitude, position.longitude);
-      updateBackground();
-    });
+    } catch (e) {}
   }
 
-  // Future<void> initFaunas() async {
-  //   if (_currentPosition == null) return;
+  void _startListeningToLocationChanges() {
+    try {
+      _positionSubscription = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      ).listen((Position position) {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+        updateBackground();
+      });
+    } catch (e) {}
+  }
 
-  //   _lastApiPosition = _currentPosition;
+  Future<void> initFaunas() async {
+    if (_currentPosition == null) return;
 
-  //   // fetch
-  //   List<LatLng> wish = await Common.getWishByPosition(_currentPosition!);
+    _lastApiPosition = _currentPosition;
 
-  //   for (var position in wish) {
-  //     if (Common.calculateDistance(_currentPosition!, position) <=
-  //         Settings.furthestThreshold) {
-  //       _faunas.add(Fauna(
-  //           type: 'fish',
-  //           position: position,
-  //           level: Common.getFaunaLevel(_currentPosition!, position)));
-  //     }
-  //   }
+    // fetch
+    List<LatLng> wish = await Common.getWishByPosition(_currentPosition!);
 
-  //   // Annonce sonore eventuelle du fauna le plus proche si URGENT (level = 1)
-  //   int firstMaxLevel =
-  //       Common.getMaxLevel(_faunas.map((fauna) => fauna.level).toList());
+    for (var position in wish) {
+      if (Common.calculateDistance(_currentPosition!, position) <=
+          Settings.furthestThreshold) {
+        _faunas.add(Fauna(
+            type: 'fish',
+            position: position,
+            level: Common.getFaunaLevel(_currentPosition!, position)));
+      }
+    }
 
-  //   // Envoi notif
-  //   if (firstMaxLevel == 1 &&
-  //       Settings.notificationPermission &&
-  //       Settings.notificationEnable) {
-  //     notifyByLevel(firstMaxLevel);
-  //   }
-  // }
+    // Annonce sonore eventuelle du fauna le plus proche si URGENT (level = 1)
+    int firstMaxLevel =
+        Common.getMaxLevel(_faunas.map((fauna) => fauna.level).toList());
+
+    // Envoi notif
+    if (firstMaxLevel == 1 &&
+        Settings.notificationPermission &&
+        Settings.notificationEnable) {
+      notifyByLevel(firstMaxLevel);
+    }
+  }
 
   void updateBackground() async {
     if (_currentPosition == null) return;
@@ -205,32 +212,34 @@ class BackService {
       return;
     }
 
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'channel_id',
-      'channel_name',
-      channelDescription: 'channel_description',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
+    try {
+      const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+        'channel_id',
+        'channel_name',
+        channelDescription: 'channel_description',
+        importance: Importance.max,
+        priority: Priority.high,
+      );
 
-    const DarwinNotificationDetails iosPlatformChannelSpecifics =
-        DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
+      const DarwinNotificationDetails iosPlatformChannelSpecifics =
+          DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      );
 
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iosPlatformChannelSpecifics,
-    );
+      const NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iosPlatformChannelSpecifics,
+      );
 
-    await _flutterLocalNotifications.show(
-      0,
-      'Sonare',
-      notifContent,
-      platformChannelSpecifics,
-    );
+      await _flutterLocalNotifications.show(
+        0,
+        'Sonare',
+        notifContent,
+        platformChannelSpecifics,
+      );
+    } catch (e) {}
   }
 }

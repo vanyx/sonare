@@ -32,7 +32,6 @@ class Settings {
     LocationPermission permission = await Geolocator.checkPermission();
 
     if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         return false; // Permission refusee
       }
@@ -96,7 +95,6 @@ class Settings {
 
   static String mapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-//https://a.tiles.mapbox.com/styles/v1/strava/cm1rtwclf00x401qv2ky2e5d2/tiles/8/130/88@2x?access_token=pk.eyJ1Ijoic3RyYXZhIiwiYSI6ImNtMWp3M2UyZDAydzIyam9zaTh6OTNiZm0ifQ.AOpRu_eeNKWg6r-4GS52Kw
   static String wishUrl = '';
 
   /**************** Seuils ****************/
