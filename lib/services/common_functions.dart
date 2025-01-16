@@ -13,6 +13,7 @@ class Common {
   static const int maxRetry = 3;
 
   static Future<List<LatLng>> getWishByPosition(LatLng position) async {
+    return [LatLng(47.662537430234515, -2.7497376082354785)];
     // Return empty si url vide
     if (Settings.wishUrl.length == 0) {
       return [];
@@ -107,11 +108,13 @@ class Common {
 
   // Sauvegarde des preferences
   static Future<void> setSoundEnabled(bool enabled) async {
+    Settings.soundEnable = enabled;
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(Settings.soundKey, enabled);
   }
 
   static Future<void> setNotificationsEnabled(bool enabled) async {
+    Settings.notificationEnable = enabled;
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(Settings.notificationsKey, enabled);
   }

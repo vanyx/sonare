@@ -63,17 +63,9 @@ class SonarePageState extends State<SonarePage> {
 
   List<FaunaSonare> _FaunaSonare = [];
 
-  bool _isSoundEnabled = true;
-
   @override
   void initState() {
     super.initState();
-
-    Common.getSoundEnabled().then((value) {
-      setState(() {
-        _isSoundEnabled = value;
-      });
-    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
@@ -191,7 +183,7 @@ class SonarePageState extends State<SonarePage> {
     // Annonce sonore eventuelle du fauna le plus proche
     int firstMaxLevel =
         Common.getMaxLevel(_FaunaSonare.map((fauna) => fauna.level).toList());
-    if (firstMaxLevel != -1 && _isSoundEnabled) {
+    if (firstMaxLevel != -1 && Settings.soundEnable) {
       Common.playWarningByLevel(firstMaxLevel);
     }
   }
@@ -243,7 +235,7 @@ class SonarePageState extends State<SonarePage> {
 
     // Annonce sonore eventuelle du nouveau fauna le plus proche
     int firstMaxLevel = Common.getMaxLevel(tmpLevels);
-    if (firstMaxLevel != -1 && _isSoundEnabled) {
+    if (firstMaxLevel != -1 && Settings.soundEnable) {
       Common.playWarningByLevel(firstMaxLevel);
     }
 
@@ -431,13 +423,13 @@ class SonarePageState extends State<SonarePage> {
           }
         }
 
-        // Tri les fauna du plus petit au plus grand
+        // Tri les fauna du plus petit au plus grand (utile pour l'affichage des ronds autour de la carte)
         _FaunaSonare.sort((a, b) => a.size.compareTo(b.size));
       });
     }
 
     // Annonce eventuelle d'un level
-    if (levelsToAnnounce.isNotEmpty && _isSoundEnabled) {
+    if (levelsToAnnounce.isNotEmpty && Settings.soundEnable) {
       Common.playWarningByLevel(
           levelsToAnnounce.reduce((a, b) => a < b ? a : b));
     }

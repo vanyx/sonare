@@ -1,3 +1,4 @@
+import 'package:Sonare/services/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
@@ -13,23 +14,9 @@ class SoundNotificationPage extends StatefulWidget {
 }
 
 class _SoundNotificationPageState extends State<SoundNotificationPage> {
-  bool _isSoundEnabled = true;
-  bool _isNotificationsEnabled = true;
-
   @override
   void initState() {
     super.initState();
-    _loadPreferences();
-  }
-
-  void _loadPreferences() async {
-    bool sound = await Common.getSoundEnabled();
-    bool notif = await Common.getNotificationsEnabled();
-
-    setState(() {
-      _isSoundEnabled = sound;
-      _isNotificationsEnabled = notif;
-    });
   }
 
   @override
@@ -80,11 +67,8 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: IosSwitch(
-                      isActive: _isSoundEnabled,
+                      isActive: Settings.soundEnable,
                       onChanged: (v) {
-                        setState(() {
-                          _isSoundEnabled = v;
-                        });
                         Common.setSoundEnabled(v);
                       },
                     ),
@@ -120,11 +104,8 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: IosSwitch(
-                      isActive: _isNotificationsEnabled,
+                      isActive: Settings.notificationEnable,
                       onChanged: (v) {
-                        setState(() {
-                          _isNotificationsEnabled = v;
-                        });
                         Common.setNotificationsEnabled(v);
                       },
                     ),

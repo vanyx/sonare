@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:Sonare/services/common_functions.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -15,6 +16,9 @@ class Settings {
     } else if (Platform.isIOS) {
       notificationPermission = await checkNotificationPermissionIOS();
     }
+
+    soundEnable = await Common.getSoundEnabled();
+    notificationEnable = await Common.getNotificationsEnabled();
   }
 
   static Future<String> fetchWishUrl() async {
@@ -81,6 +85,10 @@ class Settings {
   static bool locationPermission = false;
 
   static bool notificationPermission = false;
+
+  static bool soundEnable = false;
+
+  static bool notificationEnable = false;
 
   static String version = "1.0.0";
 
