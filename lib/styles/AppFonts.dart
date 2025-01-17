@@ -2,6 +2,17 @@ import 'package:flutter/material.dart';
 import './AppColors.dart';
 
 class AppFonts {
+  // tutorial
+  static const tutorialCardTitle = TextStyle(
+      fontFamily: 'sf-pro-display-black',
+      fontSize: 23,
+      color: Color.fromARGB(255, 255, 255, 255));
+
+  static const tutorialCardText = TextStyle(
+      fontFamily: 'sf-pro-display-bold',
+      fontSize: 15,
+      color: Color.fromARGB(255, 255, 255, 255));
+
   // dialog
   static const dialogTitle = TextStyle(
       fontFamily: 'sf-pro-display-heavy',

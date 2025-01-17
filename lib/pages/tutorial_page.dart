@@ -54,7 +54,7 @@ class _TutorialPageState extends State<TutorialPage> {
           // Footer
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-            color: Colors.purple,
+            color: const Color.fromARGB(255, 0, 0, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -5,7 +5,7 @@ class Step3Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Step 3: You\'re ready to get started!',
+        'Vous pouvez aussi alerter en temps reel, et vous pouvez recevoir des alerts',
         style: TextStyle(
           color: Colors.white,
           fontSize: 24,

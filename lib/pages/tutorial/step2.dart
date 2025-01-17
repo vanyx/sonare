@@ -5,7 +5,7 @@ class Step2Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Step 2: Here\'s how to use the app.',
+        'Ya le mode exporer et sonare',
         style: TextStyle(
           color: Colors.white,
           fontSize: 24,
