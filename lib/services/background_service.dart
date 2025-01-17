@@ -31,6 +31,11 @@ class BackService {
     await _initializeNotifications();
     await Future.delayed(Duration(
         seconds: 2)); //necessite un delai avant l'envoi des premieres notif
+
+    // @TODO
+    print("test");
+    sendNotification("init");
+
     await _getCurrentLocation();
     await initFaunas();
 
@@ -59,7 +64,6 @@ class BackService {
           accuracy: LocationAccuracy.high,
         ),
       ).listen((Position position) {
-        print("pep");
         _currentPosition = LatLng(position.latitude, position.longitude);
         updateBackground();
       });
