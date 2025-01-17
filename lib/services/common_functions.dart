@@ -105,23 +105,34 @@ class Common {
 
   /// -------------------------- SharedPreferences --------------------------
 
-  // Sauvegarde des preferences
+  // Tutorial done
+  static Future<void> setTutorialDone(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(Settings.tutorialKey, enabled);
+  }
+
+  static Future<bool> getTutorialDone() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(Settings.tutorialKey) ?? true;
+  }
+
+  // Sound setting
   static Future<void> setSoundEnabled(bool enabled) async {
     Settings.soundEnable = enabled;
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(Settings.soundKey, enabled);
   }
 
+  static Future<bool> getSoundEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(Settings.soundKey) ?? true;
+  }
+
+  // Notification setting
   static Future<void> setNotificationsEnabled(bool enabled) async {
     Settings.notificationEnable = enabled;
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(Settings.notificationsKey, enabled);
-  }
-
-  // Recuperation des preferences
-  static Future<bool> getSoundEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(Settings.soundKey) ?? true; // valeur par defaut
   }
 
   static Future<bool> getNotificationsEnabled() async {

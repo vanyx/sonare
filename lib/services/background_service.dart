@@ -59,6 +59,7 @@ class BackService {
           accuracy: LocationAccuracy.high,
         ),
       ).listen((Position position) {
+        print("pep");
         _currentPosition = LatLng(position.latitude, position.longitude);
         updateBackground();
       });

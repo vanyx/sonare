@@ -112,6 +112,7 @@ class Settings {
 
   /**************** Notif sharedPreferences keys ****************/
 
+  static const String tutorialKey = 'tutorialDone';
   static const String soundKey = 'soundEnabled';
   static const String notificationsKey = 'notificationsEnabled';
 }
