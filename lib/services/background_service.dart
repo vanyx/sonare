@@ -24,9 +24,6 @@ class BackService {
 
   List<Fauna> _faunas = [];
 
-  // Constructeur
-  BackService() {}
-
   Future<void> onStart() async {
     if (!Settings.locationPermission) {
       return;
@@ -214,19 +211,19 @@ class BackService {
 
     try {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails(
-        'channel_id',
-        'channel_name',
-        channelDescription: 'channel_description',
-        importance: Importance.max,
-        priority: Priority.high,
-      );
+          AndroidNotificationDetails('channel_id', 'channel_name',
+              channelDescription: 'channel_description',
+              importance: Importance.max,
+              priority: Priority.high,
+              playSound: true,
+              sound: RawResourceAndroidNotificationSound('notification'));
 
       const DarwinNotificationDetails iosPlatformChannelSpecifics =
           DarwinNotificationDetails(
         presentAlert: true,
         presentBadge: true,
         presentSound: true,
+        sound: 'notification.aiff',
       );
 
       const NotificationDetails platformChannelSpecifics = NotificationDetails(

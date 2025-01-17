@@ -83,7 +83,7 @@ class SonarePageState extends State<SonarePage> {
   }
 
   void _onMapReady() {
-    initFish();
+    initFauna();
     _listeningToLocationChanges();
     _listenToCompass();
   }
@@ -106,7 +106,7 @@ class SonarePageState extends State<SonarePage> {
         setState(() {
           _currentPosition = LatLng(position.latitude, position.longitude);
         });
-        updateFishParams();
+        updateFaunaParams();
       }
     } catch (e) {}
   }
@@ -126,7 +126,7 @@ class SonarePageState extends State<SonarePage> {
 
           _animateMarker(_currentPosition!, newPosition);
 
-          updateFish();
+          updateFauna();
         }
       });
     } catch (e) {}
@@ -146,7 +146,7 @@ class SonarePageState extends State<SonarePage> {
             setState(() {
               _bearing = _heading;
             });
-            updateFishParams();
+            updateFaunaParams();
             _mapController.rotate(-_heading!);
           }
         }
@@ -154,7 +154,7 @@ class SonarePageState extends State<SonarePage> {
     } catch (e) {}
   }
 
-  void initFish() async {
+  void initFauna() async {
     if (_currentPosition == null) return;
 
     if (mounted) {
@@ -179,7 +179,7 @@ class SonarePageState extends State<SonarePage> {
       }
     }
 
-    updateFishParams();
+    updateFaunaParams();
 
     // Annonce sonore eventuelle du fauna le plus proche
     int firstMaxLevel =
@@ -189,7 +189,7 @@ class SonarePageState extends State<SonarePage> {
     }
   }
 
-  void updateFish() async {
+  void updateFauna() async {
     if (_currentPosition == null) return;
 
     // Distance min avant nouvel appel API en m
@@ -240,7 +240,7 @@ class SonarePageState extends State<SonarePage> {
       Common.playWarningByLevel(firstMaxLevel);
     }
 
-    updateFishParams();
+    updateFaunaParams();
   }
 
   bool existPositionInFauna(LatLng position) {
@@ -325,7 +325,7 @@ class SonarePageState extends State<SonarePage> {
           });
         }
 
-        updateFishParams();
+        updateFaunaParams();
 
         _mapController.move(interpolatedPosition, _zoomLevel);
       });
@@ -349,13 +349,13 @@ class SonarePageState extends State<SonarePage> {
             _bearing = interpolatedBearing;
           });
         }
-        updateFishParams();
+        updateFaunaParams();
         _mapController.rotate(-interpolatedBearing);
       });
     }
   }
 
-  void updateFishParams() {
+  void updateFaunaParams() {
     if (_currentPosition == null ||
         _bearing == null ||
         _center == null ||

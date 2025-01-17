@@ -11,11 +11,24 @@
 - Carte stylé
 - Possibilité de connecter un boitier
 
+## Ajouter son de notification
+
+1. Dans Xcode :
+Faire glisser le fichier audio (custom_sound.aiff) depuis le finder vers le dossier Runner dans la section Project Navigator (sur la gauche).
+Une boîte de dialogue s'affiche : cliquer sur OK.
+
+2. Ajouter le son dans le code :
+const DarwinNotificationDetails iosPlatformChannelSpecifics =
+  DarwinNotificationDetails(
+  ...
+  sound: 'custom_sound.aiff', // Nom du fichier sans chemin.
+);
+
 # TODO
 
 LAST !! :
+
 - mettre en pause l'app (exporer et sonare) si passage en background ?
-- modifier son notifications
 
 - changer icons / images : poisson, coquillage et images de selection
 
@@ -30,3 +43,5 @@ LAST !! :
 ## A tester sur android :
 - textes des autorisations
 - notif, sons, boussole, vibrations, webview qui fonctionnement correctement, son des notifs
+
+
