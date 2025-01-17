@@ -81,6 +81,8 @@ class Settings {
 
   /// -------------------------- SETTINGS DATA --------------------------
 
+  static bool appIsActive = true;
+
   static bool locationPermission = false;
 
   static bool notificationPermission = false;

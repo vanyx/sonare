@@ -121,12 +121,14 @@ class SonarePageState extends State<SonarePage> {
           accuracy: LocationAccuracy.high,
         ),
       ).listen((Position position) {
-        if (mounted) {
-          LatLng newPosition = LatLng(position.latitude, position.longitude);
+        // Ne fait rien si l'app est en arriere plan
+        if (Settings.appIsActive) {
+          if (mounted) {
+            _animateMarker(_currentPosition!,
+                LatLng(position.latitude, position.longitude));
 
-          _animateMarker(_currentPosition!, newPosition);
-
-          updateFauna();
+            updateFauna();
+          }
         }
       });
     } catch (e) {}

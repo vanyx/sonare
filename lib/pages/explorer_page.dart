@@ -103,22 +103,24 @@ class ExplorerPageState extends State<ExplorerPage> {
           accuracy: LocationAccuracy.high,
         ),
       ).listen((Position position) {
-        if (mounted) {
-          LatLng newPosition = LatLng(position.latitude, position.longitude);
+        // Ne fait rien si l'app est en arriere plan
+        if (Settings.appIsActive) {
+          if (mounted) {
+            animateMarker(_currentPosition!,
+                LatLng(position.latitude, position.longitude));
 
-          animateMarker(_currentPosition!, newPosition);
+            // Check automatiquement les fauna si l'user se deplace
+            if (_lastPosition == null ||
+                Common.calculateDistance(_lastPosition!, _currentPosition!) >
+                    distanceThreshold) {
+              if (mounted) {
+                setState(() {
+                  _lastPosition = _currentPosition;
+                });
+              }
 
-          // Check automatiquement les fauna si l'user se deplace
-          if (_lastPosition == null ||
-              Common.calculateDistance(_lastPosition!, _currentPosition!) >
-                  distanceThreshold) {
-            if (mounted) {
-              setState(() {
-                _lastPosition = _currentPosition;
-              });
+              _onMapChanged(_mapController.camera, false);
             }
-
-            _onMapChanged(_mapController.camera, false);
           }
         }
       });

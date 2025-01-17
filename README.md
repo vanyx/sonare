@@ -26,10 +26,6 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 
 # TODO
 
-LAST !! :
-
-- mettre en pause l'app (exporer et sonare) si passage en background ?
-
 - changer icons / images : poisson, coquillage et images de selection
 
 ## Quand j'aurais l'api

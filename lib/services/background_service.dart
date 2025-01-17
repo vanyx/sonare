@@ -31,7 +31,6 @@ class BackService {
     await _initializeNotifications();
     await Future.delayed(Duration(
         seconds: 2)); //necessite un delai avant l'envoi des premieres notif
-
     await _getCurrentLocation();
     await initFaunas();
 
@@ -84,12 +83,12 @@ class BackService {
       }
     }
 
-    // Annonce sonore eventuelle du fauna le plus proche si URGENT (level = 1)
+    // Annonce sonore eventuelle du fauna le plus proche si URGENT (level = 2)
     int firstMaxLevel =
         Common.getMaxLevel(_faunas.map((fauna) => fauna.level).toList());
 
     // Envoi notif
-    if (firstMaxLevel == 1 &&
+    if (firstMaxLevel == 2 &&
         Settings.notificationPermission &&
         Settings.notificationEnable) {
       notifyByLevel(firstMaxLevel);

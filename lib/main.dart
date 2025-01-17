@@ -35,8 +35,10 @@ class _SonareState extends State<Sonare> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
+      Settings.appIsActive = false;
       _backService.onStart();
     } else if (state == AppLifecycleState.resumed) {
+      Settings.appIsActive = true;
       _backService.stopService();
     }
   }
