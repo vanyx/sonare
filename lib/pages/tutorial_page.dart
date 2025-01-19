@@ -85,7 +85,7 @@ class _TutorialPageState extends State<TutorialPage> {
           ),
         ],
       ),
-      backgroundColor: Colors.purple,
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
     );
   }
 

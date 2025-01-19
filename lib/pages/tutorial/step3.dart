@@ -1,17 +1,94 @@
 import 'package:flutter/material.dart';
+import '../../styles/AppFonts.dart';
+import '../../styles/AppColors.dart';
 
 class Step3Widget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Vous pouvez aussi alerter en temps reel, et vous pouvez recevoir des alerts',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
+    double horizontalPadding = MediaQuery.of(context).size.width * 0.05;
+    double cardHeight = 100; // Taille fixe pour l'image
+
+    return Container(
+      color: Colors.black,
+      child: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, // Aligner à gauche
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Titre
+                Padding(
+                  padding: EdgeInsets.only(bottom: horizontalPadding),
+                  child: Text('Choisissez votre mode',
+                      style: AppFonts.tutorialCardTitle),
+                ),
+                // Première ligne
+                Padding(
+                  padding: EdgeInsets.only(bottom: horizontalPadding),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Image.asset(
+                          'assets/images/explorer.png',
+                          height: cardHeight,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Mode Explorer',
+                                style: AppFonts.tutorialCardSubtitle),
+                            SizedBox(height: 8.0),
+                            Text(
+                              'Découvrez de nouveaux horizons avec le mode explorer.',
+                              style: AppFonts.tutorialCardText,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Deuxième ligne
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: Image.asset(
+                        'assets/images/sonare.png',
+                        height: cardHeight,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(width: 16.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Mode Sonare',
+                              style: AppFonts.tutorialCardSubtitle),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'Plongez dans les profondeurs avec le mode sonare.',
+                            style: AppFonts.tutorialCardText,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
-        textAlign: TextAlign.center,
       ),
     );
   }

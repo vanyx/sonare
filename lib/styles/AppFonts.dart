@@ -8,10 +8,15 @@ class AppFonts {
       fontSize: 23,
       color: Color.fromARGB(255, 255, 255, 255));
 
-  static const tutorialCardText = TextStyle(
-      fontFamily: 'sf-pro-display-bold',
-      fontSize: 15,
+  static const tutorialCardSubtitle = TextStyle(
+      fontFamily: 'sf-pro-display-semibold',
+      fontSize: 17,
       color: Color.fromARGB(255, 255, 255, 255));
+
+  static const tutorialCardText = TextStyle(
+      fontFamily: 'sf-pro-display-semibold',
+      fontSize: 14,
+      color: AppColors.textOverCard);
 
   // dialog
   static const dialogTitle = TextStyle(
