@@ -29,6 +29,9 @@ class AppColors {
   // Petit texte gris par dessus le noir
   static const Color legendText = Color.fromARGB(255, 142, 142, 147);
 
+  // Gris sous les icons du report sheet
+  static const Color reportGreyBackground = Color.fromARGB(255, 61, 71, 80);
+
   static const Color iconBackgroundFish = Color.fromARGB(255, 0, 176, 236);
   static const Color iconBackgroundShell = Color.fromARGB(255, 254, 201, 0);
 }

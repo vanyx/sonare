@@ -97,7 +97,7 @@ class _ReportSheetState extends State<ReportSheet> {
                                   width: circleSize,
                                   height: circleSize,
                                   decoration: BoxDecoration(
-                                    color: AppColors.button,
+                                    color: AppColors.reportGreyBackground,
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: selectedCircle == 0
@@ -138,7 +138,7 @@ class _ReportSheetState extends State<ReportSheet> {
                                   width: circleSize,
                                   height: circleSize,
                                   decoration: BoxDecoration(
-                                    color: AppColors.button,
+                                    color: AppColors.reportGreyBackground,
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: selectedCircle == 1

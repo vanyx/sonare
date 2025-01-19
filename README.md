@@ -29,7 +29,7 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 BACKGORUND NE FONCTIONNE PAS EN RELEASE ?????
 => sendNotif au debut du background :
 on ne recoit pas, mais quand on reouvre l'appli on la recoit
-=> nececissité d'avoir un BackgroundServie
+=> nececissité d'avoir un BackgroundServie ?
 
 => utiliser background service : Fais quelque chose que si Setting.isActive est true
 à tester...

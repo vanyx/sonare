@@ -86,8 +86,8 @@ class LexiquePage extends StatelessWidget {
                             ),
                             child: Center(
                               child: SizedBox(
-                                width: 40 * 0.75,
-                                height: 40 * 0.75,
+                                width: 40 * 0.8,
+                                height: 40 * 0.8,
                                 child: FittedBox(
                                   fit: BoxFit.contain,
                                   child: Image.asset(item['image'] ?? ''),
