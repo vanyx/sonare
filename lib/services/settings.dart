@@ -8,15 +8,12 @@ class Settings {
 
   static Future<void> initialize() async {
     wishUrl = await fetchWishUrl();
-
     soundEnable = await Common.getSoundEnabled();
     notificationEnable = await Common.getNotificationsEnabled();
   }
 
   static Future<void> requestLocationPermission() async {
-    print('je demande');
     locationPermission = await checkLocationPermission();
-    print(locationPermission);
   }
 
   static Future<void> requestNotificationPermission() async {
@@ -35,12 +32,9 @@ class Settings {
   }
 
   static Future<bool> checkLocationPermission() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    print(permission);
+    LocationPermission permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      if (permission == LocationPermission.denied) {
-        return false; // Permission refusee
-      }
+      return false; // Permission refusee
     }
 
     if (permission == LocationPermission.deniedForever) {
@@ -101,7 +95,10 @@ class Settings {
 
   static String termsUrl = 'https://fr.wikipedia.org/wiki/Lorem_ipsum';
 
-  static String mapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  // static String mapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+  static String mapUrl =
+      'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF0aGlldWd1aWxsb3RpbnNlbnNleW91IiwiYSI6ImNsNjY5aGI1ZzBhamszamw1aTkwaTdqN2kifQ.YJ0tcy2apJOnV0TYXbBigA';
 
   static String wishUrl = '';
 

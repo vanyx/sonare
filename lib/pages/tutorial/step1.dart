@@ -12,7 +12,7 @@ class Step1Widget extends StatefulWidget {
 }
 
 class _Step1WidgetState extends State<Step1Widget> {
-  String _fullText = 'Naviguez en toute tranquillité.';
+  String _fullText = 'Naviguez en toute tranquillité';
   String _currentText = '';
   int _currentIndex = 0;
   Duration _typingDelay = Duration(milliseconds: 100);
@@ -47,7 +47,8 @@ class _Step1WidgetState extends State<Step1Widget> {
 
   void _startTypingEffect() {
     Future.delayed(_typingDelay, () {
-      if (_currentIndex < _fullText.length) {
+      if (_currentIndex < _fullText.length - 1) {
+        // -1 pour ne pas animer la derniere lettre
         if (mounted) {
           setState(() {
             _currentText += _fullText[_currentIndex];
@@ -57,12 +58,21 @@ class _Step1WidgetState extends State<Step1Widget> {
         _startTypingEffect();
       } else {
         // Une fois le texte terminé
+
+        if (mounted) {
+          // ajoute la derniere lettre
+          setState(() {
+            _currentText += _fullText[_currentIndex];
+            _currentIndex++;
+          });
+        }
+
         if (mounted) {
           setState(() {
             _showCursor = false;
           });
         }
-        widget.onAnimationComplete(); // Appel de la callback
+        widget.onAnimationComplete(); // Appel du callback
       }
     });
   }
@@ -88,6 +98,10 @@ class _Step1WidgetState extends State<Step1Widget> {
                         fontFamily: 'sf-pro-display-ultralight',
                         fontSize: 25,
                         color: Color.fromARGB(255, 255, 255, 255))),
+              Text(
+                ".",
+                style: AppFonts.tutorialCardTitle,
+              ),
             ],
           ),
         ),
