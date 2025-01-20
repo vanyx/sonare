@@ -46,7 +46,7 @@ class _Step1WidgetState extends State<Step1Widget> {
   }
 
   void _startTypingEffect() {
-    Future.delayed(_typingDelay, () {
+    Future.delayed(_typingDelay, () async {
       if (_currentIndex < _fullText.length - 1) {
         // -1 pour ne pas animer la dernière lettre
         if (mounted) {
@@ -59,6 +59,7 @@ class _Step1WidgetState extends State<Step1Widget> {
       } else {
         // Une fois le texte terminé
         if (mounted) {
+          // affiche la derniere lettre
           setState(() {
             _currentText += _fullText[_currentIndex];
             _currentIndex++;
@@ -70,6 +71,7 @@ class _Step1WidgetState extends State<Step1Widget> {
             _showCursor = false;
           });
         }
+        await Future.delayed(Duration(milliseconds: 1500));
         widget.onAnimationComplete(); // Appel du callback
       }
     });

@@ -25,9 +25,8 @@ class Step2Widget extends StatelessWidget {
                   topRight: Radius.circular(15.0),
                 ),
                 child: Image.asset(
-                  'assets/images/explorer.png',
+                  'assets/images/tutomap.png',
                   fit: BoxFit.cover,
-                  height: MediaQuery.of(context).size.height * 0.25,
                   width: double.infinity,
                 ),
               ),

@@ -30,8 +30,8 @@ class ExplorerPageState extends State<ExplorerPage> {
   /// ----------- Sizes -----------
 
   double _zoomThreshold = 12.5;
-  double _markerSize = 35;
-  double _miniMarkerSize = 11;
+  double _markerSize = 37;
+  double _miniMarkerSize = 12;
 
   /// -----------------------------
 
