@@ -12,7 +12,7 @@ class Step1Widget extends StatefulWidget {
 }
 
 class _Step1WidgetState extends State<Step1Widget> {
-  String _fullText = 'Naviguez en toute tranquillité';
+  String _fullText = 'Naviguez sereinement';
   String _currentText = '';
   int _currentIndex = 0;
   Duration _typingDelay = Duration(milliseconds: 100);
@@ -48,7 +48,7 @@ class _Step1WidgetState extends State<Step1Widget> {
   void _startTypingEffect() {
     Future.delayed(_typingDelay, () {
       if (_currentIndex < _fullText.length - 1) {
-        // -1 pour ne pas animer la derniere lettre
+        // -1 pour ne pas animer la dernière lettre
         if (mounted) {
           setState(() {
             _currentText += _fullText[_currentIndex];
@@ -58,9 +58,7 @@ class _Step1WidgetState extends State<Step1Widget> {
         _startTypingEffect();
       } else {
         // Une fois le texte terminé
-
         if (mounted) {
-          // ajoute la derniere lettre
           setState(() {
             _currentText += _fullText[_currentIndex];
             _currentIndex++;
@@ -84,25 +82,30 @@ class _Step1WidgetState extends State<Step1Widget> {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _currentText,
-                style: AppFonts.tutorialCardTitle,
-              ),
-              if (_showCursor &&
-                  (_startTyping || _currentIndex < _fullText.length))
-                Text('|',
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: _currentText,
+                  style: AppFonts.tutorialCardTitle,
+                ),
+                if (_showCursor &&
+                    (_startTyping || _currentIndex < _fullText.length))
+                  TextSpan(
+                    text: '|',
                     style: TextStyle(
-                        fontFamily: 'sf-pro-display-ultralight',
-                        fontSize: 25,
-                        color: Color.fromARGB(255, 255, 255, 255))),
-              Text(
-                ".",
-                style: AppFonts.tutorialCardTitle,
-              ),
-            ],
+                      fontFamily: 'sf-pro-display-ultralight',
+                      fontSize: 25,
+                      color: Color.fromARGB(255, 255, 255, 255),
+                    ),
+                  ),
+                TextSpan(
+                  text: '.',
+                  style: AppFonts.tutorialCardTitle,
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center, // Centre tout le texte
           ),
         ),
       ),

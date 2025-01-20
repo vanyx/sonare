@@ -6,7 +6,8 @@ class Step3Widget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double horizontalPadding = MediaQuery.of(context).size.width * 0.05;
-    double cardHeight = 110; // Taille fixe pour l'image
+    double cardHeight =
+        MediaQuery.of(context).size.width * 0.25; // Taille fixe pour l'image
 
     return Container(
       color: Colors.black,
@@ -21,7 +22,7 @@ class Step3Widget extends StatelessWidget {
                 // Titre
                 Padding(
                   padding: EdgeInsets.only(bottom: horizontalPadding),
-                  child: Text('Choisissez entre 2 modes.',
+                  child: Text('Adaptez votre navigation.',
                       style: AppFonts.tutorialCardTitle),
                 ),
                 // Première ligne
@@ -47,7 +48,7 @@ class Step3Widget extends StatelessWidget {
                                 style: AppFonts.tutorialCardSubtitle),
                             SizedBox(height: 8.0),
                             Text(
-                              'Découvrez de nouveaux horizons avec le mode explorer.',
+                              'Imaginé pour vous aider à repérer les zones sensibles.',
                               style: AppFonts.tutorialCardText,
                             ),
                           ],
@@ -76,7 +77,7 @@ class Step3Widget extends StatelessWidget {
                           Text('Sonare', style: AppFonts.tutorialCardSubtitle),
                           SizedBox(height: 8.0),
                           Text(
-                            'Plongez dans les profondeurs avec le mode sonare.',
+                            'Un scan à 360° qui dévoile les dangers autour de vous, avant même de les voir.',
                             style: AppFonts.tutorialCardText,
                           ),
                         ],

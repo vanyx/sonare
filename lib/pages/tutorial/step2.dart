@@ -39,7 +39,7 @@ class Step2Widget extends StatelessWidget {
                       CrossAxisAlignment.start, // Alignement global
                   children: [
                     Text(
-                      'Explorez le monde.',
+                      'Anticipez chaque surprise.',
                       style: AppFonts.tutorialCardTitle,
                       textAlign: TextAlign.left, // Alignement du titre à gauche
                     ),
@@ -52,16 +52,7 @@ class Step2Widget extends StatelessWidget {
                         children: [
                           TextSpan(
                             text:
-                                'Soyez alerté et alertez de présences sous-marines autour de vous, qu\'elles soient ',
-                          ),
-                          TextSpan(
-                            text: 'mobiles',
-                            style: AppFonts.tutorialCardTextBold.copyWith(
-                              color: AppColors.iconBackgroundFish,
-                            ),
-                          ),
-                          TextSpan(
-                            text: ' ou ',
+                                'Recevez des alertes en temps réel pour rester informé des présences autour de vous, qu’elles soient ',
                           ),
                           TextSpan(
                             text: 'fixes',
@@ -70,7 +61,17 @@ class Step2Widget extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text: '.',
+                            text: ' ou ',
+                          ),
+                          TextSpan(
+                            text: 'mobiles',
+                            style: AppFonts.tutorialCardTextBold.copyWith(
+                              color: AppColors.iconBackgroundFish,
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                '. Contribuez en alertant la communauté et gardez ainsi une longueur d’avance.',
                           ),
                         ],
                       ),

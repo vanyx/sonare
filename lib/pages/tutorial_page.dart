@@ -23,23 +23,24 @@ class _TutorialPageState extends State<TutorialPage> {
 
   void _onNextPressed() async {
     if (_currentPage < 2) {
+      await requestPermissions();
       _pageController.nextPage(
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-      await requestNotificationPerm();
     } else {
       widget.onTutorialCompleted();
     }
   }
 
-  Future<void> requestNotificationPerm() async {
+  Future<void> requestPermissions() async {
     if (_currentPage == 1 && !_locationRequested) {
       setState(() {
         _locationRequested = true;
       });
-      Settings.requestLocationPermission(); //demander location permission
-      Settings.requestNotificationPermission(); // demande de permission notif
+      await Settings.requestLocationPermission(); //demander location permission
+      await Settings
+          .requestNotificationPermission(); // demande de permission notif
     }
   }
 
@@ -64,10 +65,10 @@ class _TutorialPageState extends State<TutorialPage> {
                   ? AlwaysScrollableScrollPhysics()
                   : NeverScrollableScrollPhysics(),
               onPageChanged: (index) {
+                requestPermissions();
                 setState(() {
                   _currentPage = index;
                 });
-                requestNotificationPerm();
               },
               children: [
                 Step1Widget(onAnimationComplete: _onAnimationComplete),
