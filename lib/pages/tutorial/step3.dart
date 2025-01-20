@@ -6,7 +6,7 @@ class Step3Widget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double horizontalPadding = MediaQuery.of(context).size.width * 0.05;
-    double cardHeight = 100; // Taille fixe pour l'image
+    double cardHeight = 110; // Taille fixe pour l'image
 
     return Container(
       color: Colors.black,
@@ -43,7 +43,7 @@ class Step3Widget extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Mode Explorer',
+                            Text('Explorer',
                                 style: AppFonts.tutorialCardSubtitle),
                             SizedBox(height: 8.0),
                             Text(
@@ -73,8 +73,7 @@ class Step3Widget extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Mode Sonare',
-                              style: AppFonts.tutorialCardSubtitle),
+                          Text('Sonare', style: AppFonts.tutorialCardSubtitle),
                           SizedBox(height: 8.0),
                           Text(
                             'Plongez dans les profondeurs avec le mode sonare.',

@@ -39,7 +39,7 @@ class Step2Widget extends StatelessWidget {
                       CrossAxisAlignment.start, // Alignement global
                   children: [
                     Text(
-                      'Explorez le monde',
+                      'Explorez le monde.',
                       style: AppFonts.tutorialCardTitle,
                       textAlign: TextAlign.left, // Alignement du titre à gauche
                     ),
@@ -52,10 +52,10 @@ class Step2Widget extends StatelessWidget {
                         children: [
                           TextSpan(
                             text:
-                                'Soyez alerter et alertez de présence sous marine autour de vous, qu\'elles soient ',
+                                'Soyez alerté et alertez de présences sous-marines autour de vous, qu\'elles soient ',
                           ),
                           TextSpan(
-                            text: 'mobile',
+                            text: 'mobiles',
                             style: AppFonts.tutorialCardTextBold.copyWith(
                               color: AppColors.iconBackgroundFish,
                             ),
@@ -64,7 +64,7 @@ class Step2Widget extends StatelessWidget {
                             text: ' ou ',
                           ),
                           TextSpan(
-                            text: 'fixe',
+                            text: 'fixes',
                             style: AppFonts.tutorialCardTextBold.copyWith(
                               color: AppColors.iconBackgroundShell,
                             ),
