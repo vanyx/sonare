@@ -1,8 +1,6 @@
 import 'package:Sonare/services/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../styles/AppColors.dart';
 import '../../widgets/IosSwitch.dart';
 import '../../styles/AppFonts.dart';

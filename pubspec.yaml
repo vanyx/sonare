@@ -53,6 +53,9 @@ flutter:
     - assets/images/logo/
     - assets/sounds/
   fonts:
+    - family: sf-pro-display-ultralight
+      fonts:
+        - asset: assets/fonts/sf-pro-display/sf-pro-display-ultralight.otf
     - family: sf-pro-display-light
       fonts:
         - asset: assets/fonts/sf-pro-display/sf-pro-display-light.otf
