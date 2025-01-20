@@ -1,3 +1,5 @@
+import 'package:Sonare/styles/AppColors.dart';
+import 'package:Sonare/styles/AppFonts.dart';
 import 'package:flutter/material.dart';
 import 'tutorial/step1.dart';
 import 'tutorial/step2.dart';
@@ -35,6 +37,8 @@ class _TutorialPageState extends State<TutorialPage> {
 
   @override
   Widget build(BuildContext context) {
+    double horizontalPadding = MediaQuery.of(context).size.width * 0.05;
+
     return Scaffold(
       body: Column(
         children: [
@@ -53,7 +57,9 @@ class _TutorialPageState extends State<TutorialPage> {
 
           // Footer
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding * 1.5,
+                vertical: horizontalPadding * 0.8),
             color: const Color.fromARGB(255, 0, 0, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,23 +69,31 @@ class _TutorialPageState extends State<TutorialPage> {
                     _pages.length,
                     (index) => Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.0),
-                      width: 10,
-                      height: 10,
+                      width: _currentPage == index ? 13 : 8,
+                      height: 8,
                       decoration: BoxDecoration(
                         color: _currentPage == index
                             ? Colors.white
-                            : Colors.grey.shade400,
-                        shape: BoxShape.circle,
+                            : AppColors.button,
+                        borderRadius: BorderRadius.circular(50), // Bord arrondi
                       ),
                     ),
                   ),
                 ),
                 ElevatedButton(
                   onPressed: _onNextPressed,
-                  child: Text(_currentPage < _pages.length - 1
-                      ? 'Suivant'
-                      : 'Terminer'),
-                ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.overBackground,
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Bord arrondi
+                    ),
+                  ),
+                  child: Text(
+                    _currentPage < _pages.length - 1 ? 'Suivant' : 'Terminer',
+                    style: AppFonts.tutorialButton,
+                  ),
+                )
               ],
             ),
           ),

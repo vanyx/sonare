@@ -21,7 +21,7 @@ class Step3Widget extends StatelessWidget {
                 // Titre
                 Padding(
                   padding: EdgeInsets.only(bottom: horizontalPadding),
-                  child: Text('Choisissez votre mode',
+                  child: Text('Choisissez entre 2 modes.',
                       style: AppFonts.tutorialCardTitle),
                 ),
                 // Première ligne

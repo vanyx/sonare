@@ -34,6 +34,10 @@ on ne recoit pas, mais quand on reouvre l'appli on la recoit
 => utiliser background service : Fais quelque chose que si Setting.isActive est true
 à tester...
 
+=> demander au chat un exemple simple de bckgService, puis ensuite rajouter qu'il s'active/desactive quand
+on passe ou non en arriere plan.
+
+
 - changer icons / images : poisson, coquillage et images de selection
 
 ## Quand j'aurais l'api

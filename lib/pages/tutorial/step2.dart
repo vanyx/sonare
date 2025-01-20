@@ -27,8 +27,7 @@ class Step2Widget extends StatelessWidget {
                 child: Image.asset(
                   'assets/images/explorer.png',
                   fit: BoxFit.cover,
-                  height: MediaQuery.of(context).size.height *
-                      0.25, // Ajuste la hauteur
+                  height: MediaQuery.of(context).size.height * 0.25,
                   width: double.infinity,
                 ),
               ),
@@ -36,18 +35,45 @@ class Step2Widget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Alignement global
                   children: [
                     Text(
                       'Explorez le monde',
                       style: AppFonts.tutorialCardTitle,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left, // Alignement du titre à gauche
                     ),
                     SizedBox(height: 8.0),
-                    Text(
-                      'Sur la map, mettre en gros les pointeurs fish et shell. Texte : soyez alerter et alertez de présence sous marine autour de vous, quelle soient mobile (fish) ou fixe (coquillage)',
-                      style: AppFonts.tutorialCardText,
-                      textAlign: TextAlign.center,
+                    RichText(
+                      textAlign: TextAlign
+                          .left, // Alignement du texte principal à gauche
+                      text: TextSpan(
+                        style: AppFonts.tutorialCardText,
+                        children: [
+                          TextSpan(
+                            text:
+                                'Soyez alerter et alertez de présence sous marine autour de vous, qu\'elles soient ',
+                          ),
+                          TextSpan(
+                            text: 'mobile',
+                            style: AppFonts.tutorialCardTextBold.copyWith(
+                              color: AppColors.iconBackgroundFish,
+                            ),
+                          ),
+                          TextSpan(
+                            text: ' ou ',
+                          ),
+                          TextSpan(
+                            text: 'fixe',
+                            style: AppFonts.tutorialCardTextBold.copyWith(
+                              color: AppColors.iconBackgroundShell,
+                            ),
+                          ),
+                          TextSpan(
+                            text: '.',
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
