@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import '../../styles/AppFonts.dart';
 
 class Step1Widget extends StatefulWidget {
+  final VoidCallback
+      onAnimationComplete; // Callback pour informer que l'animation est terminée
+
+  Step1Widget({required this.onAnimationComplete});
+
   @override
   _Step1WidgetState createState() => _Step1WidgetState();
 }
@@ -24,30 +29,40 @@ class _Step1WidgetState extends State<Step1Widget> {
     for (int i = 0; i < 4; i++) {
       // la barre clignote 4 fois
       await Future.delayed(Duration(milliseconds: 500));
+      if (mounted) {
+        setState(() {
+          _showCursor = !_showCursor;
+        });
+      }
+    }
+    if (mounted) {
       setState(() {
-        _showCursor = !_showCursor;
+        _startTyping = true;
+        _showCursor = true;
       });
     }
-    setState(() {
-      _startTyping = true;
-      _showCursor = true;
-    });
+
     _startTypingEffect();
   }
 
   void _startTypingEffect() {
     Future.delayed(_typingDelay, () {
       if (_currentIndex < _fullText.length) {
-        setState(() {
-          _currentText += _fullText[_currentIndex];
-          _currentIndex++;
-        });
+        if (mounted) {
+          setState(() {
+            _currentText += _fullText[_currentIndex];
+            _currentIndex++;
+          });
+        }
         _startTypingEffect();
       } else {
-        // Une fois le texte terminé, cache la barre
-        setState(() {
-          _showCursor = false;
-        });
+        // Une fois le texte terminé
+        if (mounted) {
+          setState(() {
+            _showCursor = false;
+          });
+        }
+        widget.onAnimationComplete(); // Appel de la callback
       }
     });
   }

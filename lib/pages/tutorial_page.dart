@@ -1,9 +1,9 @@
-import 'package:Sonare/styles/AppColors.dart';
-import 'package:Sonare/styles/AppFonts.dart';
 import 'package:flutter/material.dart';
 import 'tutorial/step1.dart';
 import 'tutorial/step2.dart';
 import 'tutorial/step3.dart';
+import '../../styles/AppColors.dart';
+import '../../styles/AppFonts.dart';
 
 class TutorialPage extends StatefulWidget {
   final VoidCallback onTutorialCompleted;
@@ -17,15 +17,10 @@ class TutorialPage extends StatefulWidget {
 class _TutorialPageState extends State<TutorialPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-
-  final List<Widget> _pages = [
-    Step1Widget(),
-    Step2Widget(),
-    Step3Widget(),
-  ];
+  bool _isStep1Complete = false;
 
   void _onNextPressed() {
-    if (_currentPage < _pages.length - 1) {
+    if (_currentPage < 2) {
       _pageController.nextPage(
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -35,6 +30,12 @@ class _TutorialPageState extends State<TutorialPage> {
     }
   }
 
+  void _onAnimationComplete() {
+    setState(() {
+      _isStep1Complete = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double horizontalPadding = MediaQuery.of(context).size.width * 0.05;
@@ -42,16 +43,23 @@ class _TutorialPageState extends State<TutorialPage> {
     return Scaffold(
       body: Column(
         children: [
-          // Contenu principal
+          // Main
           Expanded(
             child: PageView(
               controller: _pageController,
+              physics: _isStep1Complete
+                  ? AlwaysScrollableScrollPhysics()
+                  : NeverScrollableScrollPhysics(),
               onPageChanged: (index) {
                 setState(() {
                   _currentPage = index;
                 });
               },
-              children: _pages,
+              children: [
+                Step1Widget(onAnimationComplete: _onAnimationComplete),
+                Step2Widget(),
+                Step3Widget(),
+              ],
             ),
           ),
 
@@ -61,40 +69,45 @@ class _TutorialPageState extends State<TutorialPage> {
                 horizontal: horizontalPadding * 1.5,
                 vertical: horizontalPadding * 0.8),
             color: const Color.fromARGB(255, 0, 0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: List.generate(
-                    _pages.length,
-                    (index) => Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.0),
-                      width: _currentPage == index ? 13 : 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: _currentPage == index
-                            ? Colors.white
-                            : AppColors.button,
-                        borderRadius: BorderRadius.circular(50), // Bord arrondi
+            child: AnimatedOpacity(
+              opacity: _isStep1Complete ? 1.0 : 0.0,
+              duration: Duration(milliseconds: 300),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: List.generate(
+                      3,
+                      (index) => Container(
+                        margin: EdgeInsets.symmetric(horizontal: 4.0),
+                        width: _currentPage == index ? 13 : 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: _currentPage == index
+                              ? Colors.white
+                              : AppColors.button,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: _onNextPressed,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.overBackground,
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Bord arrondi
+                  ElevatedButton(
+                    onPressed: _isStep1Complete ? _onNextPressed : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.overBackground,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      _currentPage < 2 ? 'Suivant' : 'Terminer',
+                      style: AppFonts.tutorialButton,
                     ),
                   ),
-                  child: Text(
-                    _currentPage < _pages.length - 1 ? 'Suivant' : 'Terminer',
-                    style: AppFonts.tutorialButton,
-                  ),
-                )
-              ],
+                ],
+              ),
             ),
           ),
         ],
