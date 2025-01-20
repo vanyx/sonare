@@ -88,7 +88,7 @@ class _TutorialCheckerState extends State<TutorialChecker> {
     );
   }
 
-  // callBack appelé par TutorialPage quand le tuto est terminé
+  // callback appelé par TutorialPage quand le tuto est terminé
   void _onTutorialCompleted() async {
     await Common.setTutorialDone(true);
     _isTutorialDone.value = true;

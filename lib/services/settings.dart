@@ -9,16 +9,22 @@ class Settings {
   static Future<void> initialize() async {
     wishUrl = await fetchWishUrl();
 
-    locationPermission = await checkLocationPermission();
+    soundEnable = await Common.getSoundEnabled();
+    notificationEnable = await Common.getNotificationsEnabled();
+  }
 
+  static Future<void> requestLocationPermission() async {
+    print('je demande');
+    locationPermission = await checkLocationPermission();
+    print(locationPermission);
+  }
+
+  static Future<void> requestNotificationPermission() async {
     if (Platform.isAndroid) {
       notificationPermission = await checkNotificationPermissionAndroid();
     } else if (Platform.isIOS) {
       notificationPermission = await checkNotificationPermissionIOS();
     }
-
-    soundEnable = await Common.getSoundEnabled();
-    notificationEnable = await Common.getNotificationsEnabled();
   }
 
   static Future<String> fetchWishUrl() async {
@@ -30,7 +36,7 @@ class Settings {
 
   static Future<bool> checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
-
+    print(permission);
     if (permission == LocationPermission.denied) {
       if (permission == LocationPermission.denied) {
         return false; // Permission refusee

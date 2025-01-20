@@ -4,6 +4,7 @@ import 'tutorial/step2.dart';
 import 'tutorial/step3.dart';
 import '../../styles/AppColors.dart';
 import '../../styles/AppFonts.dart';
+import '../services/settings.dart';
 
 class TutorialPage extends StatefulWidget {
   final VoidCallback onTutorialCompleted;
@@ -18,15 +19,27 @@ class _TutorialPageState extends State<TutorialPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   bool _isStep1Complete = false;
+  bool _locationRequested = false;
 
-  void _onNextPressed() {
+  void _onNextPressed() async {
     if (_currentPage < 2) {
       _pageController.nextPage(
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
+      await requestNotificationPerm();
     } else {
       widget.onTutorialCompleted();
+    }
+  }
+
+  Future<void> requestNotificationPerm() async {
+    if (_currentPage == 1 && !_locationRequested) {
+      setState(() {
+        _locationRequested = true;
+      });
+      Settings.requestLocationPermission(); //demander location permission
+      Settings.requestNotificationPermission(); // demande de permission notif
     }
   }
 
@@ -54,6 +67,7 @@ class _TutorialPageState extends State<TutorialPage> {
                 setState(() {
                   _currentPage = index;
                 });
+                requestNotificationPerm();
               },
               children: [
                 Step1Widget(onAnimationComplete: _onAnimationComplete),
@@ -80,7 +94,7 @@ class _TutorialPageState extends State<TutorialPage> {
                       3,
                       (index) => Container(
                         margin: EdgeInsets.symmetric(horizontal: 4.0),
-                        width: _currentPage == index ? 13 : 8,
+                        width: _currentPage == index ? 8 : 8,
                         height: 8,
                         decoration: BoxDecoration(
                           color: _currentPage == index
