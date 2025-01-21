@@ -26,8 +26,7 @@ class _Step1WidgetState extends State<Step1Widget> {
   }
 
   void _startCursorBlinking() async {
-    for (int i = 0; i < 4; i++) {
-      // la barre clignote 4 fois
+    for (int i = 0; i < 6; i++) {
       await Future.delayed(Duration(milliseconds: 500));
       if (mounted) {
         setState(() {
@@ -71,7 +70,7 @@ class _Step1WidgetState extends State<Step1Widget> {
             _showCursor = false;
           });
         }
-        await Future.delayed(Duration(milliseconds: 1500));
+        await Future.delayed(Duration(milliseconds: 1800));
         widget.onAnimationComplete(); // Appel du callback
       }
     });

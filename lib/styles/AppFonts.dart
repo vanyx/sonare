@@ -24,7 +24,7 @@ class AppFonts {
       color: AppColors.textOverCard);
 
   static const tutorialRowTitle = TextStyle(
-      fontFamily: 'sf-pro-display-bold',
+      fontFamily: 'sf-pro-display-heavy',
       fontSize: 17,
       color: Color.fromARGB(255, 255, 255, 255));
 

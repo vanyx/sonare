@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'tutorial/step1.dart';
 import 'tutorial/step2.dart';
 import 'tutorial/step3.dart';
@@ -86,10 +87,14 @@ class _TutorialPageState extends State<TutorialPage> {
               opacity: _isStep1Complete ? 1.0 : 0.0,
               duration: Duration(milliseconds: 400),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Espace vide à gauche
+                  Expanded(
+                    child: SizedBox(),
+                  ),
                   // 3 points
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: List.generate(
                       3,
                       (index) => Container(
@@ -98,27 +103,43 @@ class _TutorialPageState extends State<TutorialPage> {
                         height: 8,
                         decoration: BoxDecoration(
                           color: _currentPage == index
-                              ? Colors.white
+                              ? AppColors.sonareFlashi
                               : AppColors.button,
                           borderRadius: BorderRadius.circular(50),
                         ),
                       ),
                     ),
                   ),
-                  // bouton
-                  ElevatedButton(
-                    onPressed: _isStep1Complete ? _onNextPressed : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.overBackground,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text(
-                      _currentPage < 2 ? 'Suivant' : 'Terminer',
-                      style: AppFonts.tutorialButton,
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: _currentPage < 2
+                          ? IconButton(
+                              icon: Icon(
+                                CupertinoIcons.chevron_forward,
+                                color: AppColors.sonareFlashi,
+                                size: 30.0,
+                              ),
+                              onPressed: () {
+                                if (_isStep1Complete) _onNextPressed();
+                              },
+                            )
+                          : ElevatedButton(
+                              onPressed:
+                                  _isStep1Complete ? _onNextPressed : null,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.overBackground,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: Text(
+                                'Terminer',
+                                style: AppFonts.tutorialButton,
+                              ),
+                            ),
                     ),
                   ),
                 ],
