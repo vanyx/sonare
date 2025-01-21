@@ -23,24 +23,24 @@ class _TutorialPageState extends State<TutorialPage> {
 
   void _onNextPressed() async {
     if (_currentPage < 2) {
-      await requestPermissions();
       _pageController.nextPage(
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     } else {
+      await requestPermissions();
       widget.onTutorialCompleted();
     }
   }
 
   Future<void> requestPermissions() async {
-    if (_currentPage == 1 && !_locationRequested) {
+    if (_currentPage == 2 && !_locationRequested) {
       setState(() {
         _locationRequested = true;
       });
       await Settings.requestLocationPermission(); //demander location permission
       await Settings
-          .requestNotificationPermission(); // demande de permission notif
+          .requestNotificationPermission(); // demande notif permission
     }
   }
 
@@ -57,7 +57,7 @@ class _TutorialPageState extends State<TutorialPage> {
     return Scaffold(
       body: Column(
         children: [
-          // Main
+          // Contenu
           Expanded(
             child: PageView(
               controller: _pageController,
@@ -65,7 +65,6 @@ class _TutorialPageState extends State<TutorialPage> {
                   ? AlwaysScrollableScrollPhysics()
                   : NeverScrollableScrollPhysics(),
               onPageChanged: (index) {
-                requestPermissions();
                 setState(() {
                   _currentPage = index;
                 });
@@ -77,25 +76,25 @@ class _TutorialPageState extends State<TutorialPage> {
               ],
             ),
           ),
-
           // Footer
           Container(
             padding: EdgeInsets.symmetric(
                 horizontal: horizontalPadding * 1.5,
-                vertical: horizontalPadding * 0.8),
+                vertical: horizontalPadding),
             color: const Color.fromARGB(255, 0, 0, 0),
             child: AnimatedOpacity(
               opacity: _isStep1Complete ? 1.0 : 0.0,
-              duration: Duration(milliseconds: 300),
+              duration: Duration(milliseconds: 400),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // 3 points
                   Row(
                     children: List.generate(
                       3,
                       (index) => Container(
                         margin: EdgeInsets.symmetric(horizontal: 4.0),
-                        width: _currentPage == index ? 8 : 8,
+                        width: 8,
                         height: 8,
                         decoration: BoxDecoration(
                           color: _currentPage == index
@@ -106,6 +105,7 @@ class _TutorialPageState extends State<TutorialPage> {
                       ),
                     ),
                   ),
+                  // bouton
                   ElevatedButton(
                     onPressed: _isStep1Complete ? _onNextPressed : null,
                     style: ElevatedButton.styleFrom(

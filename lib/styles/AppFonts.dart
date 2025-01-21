@@ -3,31 +3,35 @@ import './AppColors.dart';
 
 class AppFonts {
   // tutorial
-
   static const tutorialButton = TextStyle(
       fontFamily: 'sf-pro-display-black',
       fontSize: 16,
       color: AppColors.sonareFlashi);
 
-  static const tutorialCardTitle = TextStyle(
-      fontFamily: 'sf-pro-display-black',
+  static const tutorialTypeWriter = TextStyle(
+      fontFamily: 'sf-pro-display-bold',
       fontSize: 22,
       color: Color.fromARGB(255, 255, 255, 255));
 
-  static const tutorialCardSubtitle = TextStyle(
-      fontFamily: 'sf-pro-display-semibold',
-      fontSize: 17,
+  static const tutorialCardTitle = TextStyle(
+      fontFamily: 'sf-pro-display-black',
+      fontSize: 21,
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const tutorialCardText = TextStyle(
-      fontFamily: 'sf-pro-display-semibold',
+      fontFamily: 'sf-pro-display-bold',
       fontSize: 15,
       color: AppColors.textOverCard);
 
-  static const tutorialCardTextBold = TextStyle(
+  static const tutorialRowTitle = TextStyle(
       fontFamily: 'sf-pro-display-bold',
-      fontSize: 15,
+      fontSize: 17,
       color: Color.fromARGB(255, 255, 255, 255));
+
+  static const tutorialRowText = TextStyle(
+      fontFamily: 'sf-pro-display-semibold',
+      fontSize: 13.5,
+      color: AppColors.textOverCard);
 
   // dialog
   static const dialogTitle = TextStyle(

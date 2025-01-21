@@ -12,7 +12,7 @@ class Step1Widget extends StatefulWidget {
 }
 
 class _Step1WidgetState extends State<Step1Widget> {
-  String _fullText = 'Naviguez sereinement';
+  String _fullText = 'Naviguez sereinement.';
   String _currentText = '';
   int _currentIndex = 0;
   Duration _typingDelay = Duration(milliseconds: 100);
@@ -89,25 +89,22 @@ class _Step1WidgetState extends State<Step1Widget> {
               children: [
                 TextSpan(
                   text: _currentText,
-                  style: AppFonts.tutorialCardTitle,
+                  style: AppFonts.tutorialTypeWriter,
                 ),
-                if (_showCursor &&
-                    (_startTyping || _currentIndex < _fullText.length))
-                  TextSpan(
-                    text: '|',
-                    style: TextStyle(
-                      fontFamily: 'sf-pro-display-ultralight',
-                      fontSize: 25,
-                      color: Color.fromARGB(255, 255, 255, 255),
-                    ),
-                  ),
                 TextSpan(
-                  text: '.',
-                  style: AppFonts.tutorialCardTitle,
+                  text: (_showCursor &&
+                          (_startTyping || _currentIndex < _fullText.length))
+                      ? '|'
+                      : ' ',
+                  style: TextStyle(
+                    fontFamily: 'sf-pro-display-light',
+                    fontSize: 30,
+                    color: Color.fromARGB(255, 255, 255, 255),
+                  ),
                 ),
               ],
             ),
-            textAlign: TextAlign.center, // Centre tout le texte
+            textAlign: TextAlign.center,
           ),
         ),
       ),

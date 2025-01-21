@@ -7,6 +7,7 @@ class Step2Widget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black,
+      // Card
       child: Center(
         child: Container(
           width: MediaQuery.of(context).size.width * 0.9,
@@ -18,7 +19,7 @@ class Step2Widget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Partie image
+              // Image
               ClipRRect(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15.0),
@@ -32,20 +33,18 @@ class Step2Widget extends StatelessWidget {
               ),
               // Partie texte
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(17),
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start, // Alignement global
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Anticipez chaque surprise.',
                       style: AppFonts.tutorialCardTitle,
-                      textAlign: TextAlign.left, // Alignement du titre à gauche
+                      textAlign: TextAlign.left,
                     ),
                     SizedBox(height: 8.0),
                     RichText(
-                      textAlign: TextAlign
-                          .left, // Alignement du texte principal à gauche
+                      textAlign: TextAlign.left,
                       text: TextSpan(
                         style: AppFonts.tutorialCardText,
                         children: [
@@ -55,7 +54,7 @@ class Step2Widget extends StatelessWidget {
                           ),
                           TextSpan(
                             text: 'fixes',
-                            style: AppFonts.tutorialCardTextBold.copyWith(
+                            style: AppFonts.tutorialCardText.copyWith(
                               color: AppColors.iconBackgroundShell,
                             ),
                           ),
@@ -64,7 +63,7 @@ class Step2Widget extends StatelessWidget {
                           ),
                           TextSpan(
                             text: 'mobiles',
-                            style: AppFonts.tutorialCardTextBold.copyWith(
+                            style: AppFonts.tutorialCardText.copyWith(
                               color: AppColors.iconBackgroundFish,
                             ),
                           ),
