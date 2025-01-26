@@ -35,12 +35,12 @@ class AppFonts {
 
   // dialog
   static const dialogTitle = TextStyle(
-      fontFamily: 'sf-pro-display-heavy',
-      fontSize: 20,
+      fontFamily: 'sf-pro-display-black',
+      fontSize: 19,
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const dialogText = TextStyle(
-      fontFamily: 'sf-pro-display-bold',
+      fontFamily: 'sf-pro-display-regular',
       fontSize: 13,
       color: Color.fromARGB(255, 255, 255, 255));
 

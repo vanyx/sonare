@@ -10,6 +10,9 @@ class Settings {
     wishUrl = await fetchWishUrl();
     soundEnable = await Common.getSoundEnabled();
     notificationEnable = await Common.getNotificationsEnabled();
+
+    await Settings.requestLocationPermission(); //demander location permission
+    await Settings.requestNotificationPermission(); // demande notif permission
   }
 
   static Future<void> requestLocationPermission() async {

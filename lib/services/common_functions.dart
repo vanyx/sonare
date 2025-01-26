@@ -113,7 +113,7 @@ class Common {
 
   static Future<bool> getTutorialDone() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(Settings.tutorialKey) ?? true;
+    return prefs.getBool(Settings.tutorialKey) ?? false;
   }
 
   // Sound setting

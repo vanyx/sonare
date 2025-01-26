@@ -33,7 +33,6 @@ class BackService {
         seconds: 2)); //necessite un delai avant l'envoi des premieres notif
 
     // @TODO
-    print("test");
     sendNotification("init");
 
     await _getCurrentLocation();
