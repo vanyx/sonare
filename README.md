@@ -26,17 +26,13 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 
 # TODO
 
-BACKGORUND NE FONCTIONNE PAS EN RELEASE ?????
-=> sendNotif au debut du background :
-on ne recoit pas, mais quand on reouvre l'appli on la recoit
-=> nececissité d'avoir un BackgroundServie ?
-
 => utiliser background service : Fais quelque chose que si Setting.isActive est true
 à tester...
 
-=> demander au chat un exemple simple de bckgService, puis ensuite rajouter qu'il s'active/desactive quand
-on passe ou non en arriere plan.
-
+voir :
+https://medium.com/flutter/executing-dart-in-the-background-with-flutter-plugins-and-geofencing-2b3e40a1a124
+https://stackoverflow.com/questions/53450029/flutter-cross-platform-way-to-keep-application-running-in-the-background
+(peut etre trop vieux)
 
 - changer icons / images : poisson, coquillage et images de selection
 

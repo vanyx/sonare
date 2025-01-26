@@ -68,17 +68,16 @@ class Settings {
   }
 
   static Future<bool> checkNotificationPermissionAndroid() async {
-    if (Platform.isAndroid) {
-      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-          FlutterLocalNotificationsPlugin();
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
 
-      final bool? isGranted = await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.areNotificationsEnabled();
+    final bool? isGranted = await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.areNotificationsEnabled();
 
-      return isGranted ?? false;
-    }
+    return isGranted ?? false;
+
     return false;
   }
 

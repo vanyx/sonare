@@ -20,7 +20,6 @@ class _TutorialPageState extends State<TutorialPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   bool _isStep1Complete = false;
-  bool _locationRequested = false;
 
   void _onNextPressed() async {
     if (_currentPage < 2) {
@@ -29,19 +28,7 @@ class _TutorialPageState extends State<TutorialPage> {
         curve: Curves.easeInOut,
       );
     } else {
-      await requestPermissions();
       widget.onTutorialCompleted();
-    }
-  }
-
-  Future<void> requestPermissions() async {
-    if (_currentPage == 2 && !_locationRequested) {
-      setState(() {
-        _locationRequested = true;
-      });
-      await Settings.requestLocationPermission(); //demander location permission
-      await Settings
-          .requestNotificationPermission(); // demande notif permission
     }
   }
 

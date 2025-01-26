@@ -11,7 +11,7 @@ Future main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Settings.initialize();
   //@TODO: supprimer ceci, c'est pour le dev
-  // await Common.setTutorialDone(false);
+  await Common.setTutorialDone(false);
 
   runApp(Sonare());
 }
