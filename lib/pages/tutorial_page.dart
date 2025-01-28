@@ -5,7 +5,6 @@ import 'tutorial/step2.dart';
 import 'tutorial/step3.dart';
 import '../../styles/AppColors.dart';
 import '../../styles/AppFonts.dart';
-import '../services/settings.dart';
 
 class TutorialPage extends StatefulWidget {
   final VoidCallback onTutorialCompleted;

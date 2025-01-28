@@ -6,6 +6,9 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/settings.dart';
 import 'dart:math';
+import 'dart:io';
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Common {
   /// -------------------------- WEB --------------------------
@@ -103,6 +106,85 @@ class Common {
     }
   }
 
+  /// -------------------------- Sonare Control --------------------------
+
+  // @TODO : fonction qui call API pour recuperer ces parametres. Si pas de reponse rien, et garde les params par defaut.
+  static void initializeSonare() async {
+    Settings.wishUrl = 'https://www.waze.com/live-map/api/georss';
+
+    Settings.mapUrl =
+        'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF0aGlldWd1aWxsb3RpbnNlbnNleW91IiwiYSI6ImNsNjY5aGI1ZzBhamszamw1aTkwaTdqN2kifQ.YJ0tcy2apJOnV0TYXbBigA';
+
+    Settings.enableWish = true;
+
+    Settings.apiVersion = '1.0.0';
+  }
+
+  /// -------------------------- Permissions --------------------------
+
+  static Future<void> requestPermissions() async {
+    await Common.requestLocationPermission(); //demander location permission
+    await Common.requestNotificationPermission(); // demande notif permission
+  }
+
+  static Future<void> requestLocationPermission() async {
+    Settings.locationPermission = await checkLocationPermission();
+  }
+
+  static Future<void> requestNotificationPermission() async {
+    if (Platform.isAndroid) {
+      Settings.notificationPermission =
+          await checkNotificationPermissionAndroid();
+    } else if (Platform.isIOS) {
+      Settings.notificationPermission = await checkNotificationPermissionIOS();
+    }
+  }
+
+  static Future<bool> checkLocationPermission() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      return false; // Permission refusee
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return false; // Permission definitivement refusee
+    }
+
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      return false; // Service de localisation desactives
+    }
+
+    return true;
+  }
+
+  static Future<bool> checkNotificationPermissionIOS() async {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    final bool? granted = await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+
+    return granted ?? false;
+  }
+
+  static Future<bool> checkNotificationPermissionAndroid() async {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    final bool? isGranted = await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.areNotificationsEnabled();
+
+    return isGranted ?? false;
+  }
+
   /// -------------------------- SharedPreferences --------------------------
 
   // Tutorial done
@@ -143,35 +225,33 @@ class Common {
   /// -------------------------- SOUNDS --------------------------
 
   static Future<void> playWarningByLevel(int level) async {
-    if (level == 1)
-      play400mWarning();
-    else if (level == 2)
-      play800mWarning();
-    else if (level == 3) play3kmWarning();
+    final soundFiles = {
+      1: 'sounds/400m.mp3',
+      2: 'sounds/800m.mp3',
+      3: 'sounds/3km.mp3',
+    };
+
+    if (soundFiles.containsKey(level)) {
+      await playSound(soundFiles[level]!);
+    }
   }
 
-  static Future<void> play3kmWarning() async {
-    final AudioPlayer audioPlayer = AudioPlayer();
+  static Future<void> playSound(String soundPath) async {
+    if (Settings.voiceTalking) return;
+
+    final audioPlayer = AudioPlayer();
+    Settings.voiceTalking = true;
 
     try {
-      await audioPlayer.play(AssetSource('sounds/3km.mp3'));
-    } catch (e) {}
-  }
+      await audioPlayer.play(AssetSource(soundPath));
 
-  static Future<void> play800mWarning() async {
-    final AudioPlayer audioPlayer = AudioPlayer();
-
-    try {
-      await audioPlayer.play(AssetSource('sounds/800m.mp3'));
-    } catch (e) {}
-  }
-
-  static Future<void> play400mWarning() async {
-    final AudioPlayer audioPlayer = AudioPlayer();
-
-    try {
-      await audioPlayer.play(AssetSource('sounds/400m.mp3'));
-    } catch (e) {}
+      // Ecoute la fin du son pour debloquer
+      audioPlayer.onPlayerComplete.listen((_) {
+        Settings.voiceTalking = false;
+      });
+    } catch (e) {
+      Settings.voiceTalking = false;
+    }
   }
 
   /// -------------------------- MATH --------------------------

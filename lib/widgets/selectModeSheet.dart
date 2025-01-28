@@ -77,8 +77,8 @@ class SelectModeSheet extends StatelessWidget {
                               child: Container(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 5.0, horizontal: 10.0),
-                                color:
-                                    AppColors.greyTransparent.withOpacity(0.97),
+                                color: AppColors.greyTransparent
+                                    .withValues(alpha: 0.97),
                                 child: Text(
                                   'Explorer',
                                   style: AppFonts.sheetMode,
@@ -124,8 +124,8 @@ class SelectModeSheet extends StatelessWidget {
                               child: Container(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 5.0, horizontal: 8.0),
-                                color:
-                                    AppColors.greyTransparent.withOpacity(0.97),
+                                color: AppColors.greyTransparent
+                                    .withValues(alpha: 0.97),
                                 child: Text(
                                   'Sonare',
                                   style: AppFonts.sheetMode,

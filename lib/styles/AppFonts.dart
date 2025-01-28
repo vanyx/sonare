@@ -40,7 +40,7 @@ class AppFonts {
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const dialogText = TextStyle(
-      fontFamily: 'sf-pro-display-regular',
+      fontFamily: 'sf-pro-display-semibold',
       fontSize: 13,
       color: Color.fromARGB(255, 255, 255, 255));
 

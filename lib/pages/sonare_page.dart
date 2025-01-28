@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
@@ -551,7 +550,8 @@ class SonarePageState extends State<SonarePage> {
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.3),
+                                          color: Colors.black
+                                              .withValues(alpha: 0.3),
                                           offset: Offset(0, 2),
                                           blurRadius: 3.0,
                                           spreadRadius: 0.0,
@@ -586,7 +586,8 @@ class SonarePageState extends State<SonarePage> {
                     left: 0,
                     right: 0,
                     top: MediaQuery.of(context).size.height / 2 +
-                        ((screenSize!.width * _sizeScreenCoef) / 2),
+                        ((screenSize!.width * _sizeScreenCoef) / 2) +
+                        10,
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
@@ -646,7 +647,7 @@ class SonarePageState extends State<SonarePage> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
+                                color: Colors.black.withValues(alpha: 0.3),
                                 blurRadius: 3.0,
                                 spreadRadius: 0.0,
                               ),

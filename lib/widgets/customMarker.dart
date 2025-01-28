@@ -43,7 +43,7 @@ class CustomMarker extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     spreadRadius: 2, // Rayonnement de l'ombre
                     blurRadius: 4, // Flou de l'ombre
                     offset: Offset(0, 3), // Déplacement vertical de l'ombre
@@ -78,7 +78,7 @@ class TrianglePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Dessine l'ombre du triangle
     final Paint shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.2) // Couleur de l'ombre
+      ..color = Colors.black.withValues(alpha: 0.2) // Couleur de l'ombre
       ..style = PaintingStyle.fill;
 
     Path shadowPath = Path()

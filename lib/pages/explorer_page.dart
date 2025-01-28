@@ -336,7 +336,7 @@ class ExplorerPageState extends State<ExplorerPage> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
+                                color: Colors.black.withValues(alpha: 0.15),
                                 spreadRadius: 2,
                                 blurRadius: 8,
                               ),

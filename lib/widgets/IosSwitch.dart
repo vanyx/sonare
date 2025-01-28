@@ -100,9 +100,9 @@ class IosSwitch extends StatelessWidget {
                           spreadRadius: 2,
                           color: isActive
                               ? const Color.fromARGB(255, 189, 189, 189)
-                                  .withOpacity(0.1)
+                                  .withValues(alpha: 0.1)
                               : const Color.fromARGB(255, 117, 117, 117)
-                                  .withOpacity(0.1),
+                                  .withValues(alpha: 0.1),
                           offset: Offset(1, 1))
                     ],
                     color: isActive ? dotActiveColor : dotdisableColor,

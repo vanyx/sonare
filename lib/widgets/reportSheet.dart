@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
 import '../styles/AppColors.dart';
 import './closeButton.dart';
 import '../../styles/AppFonts.dart';

@@ -3,7 +3,7 @@ import 'package:Sonare/services/settings.dart';
 import 'package:Sonare/services/common_functions.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 
 class Fauna {
   String type;
@@ -13,60 +13,66 @@ class Fauna {
   Fauna({required this.type, required this.position, required this.level});
 }
 
-class BackService {
+class BackgroundService {
+  bool running = false;
+  final Location _location = Location();
+
   final FlutterLocalNotificationsPlugin _flutterLocalNotifications =
       FlutterLocalNotificationsPlugin();
 
   LatLng? _currentPosition;
   LatLng? _lastApiPosition;
 
-  StreamSubscription<Position>? _positionSubscription;
-
   List<Fauna> _faunas = [];
 
-  Future<void> onStart() async {
-    if (!Settings.locationPermission) {
+  void start() async {
+    running = true;
+
+    _faunas = [];
+
+    _lastApiPosition = null;
+
+    _currentPosition = null;
+    // /!\ Enable en background
+    bool bgEnabled = await _location.enableBackgroundMode(enable: true);
+
+    if (!Settings.locationPermission || !bgEnabled) {
       return;
     }
     await _initializeNotifications();
     await Future.delayed(Duration(
         seconds: 2)); //necessite un delai avant l'envoi des premieres notif
 
-    // @TODO
-    sendNotification("init");
+    _location.changeSettings(
+        accuracy: LocationAccuracy.high,
+        interval: 10000, // en millisecondes
+        distanceFilter: 50 // en metres
+        );
 
-    await _getCurrentLocation();
-    await initFaunas();
-
-    _startListeningToLocationChanges();
-
-    return;
+    _streamLocation();
   }
 
-  void stopService() {
-    _positionSubscription?.cancel();
+  void stop() {
+    running = false;
   }
 
-  Future<void> _getCurrentLocation() async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.bestForNavigation);
+  void _streamLocation() {
+    bool _faunaInited = false;
+    _location.onLocationChanged.listen((LocationData location) {
+      // stop l'ecoute si le background est arrete
+      if (!running) {
+        return;
+      }
 
-      _currentPosition = LatLng(position.latitude, position.longitude);
-    } catch (e) {}
-  }
+      _currentPosition = LatLng(location.latitude!, location.longitude!);
 
-  void _startListeningToLocationChanges() {
-    try {
-      _positionSubscription = Geolocator.getPositionStream(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      ).listen((Position position) {
-        _currentPosition = LatLng(position.latitude, position.longitude);
-        updateBackground();
-      });
-    } catch (e) {}
+      if (!_faunaInited) {
+        _faunaInited = true;
+        initFaunas();
+      }
+
+      updateBackground();
+    });
   }
 
   Future<void> initFaunas() async {

@@ -9,7 +9,7 @@ class UpdateDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Dialog(
-      backgroundColor: AppColors.background2.withOpacity(0.9),
+      backgroundColor: AppColors.background2.withValues(alpha: 0.97),
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(13),

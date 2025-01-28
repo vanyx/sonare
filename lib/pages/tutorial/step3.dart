@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../styles/AppFonts.dart';
-import '../../styles/AppColors.dart';
 
 class Step3Widget extends StatelessWidget {
   @override

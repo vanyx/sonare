@@ -1,7 +1,6 @@
 import 'package:Sonare/services/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
 import 'explorer_page.dart';
 import 'sonare_page.dart';
 import 'settings_page.dart';
@@ -32,20 +31,12 @@ class _MainPageState extends State<MainPage> {
     _checkAppVersion();
   }
 
-  Future<String> _getVersionFromAPI() async {
-    // @TODO
-    // FONCTION TMP
-    // SIMULE APPEL API
-    await Future.delayed(Duration(seconds: 1));
-    return '1.0.0';
-  }
-
   Future<void> _checkAppVersion() async {
-    // @TODO: vrai appel API ici pour avoir la derniere version
-    final String apiVersion = await _getVersionFromAPI();
-
-    if (apiVersion != Settings.version) {
-      _showUpdateDialog();
+    if (Settings.version != Settings.apiVersion) {
+      // Differer l'execution de l'affichage du dialogue
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showUpdateDialog();
+      });
     }
   }
 
@@ -53,7 +44,7 @@ class _MainPageState extends State<MainPage> {
     showDialog(
       context: context,
       barrierDismissible:
-          false, // empeche la fermeture en cliquant en dehors du dialog
+          false, // empêche la fermeture en cliquant en dehors du dialog
       builder: (BuildContext context) {
         return UpdateDialog();
       },

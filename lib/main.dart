@@ -10,8 +10,11 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Settings.initialize();
-  //@TODO: supprimer ceci, c'est pour le dev
-  await Common.setTutorialDone(false);
+  await Common.requestPermissions();
+  Common.initializeSonare();
+
+  //@TODO: supprimer ceci, c'esent pour le dev
+  // await Common.setTutorialDone(false);
 
   runApp(Sonare());
 }
@@ -22,7 +25,7 @@ class Sonare extends StatefulWidget {
 }
 
 class _SonareState extends State<Sonare> with WidgetsBindingObserver {
-  final BackService _backService = BackService();
+  final BackgroundService _backgroundService = BackgroundService();
 
   @override
   void initState() {
@@ -33,7 +36,7 @@ class _SonareState extends State<Sonare> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _backService.stopService();
+    _backgroundService.stop();
     super.dispose();
   }
 
@@ -41,10 +44,10 @@ class _SonareState extends State<Sonare> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       Settings.appIsActive = false;
-      _backService.onStart();
+      _backgroundService.start();
     } else if (state == AppLifecycleState.resumed) {
       Settings.appIsActive = true;
-      _backService.stopService();
+      _backgroundService.stop();
     }
   }
 
