@@ -29,7 +29,9 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 
 ### TODO
 
-ajouter vitesse
+
+Supprimer CIRCLE PAINTER !!
+Modifier bug de paris au debut
 
 
 ## Quand j'aurais l'api

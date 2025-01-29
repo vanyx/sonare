@@ -71,9 +71,9 @@ class BackgroundService {
       if (!_faunaInited) {
         _faunaInited = true;
         initFaunas();
+      } else {
+        updateBackground();
       }
-
-      updateBackground();
     });
   }
 

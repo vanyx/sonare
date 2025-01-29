@@ -39,8 +39,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
-    _startListeningPosition();
+    _initializeLocationServices();
     _checkAppVersion();
   }
 
@@ -48,6 +47,11 @@ class _MainPageState extends State<MainPage> {
   void dispose() {
     _positionStreamController.close();
     super.dispose();
+  }
+
+  Future<void> _initializeLocationServices() async {
+    await _getCurrentLocation();
+    _startListeningPosition();
   }
 
   Future<void> _getCurrentLocation() async {
@@ -85,6 +89,7 @@ class _MainPageState extends State<MainPage> {
         _positionStreamController.add(position);
 
         setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
           _speed = position.speed;
         });
       });
@@ -188,6 +193,9 @@ class _MainPageState extends State<MainPage> {
         key: _explorerKey,
         positionStream: _positionStreamController.stream,
         explorerUserMovedCamera: _explorerUserMovedCamera,
+        initPosition: _currentPosition == null
+            ? LatLng(48.8566, 2.3522) // si current position null, defaut Paris
+            : _currentPosition!,
         userMovedCamera: (hasMoved) {
           setState(() {
             _explorerUserMovedCamera = hasMoved;
@@ -195,7 +203,12 @@ class _MainPageState extends State<MainPage> {
         },
       );
     } else {
-      currentPage = SonarePage();
+      currentPage = SonarePage(
+        positionStream: _positionStreamController.stream,
+        initPosition: _currentPosition == null
+            ? LatLng(48.8566, 2.3522) // si current position null, defaut Paris
+            : _currentPosition!,
+      );
     }
 
     return Scaffold(

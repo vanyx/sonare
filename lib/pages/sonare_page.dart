@@ -14,6 +14,13 @@ import '../services/common_functions.dart';
 import '../services/settings.dart';
 
 class SonarePage extends StatefulWidget {
+  final Stream<Position> positionStream;
+  final LatLng initPosition;
+
+  SonarePage(
+      {Key? key, required this.positionStream, required this.initPosition})
+      : super(key: key);
+
   @override
   SonarePageState createState() => SonarePageState();
 }
@@ -54,13 +61,13 @@ class SonarePageState extends State<SonarePage> {
   // Size moyenne à l'initialisation, pour eviter erreur null
   Size? screenSize = Size(414.0, 896.0);
 
-  double? _blueRadius;
+  double? _blueRadius = (414.0 * 0.9) / 2;
 
-  Offset? _center;
+  Offset? _center = Offset(414.0 / 2, 896.0 / 2);
 
   LatLng? _lastApiPosition;
 
-  List<FaunaSonare> _FaunaSonare = [];
+  List<FaunaSonare> _faunas = [];
 
   @override
   void initState() {
@@ -96,18 +103,20 @@ class SonarePageState extends State<SonarePage> {
   Future<void> _getCurrentLocation() async {
     if (!Settings.locationPermission) {
       await Geolocator.openLocationSettings();
-      return;
-    }
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+      // Si permission de position refusee, on ouvre la carte sur Paris
       if (mounted) {
         setState(() {
-          _currentPosition = LatLng(position.latitude, position.longitude);
+          _currentPosition = LatLng(48.8566, 2.3522);
         });
-        updateFaunaParams();
       }
-    } catch (e) {}
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _currentPosition = widget.initPosition;
+      });
+    }
   }
 
   void _listeningToLocationChanges() {
@@ -115,11 +124,7 @@ class SonarePageState extends State<SonarePage> {
       return;
     }
     try {
-      _positionSubscription = Geolocator.getPositionStream(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      ).listen((Position position) {
+      _positionSubscription = widget.positionStream.listen((Position position) {
         // Ne fait rien si l'app est en arriere plan
         if (Settings.appIsActive) {
           if (mounted) {
@@ -170,7 +175,7 @@ class SonarePageState extends State<SonarePage> {
     for (var position in wish) {
       if (Common.calculateDistance(_currentPosition!, position) <=
           Settings.furthestThreshold) {
-        _FaunaSonare.add(FaunaSonare(
+        _faunas.add(FaunaSonare(
             position: position,
             visible: false,
             angle: 0.0,
@@ -184,7 +189,7 @@ class SonarePageState extends State<SonarePage> {
 
     // Annonce sonore eventuelle du fauna le plus proche
     int firstMaxLevel =
-        Common.getMaxLevel(_FaunaSonare.map((fauna) => fauna.level).toList());
+        Common.getMaxLevel(_faunas.map((fauna) => fauna.level).toList());
     if (firstMaxLevel != -1 && Settings.soundEnable) {
       Common.playWarningByLevel(firstMaxLevel);
     }
@@ -197,7 +202,7 @@ class SonarePageState extends State<SonarePage> {
     double apiCallDistanceThreshold = Settings.furthestThreshold / 10;
 
     // filtrage
-    _FaunaSonare.removeWhere((fish) =>
+    _faunas.removeWhere((fish) =>
         Common.calculateDistance(_currentPosition!, fish.position) >
         Settings.furthestThreshold);
 
@@ -222,7 +227,7 @@ class SonarePageState extends State<SonarePage> {
       if (!existPositionInFauna(position) &&
           Common.calculateDistance(_currentPosition!, position) <=
               Settings.furthestThreshold) {
-        _FaunaSonare.add(FaunaSonare(
+        _faunas.add(FaunaSonare(
             position: position,
             visible: false,
             angle: 0.0,
@@ -245,7 +250,7 @@ class SonarePageState extends State<SonarePage> {
   }
 
   bool existPositionInFauna(LatLng position) {
-    for (var fauna in _FaunaSonare) {
+    for (var fauna in _faunas) {
       if (fauna.position.latitude == position.latitude &&
           fauna.position.longitude == position.longitude) {
         return true;
@@ -368,7 +373,7 @@ class SonarePageState extends State<SonarePage> {
 
     if (mounted) {
       setState(() {
-        for (var fish in _FaunaSonare) {
+        for (var fish in _faunas) {
           // Visibilité
           fish.visible = checkTargetVisibility(fish.position);
 
@@ -426,7 +431,7 @@ class SonarePageState extends State<SonarePage> {
         }
 
         // Tri les fauna du plus petit au plus grand (utile pour l'affichage des ronds autour de la carte)
-        _FaunaSonare.sort((a, b) => a.size.compareTo(b.size));
+        _faunas.sort((a, b) => a.size.compareTo(b.size));
       });
     }
 
@@ -510,7 +515,7 @@ class SonarePageState extends State<SonarePage> {
                           MarkerLayer(
                             markers: [
                               // Fishs - MARKERS
-                              for (var fish in _FaunaSonare)
+                              for (var fish in _faunas)
                                 if (fish.visible)
                                   Marker(
                                     width: FaunaSonare.maxSizeValue,
@@ -574,6 +579,38 @@ class SonarePageState extends State<SonarePage> {
                       ),
                     ),
                   ),
+                  // Fishs - POINTS
+                  for (var fish in _faunas)
+                    if (!fish.visible)
+                      Positioned(
+                        left: fish.circlePosition.dx - (fish.size / 2),
+                        top: fish.circlePosition.dy - (fish.size / 2),
+                        child: Container(
+                          width: fish.size,
+                          height: fish.size,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: fish.type == "fish"
+                                ? AppColors.iconBackgroundFish
+                                : (fish.type == "shell"
+                                    ? AppColors.iconBackgroundShell
+                                    : Colors
+                                        .transparent // Couleur par défaut si aucune condition
+                                ),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: fish.size / 9,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 3.0,
+                                spreadRadius: 0.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                   // cercle bleu (mdr)
                   CustomPaint(
                     size: Size(screenSize!.width, screenSize!.height),
@@ -623,38 +660,6 @@ class SonarePageState extends State<SonarePage> {
                       ),
                     ),
                   ),
-                  // Fishs - POINTS
-                  for (var fish in _FaunaSonare)
-                    if (!fish.visible)
-                      Positioned(
-                        left: fish.circlePosition.dx - (fish.size / 2),
-                        top: fish.circlePosition.dy - (fish.size / 2),
-                        child: Container(
-                          width: fish.size,
-                          height: fish.size,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: fish.type == "fish"
-                                ? AppColors.iconBackgroundFish
-                                : (fish.type == "shell"
-                                    ? AppColors.iconBackgroundShell
-                                    : Colors
-                                        .transparent // Couleur par défaut si aucune condition
-                                ),
-                            border: Border.all(
-                              color: Colors.white,
-                              width: fish.size / 9,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.3),
-                                blurRadius: 3.0,
-                                spreadRadius: 0.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                 ],
               ),
       ),

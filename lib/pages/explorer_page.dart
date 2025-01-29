@@ -15,12 +15,14 @@ class ExplorerPage extends StatefulWidget {
   final Function(bool) userMovedCamera;
   final bool explorerUserMovedCamera;
   final Stream<Position> positionStream;
+  final LatLng initPosition;
 
   ExplorerPage(
       {Key? key,
       required this.userMovedCamera,
       required this.explorerUserMovedCamera,
-      required this.positionStream})
+      required this.positionStream,
+      required this.initPosition})
       : super(key: key);
 
   @override
@@ -57,7 +59,6 @@ class ExplorerPageState extends State<ExplorerPage> {
   @override
   void initState() {
     super.initState();
-
     _getCurrentLocation();
   }
 
@@ -86,15 +87,12 @@ class ExplorerPageState extends State<ExplorerPage> {
       }
       return;
     }
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.bestForNavigation);
-      if (mounted) {
-        setState(() {
-          _currentPosition = LatLng(position.latitude, position.longitude);
-        });
-      }
-    } catch (e) {}
+
+    if (mounted) {
+      setState(() {
+        _currentPosition = widget.initPosition;
+      });
+    }
   }
 
   void _startListeningToLocationChanges() {
