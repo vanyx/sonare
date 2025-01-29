@@ -50,7 +50,7 @@ class Step2Widget extends StatelessWidget {
                         children: [
                           TextSpan(
                             text:
-                                'Recevez des alertes en temps réel pour rester informé des présences autour de vous, qu’elles soient ',
+                                'Recevez des alertes en temps réel quand vous pénétrez dans une zone de contrôle. Contribuez en alertant la communauté et soyez informé des présences autour de vous, qu’elles soient ',
                           ),
                           TextSpan(
                             text: 'fixes',
@@ -68,8 +68,7 @@ class Step2Widget extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text:
-                                '. Contribuez en alertant la communauté et gardez ainsi une longueur d’avance.',
+                            text: '.',
                           ),
                         ],
                       ),

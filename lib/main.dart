@@ -14,7 +14,7 @@ Future main() async {
   Common.initializeSonare();
 
   //@TODO: supprimer ceci, c'esent pour le dev
-  // await Common.setTutorialDone(false);
+  await Common.setTutorialDone(false);
 
   runApp(Sonare());
 }

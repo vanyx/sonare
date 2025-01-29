@@ -28,11 +28,11 @@ class Settings {
 
   static String mapUrl = '';
 
-  static String wishUrl = '';
-
-  static bool enableWish = false;
-
   static bool voiceTalking = false;
+
+  /**************** Routes ****************/
+
+  static String wishUrl = 'https://www.waze.com/live-map/api/georss';
 
   /**************** Seuils ****************/
 

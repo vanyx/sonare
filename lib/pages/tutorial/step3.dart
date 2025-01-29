@@ -43,7 +43,7 @@ class Step3Widget extends StatelessWidget {
                           Text('Explorer', style: AppFonts.tutorialRowTitle),
                           SizedBox(height: 0),
                           Text(
-                            'Imaginé pour vous aider à repérer les zones sensibles.',
+                            'Imaginé pour vous aider à visualiser les zones sensibles.',
                             style: AppFonts.tutorialRowText,
                           ),
                         ],

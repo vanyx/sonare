@@ -44,28 +44,30 @@ class BackgroundService {
         seconds: 2)); //necessite un delai avant l'envoi des premieres notif
 
     _location.changeSettings(
-        accuracy: LocationAccuracy.high,
-        interval: 10000, // en millisecondes
-        distanceFilter: 50 // en metres
-        );
+      accuracy: LocationAccuracy.high,
+      interval: 10000, // en millisecondes
+      // distanceFilter: 50 // en metres
+    );
 
     _streamLocation();
   }
 
   void stop() {
     running = false;
+    _locationSubscription?.cancel();
   }
 
+  StreamSubscription<LocationData>? _locationSubscription;
   void _streamLocation() {
     bool _faunaInited = false;
-    _location.onLocationChanged.listen((LocationData location) {
-      // stop l'ecoute si le background est arrete
-      if (!running) {
+
+    _locationSubscription =
+        _location.onLocationChanged.listen((LocationData location) {
+      if (!running || Settings.appIsActive) {
+        _locationSubscription?.cancel();
         return;
       }
-
       _currentPosition = LatLng(location.latitude!, location.longitude!);
-
       if (!_faunaInited) {
         _faunaInited = true;
         initFaunas();

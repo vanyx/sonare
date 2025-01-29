@@ -1,3 +1,4 @@
+import 'package:Sonare/models/faunaExplorer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -8,6 +9,7 @@ import '../styles/AppColors.dart';
 import '../services/common_functions.dart';
 import '../services/settings.dart';
 import '../widgets/explorerExpandableMarker.dart';
+import '../models/models.dart';
 
 class ExplorerPage extends StatefulWidget {
   final Function(bool) userMovedCamera;
@@ -38,8 +40,8 @@ class ExplorerPageState extends State<ExplorerPage> {
   bool _mapReady = false;
 
   LatLng? _currentPosition;
-  List<LatLng> _shell = [];
-  List<LatLng> _fish = [];
+  List<FaunaExplorer> _faunas = [];
+
   double distanceThreshold = 200.0; // Seuil en m
 
   MapController _mapController = MapController();
@@ -156,7 +158,9 @@ class ExplorerPageState extends State<ExplorerPage> {
           .then((newFish) {
         if (mounted) {
           setState(() {
-            _fish = newFish;
+            _faunas = newFish
+                .map((pos) => FaunaExplorer(position: pos, type: "fish"))
+                .toList();
           });
         }
       });
@@ -274,9 +278,10 @@ class ExplorerPageState extends State<ExplorerPage> {
                 TileLayer(urlTemplate: Settings.mapUrl),
                 MarkerLayer(
                   markers: [
-                    // FISH
                     if (_mapReady)
-                      for (var fishPosition in _fish)
+
+                      // MARKERs
+                      for (var item in _faunas)
                         Marker(
                           width: _currentZoom > _zoomThreshold
                               ? _markerSize
@@ -284,40 +289,21 @@ class ExplorerPageState extends State<ExplorerPage> {
                           height: _currentZoom > _zoomThreshold
                               ? _markerSize
                               : _miniMarkerSize,
-                          point: fishPosition,
+                          point: item.position,
                           child: ExplorerExpandableMarker(
                             zoom: _currentZoom,
-                            type: "fish",
-                            color: AppColors.iconBackgroundFish,
-                            position: fishPosition,
+                            type: item.type,
+                            color: item.type == "fish"
+                                ? AppColors.iconBackgroundFish
+                                : AppColors.iconBackgroundShell,
+                            position: item.position,
                             rotationAngle: _mapController.camera.rotation,
                             markerSize: _markerSize,
                             miniMarkerSize: _miniMarkerSize,
                             zoomThreshold: _zoomThreshold,
                           ),
                         ),
-                    // SHELL
-                    if (_mapReady)
-                      for (var shellPosition in _shell)
-                        Marker(
-                          width: _currentZoom > _zoomThreshold
-                              ? _markerSize
-                              : _miniMarkerSize,
-                          height: _currentZoom > _zoomThreshold
-                              ? _markerSize
-                              : _miniMarkerSize,
-                          point: shellPosition,
-                          child: ExplorerExpandableMarker(
-                            zoom: _currentZoom,
-                            type: "shell",
-                            color: AppColors.iconBackgroundShell,
-                            position: shellPosition,
-                            rotationAngle: _mapController.camera.rotation,
-                            markerSize: _markerSize,
-                            miniMarkerSize: _miniMarkerSize,
-                            zoomThreshold: _zoomThreshold,
-                          ),
-                        ),
+
                     // ME
                     if (Settings.locationPermission)
                       Marker(

@@ -19,7 +19,7 @@ class AppFonts {
       color: Color.fromARGB(255, 255, 255, 255));
 
   static const tutorialCardText = TextStyle(
-      fontFamily: 'sf-pro-display-bold',
+      fontFamily: 'sf-pro-display-semibold',
       fontSize: 15,
       color: AppColors.textOverCard);
 
