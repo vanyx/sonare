@@ -14,11 +14,13 @@ import '../models/models.dart';
 class ExplorerPage extends StatefulWidget {
   final Function(bool) userMovedCamera;
   final bool explorerUserMovedCamera;
+  final Stream<Position> positionStream;
 
   ExplorerPage(
       {Key? key,
       required this.userMovedCamera,
-      required this.explorerUserMovedCamera})
+      required this.explorerUserMovedCamera,
+      required this.positionStream})
       : super(key: key);
 
   @override
@@ -100,11 +102,7 @@ class ExplorerPageState extends State<ExplorerPage> {
       return;
     }
     try {
-      _positionSubscription = Geolocator.getPositionStream(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      ).listen((Position position) {
+      _positionSubscription = widget.positionStream.listen((Position position) {
         // Ne fait rien si l'app est en arriere plan
         if (Settings.appIsActive) {
           if (mounted) {

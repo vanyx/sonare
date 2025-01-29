@@ -27,6 +27,11 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 );
 
 
+### TODO
+
+ajouter vitesse
+
+
 ## Quand j'aurais l'api
 - Version API, mapUrl
 - report fishs

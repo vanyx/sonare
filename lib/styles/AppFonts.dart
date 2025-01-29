@@ -100,4 +100,15 @@ class AppFonts {
       fontFamily: 'sf-pro-display-bold',
       fontSize: 14,
       color: AppColors.textOverCard);
+
+  // Speedometer
+  static const speedometerSpeed = TextStyle(
+      fontFamily: 'sf-pro-display-bold',
+      fontSize: 28,
+      color: Color.fromARGB(255, 255, 255, 255));
+
+  static const speedometerUnit = TextStyle(
+      fontFamily: 'sf-pro-display-regular',
+      fontSize: 14,
+      color: Color.fromARGB(255, 255, 255, 255));
 }

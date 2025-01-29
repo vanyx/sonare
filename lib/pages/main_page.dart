@@ -1,6 +1,7 @@
 import 'package:Sonare/services/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:latlong2/latlong.dart';
 import 'explorer_page.dart';
 import 'sonare_page.dart';
 import 'settings_page.dart';
@@ -8,6 +9,9 @@ import '../widgets/selectModeSheet.dart';
 import '../widgets/reportSheet.dart';
 import '../widgets/updateDialog.dart';
 import '../styles/AppColors.dart';
+import '../widgets/speedometer.dart';
+import 'dart:async';
+import 'package:geolocator/geolocator.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -17,18 +21,74 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedMode = 1; // 1 : Explorer, 2 : Sonare
   bool _explorerUserMovedCamera = false;
-  bool isBottomSheetOpen = false;
+  bool _isBottomSheetOpen = false;
+  double _marginTop = 40;
+  double _marginRight = 20;
 
-  double marginTop = 40;
-  double marginRight = 20;
+  double _speed = 0;
+  static const double _minSpeedometerLimit = 0;
+
+  LatLng? _currentPosition;
 
   final GlobalKey<ExplorerPageState> _explorerKey =
       GlobalKey<ExplorerPageState>();
 
+  final StreamController<Position> _positionStreamController =
+      StreamController.broadcast();
+
   @override
   void initState() {
     super.initState();
+    _getCurrentLocation();
+    _startListeningPosition();
     _checkAppVersion();
+  }
+
+  @override
+  void dispose() {
+    _positionStreamController.close();
+    super.dispose();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    if (!Settings.locationPermission) {
+      await Geolocator.openLocationSettings();
+      // Si permission de position refusee, on ouvre la carte sur Paris
+      if (mounted) {
+        setState(() {
+          _currentPosition = LatLng(48.8566, 2.3522);
+        });
+      }
+      return;
+    }
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
+      if (mounted) {
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+        });
+      }
+    } catch (e) {}
+  }
+
+  void _startListeningPosition() {
+    if (!Settings.locationPermission) {
+      return;
+    }
+    try {
+      Geolocator.getPositionStream(
+        locationSettings: LocationSettings(
+            accuracy: LocationAccuracy.high, distanceFilter: 1),
+      ).listen((Position position) {
+        // Stream de position
+        _positionStreamController.add(position);
+
+        setState(() {
+          _speed = position.speed;
+        });
+      });
+    } catch (e) {}
   }
 
   Future<void> _checkAppVersion() async {
@@ -53,7 +113,7 @@ class _MainPageState extends State<MainPage> {
 
   void _showSelectModeSheet() {
     setState(() {
-      isBottomSheetOpen = true;
+      _isBottomSheetOpen = true;
     });
 
     showModalBottomSheet(
@@ -85,14 +145,14 @@ class _MainPageState extends State<MainPage> {
       },
     ).whenComplete(() {
       setState(() {
-        isBottomSheetOpen = false;
+        _isBottomSheetOpen = false;
       });
     });
   }
 
   void _showReportSheet() {
     setState(() {
-      isBottomSheetOpen = true;
+      _isBottomSheetOpen = true;
     });
 
     showModalBottomSheet(
@@ -107,14 +167,14 @@ class _MainPageState extends State<MainPage> {
           onClose: () {
             Navigator.of(context).pop();
             setState(() {
-              isBottomSheetOpen = false;
+              _isBottomSheetOpen = false;
             });
           },
         );
       },
     ).whenComplete(() {
       setState(() {
-        isBottomSheetOpen = false;
+        _isBottomSheetOpen = false;
       });
     });
   }
@@ -126,6 +186,7 @@ class _MainPageState extends State<MainPage> {
     if (_selectedMode == 1) {
       currentPage = ExplorerPage(
         key: _explorerKey,
+        positionStream: _positionStreamController.stream,
         explorerUserMovedCamera: _explorerUserMovedCamera,
         userMovedCamera: (hasMoved) {
           setState(() {
@@ -146,9 +207,9 @@ class _MainPageState extends State<MainPage> {
               children: [
                 currentPage,
                 Positioned(
-                  bottom: marginTop,
-                  right: marginRight,
-                  child: isBottomSheetOpen
+                  bottom: _marginTop,
+                  right: _marginRight,
+                  child: _isBottomSheetOpen
                       ? Container()
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,11 +285,22 @@ class _MainPageState extends State<MainPage> {
                           ],
                         ),
                 ),
+                // SPEED
+                if (_speed >= _minSpeedometerLimit)
+                  Positioned(
+                      bottom: _marginTop,
+                      left: _marginRight,
+                      child: _isBottomSheetOpen
+                          ? Container()
+                          : Speedometer(
+                              speed: _speed * 3.6,
+                              mode: _selectedMode,
+                            )),
                 // SETTINGS
                 Positioned(
-                  top: marginTop * 1.3,
-                  left: marginRight,
-                  child: isBottomSheetOpen
+                  top: _marginTop * 1.3,
+                  left: _marginRight,
+                  child: _isBottomSheetOpen
                       ? SizedBox.shrink()
                       : ElevatedButton(
                           onPressed: () {
