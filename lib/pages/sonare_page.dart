@@ -45,8 +45,6 @@ class SonarePageState extends State<SonarePage> {
    */
   double? _bearing;
 
-  double _blueThickness = 0; //epaisseur cercle bleu
-
   DateTime? _lastUpdateTime;
 
   bool _isMovingForSure = false;
