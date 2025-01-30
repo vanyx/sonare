@@ -16,7 +16,7 @@ class Speedometer extends StatelessWidget {
         width: 100,
         height: 100,
         decoration: BoxDecoration(
-          color: AppColors.button.withValues(alpha: mode == 1 ? 0.9 : 1.0),
+          color: AppColors.button.withValues(alpha: mode == 1 ? 0.7 : 1.0),
           shape: BoxShape.circle,
         ),
         child: Stack(
