@@ -1,4 +1,4 @@
-# Sonare \\\_|\_/
+# \\\_|\_/ SONARE
 
 ## 1. Seuils
 
