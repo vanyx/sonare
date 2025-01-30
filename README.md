@@ -1,4 +1,4 @@
-# Sonare \\|/
+# Sonare \\_|_/
 
 ## 1. Seuils
 
@@ -29,10 +29,11 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 
 ### TODO
 
+1. Faire quelque chose pour la position : regler le bug de la carte qui s'ouvre sur paris => passer un null, et faire comme le comportement d'avant
+Check sonare, ça doit rester en shimmer, et pas de position de paris
+Faire clean les autorisations
 
-Supprimer CIRCLE PAINTER !!
-Modifier bug de paris au debut
-
+2. Bug on voit plus les boutons - et +, voir pq ça marche pas
 
 ## Quand j'aurais l'api
 - Version API, mapUrl
@@ -42,6 +43,6 @@ Modifier bug de paris au debut
 
 ## A tester sur android :
 - textes des autorisations
-- notif, sons, boussole, vibrations, webview qui fonctionnement correctement, son des notifs
+- notif, sons, boussole, vibrations, webview qui fonctionnement correctement, son des notifs, background
 
 

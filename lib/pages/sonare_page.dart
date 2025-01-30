@@ -374,7 +374,7 @@ class SonarePageState extends State<SonarePage> {
     if (mounted) {
       setState(() {
         for (var fish in _faunas) {
-          // Visibilité
+          // Visibilite
           fish.visible = checkTargetVisibility(fish.position);
 
           // Calcul de l'angle
@@ -385,11 +385,13 @@ class SonarePageState extends State<SonarePage> {
                   fish.position.longitude) -
               Common.degreesToRadians(_bearing!);
 
-          // Position sur le cercle
-          fish.circlePosition = Offset(
-            _center!.dx + _blueRadius! * cos(fish.angle),
-            _center!.dy + _blueRadius! * sin(fish.angle),
-          );
+          double x = ((screenSize!.width) / 2) +
+              _blueRadius! * cos(fish.angle) -
+              fish.size / 2;
+          double y = ((screenSize!.width) / 2) +
+              _blueRadius! * sin(fish.angle) -
+              fish.size / 2;
+          fish.circlePosition = Offset(x, y);
 
           // Calcul de la taille en fonction de la distance
           /**
@@ -514,7 +516,7 @@ class SonarePageState extends State<SonarePage> {
                           TileLayer(urlTemplate: Settings.mapUrl),
                           MarkerLayer(
                             markers: [
-                              // Fishs - MARKERS
+                              // FAUNAS - MARKERS
                               for (var fish in _faunas)
                                 if (fish.visible)
                                   Marker(
@@ -579,43 +581,57 @@ class SonarePageState extends State<SonarePage> {
                       ),
                     ),
                   ),
-                  // Fishs - POINTS
-                  for (var fish in _faunas)
-                    if (!fish.visible)
-                      Positioned(
-                        left: fish.circlePosition.dx - (fish.size / 2),
-                        top: fish.circlePosition.dy - (fish.size / 2),
-                        child: Container(
-                          width: fish.size,
-                          height: fish.size,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: fish.type == "fish"
-                                ? AppColors.iconBackgroundFish
-                                : (fish.type == "shell"
-                                    ? AppColors.iconBackgroundShell
-                                    : Colors
-                                        .transparent // Couleur par défaut si aucune condition
+
+                  // FAUNAS - POINTS
+                  Container(
+                    /*
+                    - Le container joue le role de repere, dans lequel on positionne les points
+                      Pour trouver son centre, on utilise sa (taille / 2) en x et y
+                      Il est donc necessaire de garder la meme taille utilisee pour la taille du container (repere) que pour le calcul du centre d'ou se baser pour calculer son centre
+
+                    - C'est ensuite le rayon qui defini la distance du centre a laquelle on veut mettre les points
+                    */
+                    width: (screenSize!.width),
+                    height: (screenSize!.width),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: Stack(
+                      children: [
+                        for (var fish in _faunas)
+                          if (!fish.visible)
+                            Positioned(
+                              left: fish.circlePosition.dx,
+                              top: fish.circlePosition.dy,
+                              child: Container(
+                                width: fish.size,
+                                height: fish.size,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: fish.type == "fish"
+                                      ? AppColors.iconBackgroundFish
+                                      : (fish.type == "shell"
+                                          ? AppColors.iconBackgroundShell
+                                          : Colors
+                                              .transparent // Couleur par défaut si aucune condition
+                                      ),
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: fish.size / 9,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.3),
+                                      blurRadius: 3.0,
+                                      spreadRadius: 0.0,
+                                    ),
+                                  ],
                                 ),
-                            border: Border.all(
-                              color: Colors.white,
-                              width: fish.size / 9,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.3),
-                                blurRadius: 3.0,
-                                spreadRadius: 0.0,
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                  // cercle bleu (mdr)
-                  CustomPaint(
-                    size: Size(screenSize!.width, screenSize!.height),
-                    painter:
-                        CirclePainter(_center!, _blueRadius!, _blueThickness),
+                            ),
+                      ],
+                    ),
                   ),
 
                   // boutons zoom / dezoom
@@ -664,21 +680,5 @@ class SonarePageState extends State<SonarePage> {
               ),
       ),
     );
-  }
-}
-
-class CirclePainter extends CustomPainter {
-  final Offset center;
-  final double radius;
-  final double thickness;
-
-  CirclePainter(this.center, this.radius, this.thickness);
-
-  @override
-  void paint(Canvas canvas, Size size) {}
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
   }
 }
