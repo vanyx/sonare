@@ -12,7 +12,6 @@ Future main() async {
   await Settings.initialize();
   if (Settings.tutorialDone) await Common.requestPermissions();
   Common.initializeSonare();
-  await Common.setTutorialDone(false);
   runApp(Sonare());
 }
 
