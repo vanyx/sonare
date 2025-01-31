@@ -37,10 +37,3 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 ### A tester sur android :
 - textes des autorisations
 - notif, sons, boussole, vibrations, webview qui fonctionnement correctement, son des notifs, background
-
-
-# 📌 Licence
-
-Ce projet a été entièrement imaginé, conçu et développé par **Thomas Benalouane**.  
-
-Copyright (c) 2025 Thomas Benalouane
