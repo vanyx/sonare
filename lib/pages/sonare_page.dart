@@ -665,6 +665,7 @@ class SonarePageState extends State<SonarePage> {
                                       });
                                       _mapController.move(
                                           _currentPosition!, _zoomLevel);
+                                      updateFaunaParams();
                                     }
                                   },
                                 ),
@@ -678,6 +679,7 @@ class SonarePageState extends State<SonarePage> {
                                       });
                                       _mapController.move(
                                           _currentPosition!, _zoomLevel);
+                                      updateFaunaParams();
                                     }
                                   },
                                 ),

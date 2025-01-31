@@ -112,7 +112,7 @@ class _ReportSheetState extends State<ReportSheet> {
                                       child: FittedBox(
                                         fit: BoxFit.contain,
                                         child: Image.asset(
-                                            'assets/images/fish.png'),
+                                            'assets/images/fish.webp'),
                                       ),
                                     ),
                                   ),
@@ -153,7 +153,7 @@ class _ReportSheetState extends State<ReportSheet> {
                                       child: FittedBox(
                                         fit: BoxFit.contain,
                                         child: Image.asset(
-                                            'assets/images/shell.png'),
+                                            'assets/images/shell.webp'),
                                       ),
                                     ),
                                   ),

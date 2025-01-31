@@ -9,14 +9,14 @@ class LexiquePage extends StatelessWidget {
       'title': 'Poisson',
       'description':
           'Créature vive et mobile, le poisson sillonne les eaux en constante évolution. Toujours en mouvement, il peut apparaître là où on l’attend le moins.',
-      'image': 'assets/images/fish.png',
+      'image': 'assets/images/fish.webp',
       'backgroundColor': 'iconBackgroundFish'
     },
     {
       'title': 'Coquillage',
       'description':
           'Immobile et ancré, le coquillage veille en silence à son emplacement fixe. Il est une présence constante, marquant des lieux clés que l’on croise toujours au même endroit.',
-      'image': 'assets/images/shell.png',
+      'image': 'assets/images/shell.webp',
       'backgroundColor': 'iconBackgroundShell'
     }
   ];

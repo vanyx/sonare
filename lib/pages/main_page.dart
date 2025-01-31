@@ -344,7 +344,7 @@ class _MainPageState extends State<MainPage> {
                               padding: EdgeInsets.all(0),
                               backgroundColor: AppColors.button),
                           child: Image.asset(
-                            'assets/images/icons/burgermenu.png',
+                            'assets/images/icons/burgermenu.webp',
                             color: const Color.fromARGB(255, 255, 255, 255),
                             width: 25,
                             height: 25,

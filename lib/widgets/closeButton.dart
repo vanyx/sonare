@@ -24,7 +24,7 @@ class CloseButtonWidget extends StatelessWidget {
             width: 15.5,
             height: 15.5,
             child: Image.asset(
-              'assets/images/icons/croix.png',
+              'assets/images/icons/croix.webp',
               color: AppColors.buttonMain,
               fit: BoxFit.contain,
             ),

@@ -23,7 +23,7 @@ class Speedometer extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             Image.asset(
-              'assets/images/icons/speedometer.png',
+              'assets/images/icons/speedometer.webp',
               color: AppColors.textOverCard,
               width: 92,
               height: 92,

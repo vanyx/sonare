@@ -30,7 +30,7 @@ class Step3Widget extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Image.asset(
-                        'assets/images/explorer.png',
+                        'assets/images/explorer.webp',
                         width: MediaQuery.of(context).size.width * 0.4,
                         fit: BoxFit.cover,
                       ),
@@ -59,7 +59,7 @@ class Step3Widget extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
                     child: Image.asset(
-                      'assets/images/sonare.png',
+                      'assets/images/sonare.webp',
                       width: MediaQuery.of(context).size.width * 0.4,
                       fit: BoxFit.cover,
                     ),

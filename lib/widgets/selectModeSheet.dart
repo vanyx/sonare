@@ -65,7 +65,7 @@ class SelectModeSheet extends StatelessWidget {
                         child: Stack(
                           children: [
                             Image.asset(
-                              'assets/images/explorer.png',
+                              'assets/images/explorer.webp',
                               width: double.infinity,
                               height: cardHeight,
                               fit: BoxFit.cover,
@@ -112,7 +112,7 @@ class SelectModeSheet extends StatelessWidget {
                         child: Stack(
                           children: [
                             Image.asset(
-                              'assets/images/sonare.png',
+                              'assets/images/sonare.webp',
                               width: double.infinity,
                               height: cardHeight,
                               fit: BoxFit.cover,

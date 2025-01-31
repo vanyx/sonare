@@ -26,7 +26,7 @@ class Step2Widget extends StatelessWidget {
                   topRight: Radius.circular(15.0),
                 ),
                 child: Image.asset(
-                  'assets/images/tutomap.png',
+                  'assets/images/tutomap.webp',
                   fit: BoxFit.cover,
                   width: double.infinity,
                 ),
@@ -38,7 +38,7 @@ class Step2Widget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Anticipez chaque surprise.',
+                      'Naviguez sereinement.',
                       style: AppFonts.tutorialCardTitle,
                       textAlign: TextAlign.left,
                     ),
