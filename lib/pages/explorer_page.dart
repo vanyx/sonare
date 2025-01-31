@@ -15,7 +15,7 @@ class ExplorerPage extends StatefulWidget {
   final Function(bool) userMovedCamera;
   final bool explorerUserMovedCamera;
   final Stream<Position> positionStream;
-  final LatLng initPosition;
+  final LatLng? initPosition;
 
   ExplorerPage(
       {Key? key,
@@ -59,7 +59,8 @@ class ExplorerPageState extends State<ExplorerPage> {
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    _initializeLocationServices();
+    ();
   }
 
   @override
@@ -70,32 +71,30 @@ class ExplorerPageState extends State<ExplorerPage> {
   }
 
   void _onMapReady() {
-    _startListeningToLocationChanges();
     setState(() {
       _mapReady = true;
     });
   }
 
+  Future<void> _initializeLocationServices() async {
+    await _getCurrentLocation();
+    _listeningToLocationChanges();
+  }
+
   Future<void> _getCurrentLocation() async {
     if (!Settings.locationPermission) {
       await Geolocator.openLocationSettings();
-      // Si permission de position refusee, on ouvre la carte sur Paris
-      if (mounted) {
-        setState(() {
-          _currentPosition = LatLng(48.8566, 2.3522);
-        });
-      }
       return;
     }
 
-    if (mounted) {
+    if (mounted && widget.initPosition != null) {
       setState(() {
         _currentPosition = widget.initPosition;
       });
     }
   }
 
-  void _startListeningToLocationChanges() {
+  void _listeningToLocationChanges() {
     if (!Settings.locationPermission) {
       return;
     }
@@ -103,22 +102,28 @@ class ExplorerPageState extends State<ExplorerPage> {
       _positionSubscription = widget.positionStream.listen((Position position) {
         // Ne fait rien si l'app est en arriere plan
         if (Settings.appIsActive) {
-          if (mounted) {
-            animateMarker(_currentPosition!,
-                LatLng(position.latitude, position.longitude));
+          if (_mapReady) {
+            if (mounted) {
+              animateMarker(_currentPosition!,
+                  LatLng(position.latitude, position.longitude));
 
-            // Check automatiquement les fauna si l'user se deplace
-            if (_lastPosition == null ||
-                Common.calculateDistance(_lastPosition!, _currentPosition!) >
-                    distanceThreshold) {
-              if (mounted) {
-                setState(() {
-                  _lastPosition = _currentPosition;
-                });
+              // Check automatiquement les fauna si l'user se deplace
+              if (_lastPosition == null ||
+                  Common.calculateDistance(_lastPosition!, _currentPosition!) >
+                      distanceThreshold) {
+                if (mounted) {
+                  setState(() {
+                    _lastPosition = _currentPosition;
+                  });
+                }
+
+                _onMapChanged(_mapController.camera, false);
               }
-
-              _onMapChanged(_mapController.camera, false);
             }
+          } else {
+            setState(() {
+              _currentPosition = LatLng(position.latitude, position.longitude);
+            });
           }
         }
       });

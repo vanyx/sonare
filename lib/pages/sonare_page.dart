@@ -15,7 +15,7 @@ import '../services/settings.dart';
 
 class SonarePage extends StatefulWidget {
   final Stream<Position> positionStream;
-  final LatLng initPosition;
+  final LatLng? initPosition;
 
   SonarePage(
       {Key? key, required this.positionStream, required this.initPosition})
@@ -26,6 +26,8 @@ class SonarePage extends StatefulWidget {
 }
 
 class SonarePageState extends State<SonarePage> {
+  bool _mapReady = false;
+
   LatLng? _currentPosition;
 
   MapController _mapController = MapController();
@@ -83,13 +85,14 @@ class SonarePageState extends State<SonarePage> {
       });
     });
 
-    _getCurrentLocation();
-    updateFaunaParams();
+    _initializeLocationServices();
   }
 
   void _onMapReady() {
+    setState(() {
+      _mapReady = true;
+    });
     initFauna();
-    _listeningToLocationChanges();
     _listenToCompass();
   }
 
@@ -99,19 +102,19 @@ class SonarePageState extends State<SonarePage> {
     super.dispose();
   }
 
+  Future<void> _initializeLocationServices() async {
+    await _getCurrentLocation();
+    updateFaunaParams();
+    _listeningToLocationChanges();
+  }
+
   Future<void> _getCurrentLocation() async {
     if (!Settings.locationPermission) {
       await Geolocator.openLocationSettings();
-      // Si permission de position refusee, on ouvre la carte sur Paris
-      if (mounted) {
-        setState(() {
-          _currentPosition = LatLng(48.8566, 2.3522);
-        });
-      }
       return;
     }
 
-    if (mounted) {
+    if (mounted && widget.initPosition != null) {
       setState(() {
         _currentPosition = widget.initPosition;
       });
@@ -126,11 +129,15 @@ class SonarePageState extends State<SonarePage> {
       _positionSubscription = widget.positionStream.listen((Position position) {
         // Ne fait rien si l'app est en arriere plan
         if (Settings.appIsActive) {
-          if (mounted) {
-            _animateMarker(_currentPosition!,
-                LatLng(position.latitude, position.longitude));
+          if (_mapReady) {
+            if (mounted) {
+              _animateMarker(_currentPosition!,
+                  LatLng(position.latitude, position.longitude));
 
-            updateFauna();
+              updateFauna();
+            }
+          } else {
+            _currentPosition = LatLng(position.latitude, position.longitude);
           }
         }
       });
@@ -656,8 +663,6 @@ class SonarePageState extends State<SonarePage> {
                                       setState(() {
                                         _zoomLevel -= 0.5;
                                       });
-                                      print(_zoomLevel);
-
                                       _mapController.move(
                                           _currentPosition!, _zoomLevel);
                                     }
@@ -671,8 +676,6 @@ class SonarePageState extends State<SonarePage> {
                                       setState(() {
                                         _zoomLevel += 0.5;
                                       });
-                                      print(_zoomLevel);
-
                                       _mapController.move(
                                           _currentPosition!, _zoomLevel);
                                     }

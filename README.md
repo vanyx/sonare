@@ -27,13 +27,8 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 );
 
 
-### TODO
+# TODO: Faire clean les autorisations
 
-1. Faire quelque chose pour la position : regler le bug de la carte qui s'ouvre sur paris => passer un null, et faire comme le comportement d'avant
-Check sonare, ça doit rester en shimmer, et pas de position de paris
-Faire clean les autorisations
-
-2. Bug on voit plus les boutons - et +, voir pq ça marche pas
 
 ## Quand j'aurais l'api
 - Version API, mapUrl
