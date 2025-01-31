@@ -26,7 +26,7 @@ class Settings {
 
   static String termsUrl = 'https://fr.wikipedia.org/wiki/Lorem_ipsum';
 
-  static String mapUrl = '';
+  static String mapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   static bool voiceTalking = false;
 

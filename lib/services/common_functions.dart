@@ -110,8 +110,8 @@ class Common {
 
   // @TODO : fonction qui call API pour recuperer ces parametres. Si pas de reponse rien, et garde les params par defaut.
   static void initializeSonare() async {
-    Settings.mapUrl =
-        'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF0aGlldWd1aWxsb3RpbnNlbnNleW91IiwiYSI6ImNsNjY5aGI1ZzBhamszamw1aTkwaTdqN2kifQ.YJ0tcy2apJOnV0TYXbBigA';
+    // Settings.mapUrl =
+    //     'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF0aGlldWd1aWxsb3RpbnNlbnNleW91IiwiYSI6ImNsNjY5aGI1ZzBhamszamw1aTkwaTdqN2kifQ.YJ0tcy2apJOnV0TYXbBigA';
 
     Settings.apiVersion = '1.0.0';
   }

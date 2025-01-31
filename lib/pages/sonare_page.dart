@@ -32,7 +32,7 @@ class SonarePageState extends State<SonarePage> {
 
   StreamSubscription<Position>? _positionSubscription;
 
-  double _zoomLevel = 15.7;
+  double _zoomLevel = 15.5;
 
   double _sizeScreenCoef = 0.9; //min 0.0 et max 1.0
 
@@ -84,6 +84,7 @@ class SonarePageState extends State<SonarePage> {
     });
 
     _getCurrentLocation();
+    updateFaunaParams();
   }
 
   void _onMapReady() {
@@ -360,10 +361,7 @@ class SonarePageState extends State<SonarePage> {
   }
 
   void updateFaunaParams() {
-    if (_currentPosition == null ||
-        _bearing == null ||
-        _center == null ||
-        _blueRadius == null) {
+    if (_currentPosition == null || _center == null || _blueRadius == null) {
       return;
     }
 
@@ -381,7 +379,7 @@ class SonarePageState extends State<SonarePage> {
                   _currentPosition!.longitude,
                   fish.position.latitude,
                   fish.position.longitude) -
-              Common.degreesToRadians(_bearing!);
+              Common.degreesToRadians(_bearing != null ? _bearing! : 0);
 
           double x = ((screenSize!.width) / 2) +
               _blueRadius! * cos(fish.angle) -
@@ -503,8 +501,6 @@ class SonarePageState extends State<SonarePage> {
                         options: MapOptions(
                           initialCenter: _currentPosition!,
                           initialZoom: _zoomLevel,
-                          minZoom: _zoomLevel, // empeche de zoomer
-                          maxZoom: _zoomLevel, // empeche de zoomer
                           onMapReady: _onMapReady,
                           interactionOptions: InteractionOptions(
                             flags: 0,
@@ -585,7 +581,8 @@ class SonarePageState extends State<SonarePage> {
                     /*
                     - Le container joue le role de repere, dans lequel on positionne les points
                       Pour trouver son centre, on utilise sa (taille / 2) en x et y
-                      Il est donc necessaire de garder la meme taille utilisee pour la taille du container (repere) que pour le calcul du centre d'ou se baser pour calculer son centre
+                      Il est donc necessaire de garder la meme taille utilisee pour la taille du container (repere)
+                      que pour le calcul du centre d'ou se baser pour calculer son centre
 
                     - C'est ensuite le rayon qui defini la distance du centre a laquelle on veut mettre les points
                     */
@@ -633,47 +630,61 @@ class SonarePageState extends State<SonarePage> {
                   ),
 
                   // boutons zoom / dezoom
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    top: MediaQuery.of(context).size.height / 2 +
-                        ((screenSize!.width * _sizeScreenCoef) / 2) +
-                        10,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              CupertinoIcons.minus,
-                              color: Colors.white,
+                  Container(
+                    width: screenSize!.width,
+                    // Valeurs pour le calcul de la taille du calque a placer par dessus la carte,
+                    // qui va contenir les boutons + et -
+                    // 10 pour l'espace entre la carte et la row
+                    // 30 pour la hauteur de la row
+                    height: screenSize!.width + 10 * 2 + 30 * 2,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  icon: Icon(CupertinoIcons.minus,
+                                      color: Colors.white),
+                                  onPressed: () {
+                                    if (_zoomLevel > 13.0) {
+                                      setState(() {
+                                        _zoomLevel -= 0.5;
+                                      });
+                                      print(_zoomLevel);
+
+                                      _mapController.move(
+                                          _currentPosition!, _zoomLevel);
+                                    }
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(CupertinoIcons.plus,
+                                      color: Colors.white),
+                                  onPressed: () {
+                                    if (_zoomLevel < 17.5) {
+                                      setState(() {
+                                        _zoomLevel += 0.5;
+                                      });
+                                      print(_zoomLevel);
+
+                                      _mapController.move(
+                                          _currentPosition!, _zoomLevel);
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
-                            onPressed: () {
-                              if (_zoomLevel > 13.0) {
-                                setState(() {
-                                  _zoomLevel -= 0.5;
-                                });
-                              }
-                            },
                           ),
-                          IconButton(
-                            icon: Icon(
-                              CupertinoIcons.plus,
-                              color: const Color.fromARGB(255, 255, 255, 255),
-                            ),
-                            onPressed: () {
-                              if (_zoomLevel < 17.5) {
-                                setState(() {
-                                  _zoomLevel += 0.5;
-                                });
-                              }
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ),
+                  )
                 ],
               ),
       ),
