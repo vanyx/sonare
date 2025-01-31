@@ -13,7 +13,7 @@
 
 ## 3. Dev
 
-### Modifier son de notification
+### 3.1 Modifier son de notification
 
 1. Dans Xcode :
 Faire glisser le fichier audio (<sound_name>.aiff) depuis le finder vers le dossier Runner dans la section Project Navigator (sur la gauche).
@@ -27,17 +27,20 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 );
 
 
-# TODO: Faire clean les autorisations
-
-
-## Quand j'aurais l'api
+### Quand j'aurais l'api
 - Version API, mapUrl
+- configurer les routes dans Settings
 - report fishs
 - ajouter termes et conditions les memes que dans radar bot (attention dans certains pays c'est interdit dcp c'est votre faute, à la premiere requete de l'api on considere que vous acceptez les conditions, si ous mourrez c'est pas de notre faute, on fait ca seulement à but de securité routiere, etc., ADAPTER POUR LES CRITERES DANS LA LOI (app destiné à l'aide à la navigation etc.))
 
 
-## A tester sur android :
+### A tester sur android :
 - textes des autorisations
 - notif, sons, boussole, vibrations, webview qui fonctionnement correctement, son des notifs, background
 
 
+# 📌 Licence
+
+Ce projet a été entièrement imaginé, conçu et développé par **Thomas Benalouane**.  
+
+Copyright (c) 2025 Thomas Benalouane

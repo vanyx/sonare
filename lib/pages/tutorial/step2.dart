@@ -31,7 +31,7 @@ class Step2Widget extends StatelessWidget {
                   width: double.infinity,
                 ),
               ),
-              // Partie texte
+              // Zone texte
               Padding(
                 padding: const EdgeInsets.all(17),
                 child: Column(

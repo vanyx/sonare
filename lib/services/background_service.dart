@@ -83,9 +83,9 @@ class BackgroundService {
     _lastApiPosition = _currentPosition;
 
     // fetch
-    List<LatLng> wish = await Common.getWishByPosition(_currentPosition!);
+    List<LatLng> faunas = await Common.getFaunaByPosition(_currentPosition!);
 
-    for (var position in wish) {
+    for (var position in faunas) {
       if (Common.calculateDistance(_currentPosition!, position) <=
           Settings.furthestThreshold) {
         _faunas.add(Fauna(
@@ -95,11 +95,10 @@ class BackgroundService {
       }
     }
 
-    // Annonce sonore eventuelle du fauna le plus proche si URGENT (level = 2)
+    // Notif eventuelle du fauna le plus proche si URGENT (level = 2)
     int firstMaxLevel =
         Common.getMaxLevel(_faunas.map((fauna) => fauna.level).toList());
 
-    // Envoi notif
     if (firstMaxLevel == 2 &&
         Settings.notificationPermission &&
         Settings.notificationEnable) {
@@ -154,9 +153,9 @@ class BackgroundService {
 
     List<int> tmpLevels = [];
 
-    List<LatLng> wish = await Common.getWishByPosition(_currentPosition!);
+    List<LatLng> faunas = await Common.getFaunaByPosition(_currentPosition!);
 
-    for (var position in wish) {
+    for (var position in faunas) {
       if (!existPositionInFauna(position) &&
           Common.calculateDistance(_currentPosition!, position) <=
               Settings.furthestThreshold) {

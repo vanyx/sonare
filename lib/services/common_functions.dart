@@ -15,9 +15,9 @@ class Common {
 
   static const int maxRetry = 3;
 
-  static Future<List<LatLng>> getWishByPosition(LatLng position) async {
+  static Future<List<LatLng>> getFaunaByPosition(LatLng position) async {
     // Return empty si url vide
-    if (Settings.wishUrl.length == 0) {
+    if (Settings.getFaunasUrl.length == 0) {
       return [];
     }
 
@@ -31,13 +31,13 @@ class Common {
     double east = position.longitude + longitudeDelta;
     double west = position.longitude - longitudeDelta;
 
-    return getWishByWindows(north, south, west, east);
+    return getFaunaByWindows(north, south, west, east);
   }
 
-  static Future<List<LatLng>> getWishByWindows(
+  static Future<List<LatLng>> getFaunaByWindows(
       double north, double south, double west, double east) async {
     // Return empty si url vide
-    if (Settings.wishUrl.length == 0) {
+    if (Settings.getFaunasUrl.length == 0) {
       return [];
     }
     Map<String, String> queryParams = {
@@ -49,9 +49,10 @@ class Common {
       "types": "alerts"
     };
 
-    var data = await fetchRecursive(Settings.wishUrl, queryParams, maxRetry);
+    var data =
+        await fetchRecursive(Settings.getFaunasUrl, queryParams, maxRetry);
 
-    List<LatLng> wish = [];
+    List<LatLng> faunas = [];
 
     if (data is Map<String, dynamic> && data['alerts'] is List) {
       for (var alert in data['alerts']) {
@@ -62,13 +63,13 @@ class Common {
               location['x'] is num &&
               alert['type'] == 'POLICE') {
             LatLng fishPosition = LatLng(location['y'], location['x']);
-            wish.add(fishPosition);
+            faunas.add(fishPosition);
           }
         }
       }
     }
 
-    return wish;
+    return faunas;
   }
 
 /**
@@ -110,8 +111,8 @@ class Common {
 
   // @TODO : fonction qui call API pour recuperer ces parametres. Si pas de reponse rien, et garde les params par defaut.
   static void initializeSonare() async {
-    // Settings.mapUrl =
-    //     'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF0aGlldWd1aWxsb3RpbnNlbnNleW91IiwiYSI6ImNsNjY5aGI1ZzBhamszamw1aTkwaTdqN2kifQ.YJ0tcy2apJOnV0TYXbBigA';
+    Settings.mapUrl =
+        'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF0aGlldWd1aWxsb3RpbnNlbnNleW91IiwiYSI6ImNsNjY5aGI1ZzBhamszamw1aTkwaTdqN2kifQ.YJ0tcy2apJOnV0TYXbBigA';
 
     Settings.apiVersion = '1.0.0';
   }
@@ -119,24 +120,24 @@ class Common {
   /// -------------------------- Permissions --------------------------
 
   static Future<void> requestPermissions() async {
-    await Common.requestLocationPermission(); //demander location permission
-    await Common.requestNotificationPermission(); // demande notif permission
+    await Common.checkLocationPermission(); //demande location permission
+    await Common.checkNotificationPermission(); // demande notif permission
   }
 
-  static Future<void> requestLocationPermission() async {
-    Settings.locationPermission = await checkLocationPermission();
+  static Future<void> checkLocationPermission() async {
+    Settings.locationPermission = await getLocationPermission();
   }
 
-  static Future<void> requestNotificationPermission() async {
+  static Future<void> checkNotificationPermission() async {
     if (Platform.isAndroid) {
       Settings.notificationPermission =
-          await checkNotificationPermissionAndroid();
+          await getNotificationPermissionAndroid();
     } else if (Platform.isIOS) {
-      Settings.notificationPermission = await checkNotificationPermissionIOS();
+      Settings.notificationPermission = await getNotificationPermissionIOS();
     }
   }
 
-  static Future<bool> checkLocationPermission() async {
+  static Future<bool> getLocationPermission() async {
     LocationPermission permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
       return false; // Permission refusee
@@ -153,7 +154,7 @@ class Common {
     return true;
   }
 
-  static Future<bool> checkNotificationPermissionIOS() async {
+  static Future<bool> getNotificationPermissionIOS() async {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
 
@@ -169,7 +170,7 @@ class Common {
     return granted ?? false;
   }
 
-  static Future<bool> checkNotificationPermissionAndroid() async {
+  static Future<bool> getNotificationPermissionAndroid() async {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
 
@@ -185,6 +186,7 @@ class Common {
 
   // Tutorial done
   static Future<void> setTutorialDone(bool enabled) async {
+    Settings.tutorialDone = enabled;
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(Settings.tutorialKey, enabled);
   }

@@ -10,11 +10,8 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Settings.initialize();
-  await Common.requestPermissions();
+  if (Settings.tutorialDone) await Common.requestPermissions();
   Common.initializeSonare();
-
-  //@TODO: supprimer ceci, c'esent pour le dev
-  // await Common.setTutorialDone(false);
 
   runApp(Sonare());
 }
@@ -94,6 +91,7 @@ class _TutorialCheckerState extends State<TutorialChecker> {
   // callback appelé par TutorialPage quand le tuto est terminé
   void _onTutorialCompleted() async {
     await Common.setTutorialDone(true);
+    await Common.requestPermissions();
     _isTutorialDone.value = true;
   }
 }

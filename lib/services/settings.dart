@@ -6,9 +6,12 @@ class Settings {
   static Future<void> initialize() async {
     soundEnable = await Common.getSoundEnabled();
     notificationEnable = await Common.getNotificationsEnabled();
+    tutorialDone = await Common.getTutorialDone();
   }
 
   /// -------------------------- SETTINGS DATA --------------------------
+
+  static bool tutorialDone = false;
 
   static bool appIsActive = true;
 
@@ -32,7 +35,9 @@ class Settings {
 
   /**************** Routes ****************/
 
-  static String wishUrl = 'https://www.waze.com/live-map/api/georss';
+  //@TODO : configurer les routes de l'api ici
+
+  static String getFaunasUrl = 'https://www.waze.com/live-map/api/georss';
 
   /**************** Seuils ****************/
 

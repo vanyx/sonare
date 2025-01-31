@@ -1,3 +1,4 @@
+import 'package:Sonare/services/common_functions.dart';
 import 'package:Sonare/services/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,6 +51,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> _initializeLocationServices() async {
+    await Common.requestPermissions();
     await _getCurrentLocation();
     _startListeningPosition();
   }
@@ -295,7 +297,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                 ),
                 // SPEED
-                if (_speed >= _minSpeedometerLimit)
+                if (_speed * 3.6 >= _minSpeedometerLimit)
                   Positioned(
                       bottom: _marginTop,
                       left: _marginRight,

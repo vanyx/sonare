@@ -154,7 +154,7 @@ class ExplorerPageState extends State<ExplorerPage> {
       var northEast = bounds.northEast;
       var southWest = bounds.southWest;
 
-      Common.getWishByWindows(northEast.latitude, southWest.latitude,
+      Common.getFaunaByWindows(northEast.latitude, southWest.latitude,
               southWest.longitude, northEast.longitude)
           .then((newFish) {
         if (mounted) {

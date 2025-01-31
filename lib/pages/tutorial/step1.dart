@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import '../../styles/AppFonts.dart';
 
 class Step1Widget extends StatefulWidget {
-  final VoidCallback
-      onAnimationComplete; // Callback pour informer que l'animation est terminée
+  final VoidCallback onAnimationComplete;
 
   Step1Widget({required this.onAnimationComplete});
 
@@ -94,7 +93,7 @@ class _Step1WidgetState extends State<Step1Widget> {
                   text: (_showCursor &&
                           (_startTyping || _currentIndex < _fullText.length))
                       ? '|'
-                      : ' ',
+                      : ' ', // espace pour eviter le decalage
                   style: TextStyle(
                     fontFamily: 'sf-pro-display-light',
                     fontSize: 30,

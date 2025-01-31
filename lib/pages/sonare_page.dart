@@ -59,7 +59,7 @@ class SonarePageState extends State<SonarePage> {
       3; // nombre de confirmations necessaires pour le cap
 
   // Size moyenne à l'initialisation, pour eviter erreur null
-  Size? screenSize = Size(414.0, 896.0);
+  Size? _screenSize = Size(414.0, 896.0);
 
   double? _blueRadius = (414.0 * 0.9) / 2;
 
@@ -75,13 +75,13 @@ class SonarePageState extends State<SonarePage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        screenSize = MediaQuery.of(context).size;
+        _screenSize = MediaQuery.of(context).size;
 
         _blueRadius =
-            (screenSize!.width * _sizeScreenCoef) / 2; //rayon du cercle bleu
+            (_screenSize!.width * _sizeScreenCoef) / 2; //rayon du cercle bleu
 
-        _center = Offset(screenSize!.width / 2,
-            screenSize!.height / 2); //coord. centre de l'ecran
+        _center = Offset(_screenSize!.width / 2,
+            _screenSize!.height / 2); //coord. centre de l'ecran
       });
     });
 
@@ -176,9 +176,9 @@ class SonarePageState extends State<SonarePage> {
     }
 
     // fetch
-    List<LatLng> wish = await Common.getWishByPosition(_currentPosition!);
+    List<LatLng> faunas = await Common.getFaunaByPosition(_currentPosition!);
 
-    for (var position in wish) {
+    for (var position in faunas) {
       if (Common.calculateDistance(_currentPosition!, position) <=
           Settings.furthestThreshold) {
         _faunas.add(FaunaSonare(
@@ -225,11 +225,11 @@ class SonarePageState extends State<SonarePage> {
       });
     }
 
-    List<LatLng> wish = await Common.getWishByPosition(_currentPosition!);
+    List<LatLng> faunas = await Common.getFaunaByPosition(_currentPosition!);
 
     List<int> tmpLevels = [];
 
-    for (var position in wish) {
+    for (var position in faunas) {
       if (!existPositionInFauna(position) &&
           Common.calculateDistance(_currentPosition!, position) <=
               Settings.furthestThreshold) {
@@ -388,10 +388,10 @@ class SonarePageState extends State<SonarePage> {
                   fish.position.longitude) -
               Common.degreesToRadians(_bearing != null ? _bearing! : 0);
 
-          double x = ((screenSize!.width) / 2) +
+          double x = ((_screenSize!.width) / 2) +
               _blueRadius! * cos(fish.angle) -
               fish.size / 2;
-          double y = ((screenSize!.width) / 2) +
+          double y = ((_screenSize!.width) / 2) +
               _blueRadius! * sin(fish.angle) -
               fish.size / 2;
           fish.circlePosition = Offset(x, y);
@@ -479,8 +479,8 @@ class SonarePageState extends State<SonarePage> {
                   baseColor: Colors.grey[300]!,
                   highlightColor: Colors.grey[100]!,
                   child: Container(
-                    width: screenSize!.width * _sizeScreenCoef,
-                    height: screenSize!.width * _sizeScreenCoef,
+                    width: _screenSize!.width * _sizeScreenCoef,
+                    height: _screenSize!.width * _sizeScreenCoef,
                     decoration: BoxDecoration(
                       color: AppColors.sonareFlashi,
                       shape: BoxShape.circle,
@@ -496,8 +496,8 @@ class SonarePageState extends State<SonarePage> {
                 alignment: Alignment.center,
                 children: [
                   Container(
-                    width: screenSize!.width * _sizeScreenCoef,
-                    height: screenSize!.width * _sizeScreenCoef,
+                    width: _screenSize!.width * _sizeScreenCoef,
+                    height: _screenSize!.width * _sizeScreenCoef,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.transparent,
@@ -510,7 +510,7 @@ class SonarePageState extends State<SonarePage> {
                           initialZoom: _zoomLevel,
                           onMapReady: _onMapReady,
                           interactionOptions: InteractionOptions(
-                            flags: 0,
+                            flags: 0, // desactive le zoom
                           ),
                         ),
                         children: [
@@ -593,8 +593,8 @@ class SonarePageState extends State<SonarePage> {
 
                     - C'est ensuite le rayon qui defini la distance du centre a laquelle on veut mettre les points
                     */
-                    width: (screenSize!.width),
-                    height: (screenSize!.width),
+                    width: (_screenSize!.width),
+                    height: (_screenSize!.width),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                     ),
@@ -638,12 +638,12 @@ class SonarePageState extends State<SonarePage> {
 
                   // boutons zoom / dezoom
                   Container(
-                    width: screenSize!.width,
+                    width: _screenSize!.width,
                     // Valeurs pour le calcul de la taille du calque a placer par dessus la carte,
                     // qui va contenir les boutons + et -
                     // 10 pour l'espace entre la carte et la row
                     // 30 pour la hauteur de la row
-                    height: screenSize!.width + 10 * 2 + 30 * 2,
+                    height: _screenSize!.width + 10 * 2 + 30 * 2,
                     child: Stack(
                       children: [
                         Positioned(
