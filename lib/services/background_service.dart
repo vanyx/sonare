@@ -25,6 +25,43 @@ class BackgroundService {
 
   List<Fauna> _faunas = [];
 
+  bool _locationInitializationIsOk = false;
+
+  Future<void> initialize() async {
+    // Enable mode background
+    await _location.enableBackgroundMode(enable: true);
+
+    _location.changeSettings(
+      accuracy: LocationAccuracy.high,
+      // interval: 10000, // en millisecondes
+      // distanceFilter: 50 // en metres
+    );
+
+    // Initialisation notifications
+    await _initializeNotifications();
+
+    // Permissions
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+
+    serviceEnabled = await _location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await _location.requestService();
+      if (!serviceEnabled) {
+        return;
+      }
+    }
+
+    permissionGranted = await _location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await _location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+    _locationInitializationIsOk = true;
+  }
+
   void start() async {
     running = true;
 
@@ -33,21 +70,10 @@ class BackgroundService {
     _lastApiPosition = null;
 
     _currentPosition = null;
-    // /!\ Enable en background
-    bool bgEnabled = await _location.enableBackgroundMode(enable: true);
 
-    if (!Settings.locationPermission || !bgEnabled) {
+    if (!Settings.locationPermission || !_locationInitializationIsOk) {
       return;
     }
-    await _initializeNotifications();
-    await Future.delayed(Duration(
-        seconds: 2)); //necessite un delai avant l'envoi des premieres notif
-
-    _location.changeSettings(
-      accuracy: LocationAccuracy.high,
-      interval: 10000, // en millisecondes
-      // distanceFilter: 50 // en metres
-    );
 
     _streamLocation();
   }

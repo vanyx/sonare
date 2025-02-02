@@ -26,6 +26,7 @@ class _SonareState extends State<Sonare> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _backgroundService.initialize(); // initialize background
     WidgetsBinding.instance.addObserver(this);
   }
 
