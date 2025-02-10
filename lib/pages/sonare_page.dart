@@ -170,7 +170,7 @@ class SonarePageState extends State<SonarePage> {
     } catch (e) {}
   }
 
-  void initFauna() async {
+  Future<void> initFauna() async {
     if (_currentPosition == null) return;
 
     if (mounted) {
@@ -205,7 +205,7 @@ class SonarePageState extends State<SonarePage> {
     }
   }
 
-  void updateFauna() async {
+  Future<void> updateFauna() async {
     if (_currentPosition == null) return;
 
     // Distance min avant nouvel appel API en m
@@ -228,7 +228,10 @@ class SonarePageState extends State<SonarePage> {
         _lastApiPosition = _currentPosition;
       });
     }
+    updateFaunaParams();
+  }
 
+  Future<void> fetchFaunaAndIntegrate() async {
     List<LatLng> faunas = await Common.getFaunaByPosition(_currentPosition!);
 
     List<int> tmpLevels = [];

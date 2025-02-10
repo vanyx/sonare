@@ -102,7 +102,7 @@ class _TutorialCheckerState extends State<TutorialChecker> {
   }
 
   // callback appelé par TutorialPage quand le tuto est terminé
-  void _onTutorialCompleted() async {
+  Future<void> _onTutorialCompleted() async {
     await Common.setTutorialDone(true);
     await Common.requestPermissions();
     widget.backgroundService

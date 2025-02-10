@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:audioplayers_platform_interface/audioplayers_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/settings.dart';
 import 'dart:math';
@@ -111,7 +110,7 @@ class Common {
   /// -------------------------- Sonare Control --------------------------
 
   // @TODO : fonction qui call API pour recuperer ces parametres. Si pas de reponse rien, et garde les params par defaut.
-  static void initializeSonare() async {
+  static Future<void> initializeSonare() async {
     Settings.mapUrl =
         'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF0aGlldWd1aWxsb3RpbnNlbnNleW91IiwiYSI6ImNsNjY5aGI1ZzBhamszamw1aTkwaTdqN2kifQ.YJ0tcy2apJOnV0TYXbBigA';
 

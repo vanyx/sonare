@@ -26,13 +26,9 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
   sound: '<sound_name>.aiff', // Nom du fichier sans chemin
 );
 
-
-BUG :
-
-fetch api asynchrone et pas await
-idem pour lancer un son ?
-gerer un peu mieux tous les await
-
+# TODO
+Verifier que le background service fonctionne bien, que l'appelle api fonctionne, qu'il y a bien une notif au debut 
+si il y a un fauna direct
 
 ### Quand j'aurais l'api
 - Version API, mapUrl
