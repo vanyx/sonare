@@ -26,16 +26,13 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
   sound: '<sound_name>.aiff', // Nom du fichier sans chemin
 );
 
-# TODO
-Verifier que le background service fonctionne bien, que l'appelle api fonctionne, qu'il y a bien une notif au debut 
-si il y a un fauna direct
 
 ### Quand j'aurais l'api
 - Version API, mapUrl
 - configurer les routes dans Settings
 - report fishs
 - ajouter termes et conditions les memes que dans radar bot (attention dans certains pays c'est interdit dcp c'est votre faute, à la premiere requete de l'api on considere que vous acceptez les conditions, si ous mourrez c'est pas de notre faute, on fait ca seulement à but de securité routiere, etc., ADAPTER POUR LES CRITERES DANS LA LOI (app destiné à l'aide à la navigation etc.))
-
+- verifier que le background fonctionne bien
 
 ### A tester sur android :
 - textes des autorisations
