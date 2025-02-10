@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers_platform_interface/audioplayers_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/settings.dart';
 import 'dart:math';
@@ -238,14 +239,43 @@ class Common {
     if (Settings.voiceTalking) return;
 
     final audioPlayer = AudioPlayer();
+
+    // config pour baisser temporairement la musique en cours
+    await audioPlayer.setAudioContext(AudioContext(
+      android: AudioContextAndroid(
+        isSpeakerphoneOn: true,
+        audioFocus: AndroidAudioFocus.gainTransientMayDuck,
+        usageType: AndroidUsageType.assistant,
+        contentType: AndroidContentType.sonification,
+      ),
+      iOS: AudioContextIOS(
+        category: AVAudioSessionCategory.playback,
+        options: {AVAudioSessionOptions.duckOthers},
+      ),
+    ));
+
     Settings.voiceTalking = true;
 
     try {
       await audioPlayer.play(AssetSource(soundPath));
 
-      // Ecoute la fin du son pour debloquer
-      audioPlayer.onPlayerComplete.listen((_) {
+      // attend la fin du son pour retablir le volume
+      audioPlayer.onPlayerComplete.listen((_) async {
         Settings.voiceTalking = false;
+
+        // retabli le volume normal en supprimant l'effet ducking
+        await audioPlayer.setAudioContext(AudioContext(
+          android: AudioContextAndroid(
+            isSpeakerphoneOn: true,
+            audioFocus: AndroidAudioFocus.none,
+            usageType: AndroidUsageType.assistant,
+            contentType: AndroidContentType.sonification,
+          ),
+          iOS: AudioContextIOS(
+            category: AVAudioSessionCategory.playback,
+            options: {AVAudioSessionOptions.mixWithOthers},
+          ),
+        ));
       });
     } catch (e) {
       Settings.voiceTalking = false;

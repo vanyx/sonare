@@ -16,9 +16,13 @@ import '../services/settings.dart';
 class SonarePage extends StatefulWidget {
   final Stream<Position> positionStream;
   final LatLng? initPosition;
+  final double speed;
 
   SonarePage(
-      {Key? key, required this.positionStream, required this.initPosition})
+      {Key? key,
+      required this.positionStream,
+      required this.initPosition,
+      required this.speed})
       : super(key: key);
 
   @override
@@ -278,13 +282,7 @@ class SonarePageState extends State<SonarePage> {
       return;
     }
 
-    int timeElapsed = now.difference(_lastUpdateTime!).inMilliseconds;
-
-    double distance = Common.calculateDistance(from, to); //distance en m
-
-    double speedKmh = (distance / (timeElapsed / 1000)) * 3.6;
-
-    if (speedKmh >= 4 && distance > 2) {
+    if (widget.speed >= 15) {
       setState(() {
         _stoppedCount = 0;
         _movingCount++;

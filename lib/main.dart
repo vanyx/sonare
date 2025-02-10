@@ -10,7 +10,9 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Settings.initialize();
-  if (Settings.tutorialDone) await Common.requestPermissions();
+  if (Settings.tutorialDone) {
+    await Common.requestPermissions();
+  }
   Common.initializeSonare();
   runApp(Sonare());
 }
@@ -26,7 +28,7 @@ class _SonareState extends State<Sonare> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _backgroundService.initialize(); // initialize background
+    // _backgroundService.initialize(); // initialize background
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -41,7 +43,10 @@ class _SonareState extends State<Sonare> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       Settings.appIsActive = false;
-      _backgroundService.start();
+      if (Settings.tutorialDone) {
+        _backgroundService
+            .start(); // Ne fonctionne que si le tuto a deja ete fait
+      }
     } else if (state == AppLifecycleState.resumed) {
       Settings.appIsActive = true;
       _backgroundService.stop();
@@ -51,13 +56,17 @@ class _SonareState extends State<Sonare> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: TutorialChecker(),
+      home: TutorialChecker(backgroundService: _backgroundService),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class TutorialChecker extends StatefulWidget {
+  final BackgroundService backgroundService;
+
+  TutorialChecker({required this.backgroundService});
+
   @override
   _TutorialCheckerState createState() => _TutorialCheckerState();
 }
@@ -73,6 +82,10 @@ class _TutorialCheckerState extends State<TutorialChecker> {
 
   Future<void> _initializeTutorialStatus() async {
     final tutorialDone = await Common.getTutorialDone();
+    if (tutorialDone) {
+      widget.backgroundService
+          .initialize(); // Initialisation du background si le tuto a deja ete fait
+    }
     _isTutorialDone.value = tutorialDone;
   }
 
@@ -92,6 +105,8 @@ class _TutorialCheckerState extends State<TutorialChecker> {
   void _onTutorialCompleted() async {
     await Common.setTutorialDone(true);
     await Common.requestPermissions();
+    widget.backgroundService
+        .initialize(); // initialise le background une fois le tuto fini
     _isTutorialDone.value = true;
   }
 }

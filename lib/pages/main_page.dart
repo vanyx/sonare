@@ -26,8 +26,8 @@ class _MainPageState extends State<MainPage> {
   double _marginTop = 40;
   double _marginRight = 20;
 
-  double _speed = 0;
-  static const double _minSpeedometerLimit = 5; // km/h
+  double _speed = 0; // m/s
+  static const double _minSpeedometerLimit = 15; // km/h
 
   LatLng? _currentPosition;
 
@@ -206,6 +206,7 @@ class _MainPageState extends State<MainPage> {
       currentPage = SonarePage(
         positionStream: _positionStreamController.stream,
         initPosition: _currentPosition,
+        speed: _speed * 3.6,
       );
     }
 

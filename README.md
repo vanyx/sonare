@@ -27,6 +27,13 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 );
 
 
+BUG :
+
+fetch api asynchrone et pas await
+idem pour lancer un son ?
+gerer un peu mieux tous les await
+
+
 ### Quand j'aurais l'api
 - Version API, mapUrl
 - configurer les routes dans Settings
@@ -36,4 +43,5 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 
 ### A tester sur android :
 - textes des autorisations
-- notif, sons, boussole, vibrations, webview qui fonctionnement correctement, son des notifs, background
+- notif, sons, musique en arriere plan et que apres un son la musique reprenne,
+ boussole, vibrations, webview qui fonctionnement correctement, son des notifs, background
