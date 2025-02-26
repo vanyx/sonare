@@ -38,7 +38,7 @@ class Step2Widget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Naviguez sereinement.',
+                      'Soyez informé des zones de contrôle.',
                       style: AppFonts.tutorialCardTitle,
                       textAlign: TextAlign.left,
                     ),
