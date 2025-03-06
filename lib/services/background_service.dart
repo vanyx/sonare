@@ -1,17 +1,12 @@
 import 'dart:async';
+import 'package:Sonare/models/FaunaBackground.dart';
 import 'package:Sonare/services/settings.dart';
 import 'package:Sonare/services/common_functions.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 
-class Fauna {
-  String type;
-  LatLng position;
-  int level;
-
-  Fauna({required this.type, required this.position, required this.level});
-}
+import '../models/Fauna.dart';
 
 class BackgroundService {
   bool running = false;
@@ -23,7 +18,7 @@ class BackgroundService {
   LatLng? _currentPosition;
   LatLng? _lastApiPosition;
 
-  List<Fauna> _faunas = [];
+  List<FaunaBackground> _faunas = [];
 
   bool _locationInitializationIsOk = false;
 
@@ -108,24 +103,23 @@ class BackgroundService {
 
     _lastApiPosition = _currentPosition;
 
-    // fetch
-    List<LatLng> faunas = await Common.getFaunaByPosition(_currentPosition!);
-
-    for (var position in faunas) {
-      if (Common.calculateDistance(_currentPosition!, position) <=
+    List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
+    for (var fauna in faunas) {
+      if (Common.calculateDistance(_currentPosition!, fauna.position) <=
           Settings.furthestThreshold) {
-        _faunas.add(Fauna(
-            type: 'fish',
-            position: position,
-            level: Common.getFaunaLevel(_currentPosition!, position)));
+        _faunas.add(FaunaBackground(
+          type: fauna.type,
+          position: fauna.position,
+          level: Common.getFaunaLevel(_currentPosition!, fauna.position),
+        ));
       }
     }
 
-    // Notif eventuelle du fauna le plus proche si URGENT (level = 2)
+    // Notif eventuelle du fauna le plus proche si URGENT (level <= 2)
     int firstMaxLevel =
         Common.getMaxLevel(_faunas.map((fauna) => fauna.level).toList());
-
-    if (firstMaxLevel == 2 &&
+    print(firstMaxLevel);
+    if (firstMaxLevel <= 2 &&
         Settings.notificationPermission &&
         Settings.notificationEnable) {
       notifyByLevel(firstMaxLevel);
@@ -179,18 +173,19 @@ class BackgroundService {
 
     List<int> tmpLevels = [];
 
-    List<LatLng> faunas = await Common.getFaunaByPosition(_currentPosition!);
+    List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
 
-    for (var position in faunas) {
-      if (!existPositionInFauna(position) &&
-          Common.calculateDistance(_currentPosition!, position) <=
+    for (var fauna in faunas) {
+      if (!existPositionInFauna(fauna.position) &&
+          Common.calculateDistance(_currentPosition!, fauna.position) <=
               Settings.furthestThreshold) {
-        _faunas.add(Fauna(
-            position: position,
-            type: 'fish',
-            level: Common.getFaunaLevel(_currentPosition!, position)));
+        _faunas.add(FaunaBackground(
+          position: fauna.position,
+          type: fauna.type,
+          level: Common.getFaunaLevel(_currentPosition!, fauna.position),
+        ));
 
-        tmpLevels.add(Common.getFaunaLevel(_currentPosition!, position));
+        tmpLevels.add(Common.getFaunaLevel(_currentPosition!, fauna.position));
       }
     }
 

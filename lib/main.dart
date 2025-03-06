@@ -13,7 +13,7 @@ Future main() async {
   if (Settings.tutorialDone) {
     await Common.requestPermissions();
   }
-  Common.initializeSonare();
+  await Common.initializeSonare();
   runApp(Sonare());
 }
 

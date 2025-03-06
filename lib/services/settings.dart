@@ -33,11 +33,19 @@ class Settings {
 
   static bool voiceTalking = false;
 
-  /**************** Routes ****************/
+  /**************** API - endpoints ****************/
 
-  //@TODO : configurer les routes de l'api ici
+  static String apiUrl = 'http://192.168.1.37:8080';
 
-  static String getFaunasUrl = 'https://www.waze.com/live-map/api/georss';
+  static String apiInfoEndpoint = '/api/infos';
+
+  static String getByWindowEndpoint = '/api/fauna/window';
+
+  static String getByRadiusEndpoint = '/api/fauna/radius';
+
+  static String postFishEndpoint = '/api/fauna/fish';
+
+  static String postShellEndpoint = '/api/fauna/shell';
 
   /**************** Seuils ****************/
 

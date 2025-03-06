@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:latlong2/latlong.dart';
 import '../styles/AppColors.dart';
 import './closeButton.dart';
 import '../../styles/AppFonts.dart';
 import 'package:flutter/services.dart';
+import '../services/common_functions.dart';
 
 class ReportSheet extends StatefulWidget {
   final VoidCallback onClose;
+  final LatLng position;
 
-  ReportSheet({required this.onClose});
+  ReportSheet({required this.onClose, required this.position});
 
   @override
   _ReportSheetState createState() => _ReportSheetState();
 }
 
 class _ReportSheetState extends State<ReportSheet> {
-  int? selectedCircle; // null == aucun cercle sélectionné
+  int? selectedCircle; // 0 : fish, 1 : shell, null : aucun cercle sélectionné
   bool isReported = false;
   double opacity = 1.0;
 
@@ -30,6 +33,14 @@ class _ReportSheetState extends State<ReportSheet> {
   }
 
   void report() {
+    if (selectedCircle != null) {
+      if (selectedCircle == 0) {
+        Common.postFauna(widget.position, "fish");
+      } else if (selectedCircle == 1) {
+        Common.postFauna(widget.position, "shell");
+      }
+    }
+
     setState(() {
       // Lance le fondu
       opacity = 0.0;

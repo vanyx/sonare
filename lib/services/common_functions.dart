@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/Fauna.dart';
 import '../services/settings.dart';
 import 'dart:math';
 import 'dart:io';
@@ -12,109 +13,151 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Common {
   /// -------------------------- WEB --------------------------
-
-  static const int maxRetry = 3;
-
-  static Future<List<LatLng>> getFaunaByPosition(LatLng position) async {
-    // Return empty si url vide
-    if (Settings.getFaunasUrl.length == 0) {
+  static Future<List<Fauna>> getFaunaByWindow(
+      double east, double south, double west, double north) async {
+    if (Settings.getByWindowEndpoint.isEmpty) {
       return [];
     }
 
-    double latitudeDelta =
-        Settings.furthestThreshold / 111000; // Distance en degrés de latitude
-    double longitudeDelta = Settings.furthestThreshold /
-        (111000 * cos(position.latitude * pi / 180));
-
-    double north = position.latitude + latitudeDelta;
-    double south = position.latitude - latitudeDelta;
-    double east = position.longitude + longitudeDelta;
-    double west = position.longitude - longitudeDelta;
-
-    return getFaunaByWindows(north, south, west, east);
-  }
-
-  static Future<List<LatLng>> getFaunaByWindows(
-      double north, double south, double west, double east) async {
-    // Return empty si url vide
-    if (Settings.getFaunasUrl.length == 0) {
-      return [];
-    }
     Map<String, String> queryParams = {
-      "top": north.toString(),
-      "bottom": south.toString(),
-      "left": west.toString(),
-      "right": east.toString(),
-      "env": "row",
-      "types": "alerts"
+      "east": east.toString(),
+      "south": south.toString(),
+      "west": west.toString(),
+      "north": north.toString()
     };
 
-    var data =
-        await fetchRecursive(Settings.getFaunasUrl, queryParams, maxRetry);
-
-    List<LatLng> faunas = [];
-
-    if (data is Map<String, dynamic> && data['alerts'] is List) {
-      for (var alert in data['alerts']) {
-        if (alert is Map<String, dynamic>) {
-          var location = alert['location'];
-          if (location is Map<String, dynamic> &&
-              location['y'] is num &&
-              location['x'] is num &&
-              alert['type'] == 'POLICE') {
-            LatLng fishPosition = LatLng(location['y'], location['x']);
-            faunas.add(fishPosition);
-          }
-        }
-      }
-    }
-
-    return faunas;
-  }
-
-/**
- * Effectue un appel API avec un nombre maximal de tentatives.
- * En cas d'échec, la fonction réessaie jusqu'à épuisement du nombre de tentatives spécifié.
- * 
- * @param url L'URL cible de l'API (obligatoire).
- * @param queryParams Une carte (`Map<String, String>`) optionnelle contenant les paramètres
- *                    de requête à inclure dans l'URL. Si non spécifiée, la requête est 
- *                    effectuée directement sur l'URL.
- * @param retries Le nombre maximum de tentatives en cas d'échec.
- * @return La réponse JSON décodée si le statut HTTP est 200, sinon une liste vide (`[]`).
- */
-  static Future fetchRecursive(
-      String url, Map<String, String>? queryParams, retries) async {
     try {
-      Uri uri = Uri.parse(url);
-      final finalUri =
-          queryParams != null ? uri.replace(queryParameters: queryParams) : uri;
+      Uri uri = Uri.parse(Settings.apiUrl + Settings.getByWindowEndpoint);
+      final finalUri = uri.replace(queryParameters: queryParams);
 
       final response = await http.get(finalUri);
 
       if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else {
-        return [];
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+        List<Fauna> faunas = [];
+
+        if (data.containsKey("fishes")) {
+          faunas.addAll(data["fishes"]
+              .map<Fauna>((json) => Fauna.fromJson(json, "fish"))
+              .toList());
+        }
+
+        if (data.containsKey("shells")) {
+          faunas.addAll(data["shells"]
+              .map<Fauna>((json) => Fauna.fromJson(json, "shell"))
+              .toList());
+        }
+        return faunas;
       }
     } catch (e) {
-      if (retries > 0) {
-        await Future.delayed(Duration(milliseconds: 200));
-        return await fetchRecursive(url, queryParams, retries - 1);
-      } else {
-        return [];
-      }
+      return [];
     }
+    return [];
+  }
+
+  static Future<List<Fauna>> getFaunaByRadius(LatLng position) async {
+    if (Settings.getByRadiusEndpoint.isEmpty) {
+      return [];
+    }
+
+    Map<String, String> queryParams = {
+      "longitude": position.longitude.toString(),
+      "latitude": position.latitude.toString()
+    };
+
+    try {
+      Uri uri = Uri.parse(Settings.apiUrl + Settings.getByRadiusEndpoint);
+      final finalUri = uri.replace(queryParameters: queryParams);
+
+      final response = await http.get(finalUri);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+        List<Fauna> faunas = [];
+
+        if (data.containsKey("fishes")) {
+          faunas.addAll(data["fishes"]
+              .map<Fauna>((json) => Fauna.fromJson(json, "fish"))
+              .toList());
+        }
+
+        if (data.containsKey("shells")) {
+          faunas.addAll(data["shells"]
+              .map<Fauna>((json) => Fauna.fromJson(json, "shell"))
+              .toList());
+        }
+        return faunas;
+      }
+    } catch (e) {
+      return [];
+    }
+    return [];
+  }
+
+  static Future<void> postFauna(LatLng position, String type) async {
+    if (Settings.postFishEndpoint.isEmpty ||
+        Settings.postShellEndpoint.isEmpty) {
+      return;
+    }
+
+    Map<String, String> body = {
+      "longitude": position.longitude.toString(),
+      "latitude": position.latitude.toString()
+    };
+
+    try {
+      String endpoint = "";
+      if (type == "shell") {
+        endpoint = Settings.postShellEndpoint;
+      } else if (type == "fish") {
+        endpoint = Settings.postFishEndpoint;
+      } else {
+        return;
+      }
+
+      Uri uri = Uri.parse(Settings.apiUrl + endpoint);
+
+      final response = await http.post(
+        uri,
+        headers: {
+          'Content-Type':
+              'application/json', // specifie que les donnees envoyees sont en JSON
+        },
+        body: jsonEncode(body), // Encode le corps en JSON
+      );
+
+      if (response.statusCode == 200) {
+      } else {}
+    } catch (e) {}
   }
 
   /// -------------------------- Sonare Control --------------------------
 
-  // @TODO : fonction qui call API pour recuperer ces parametres. Si pas de reponse rien, et garde les params par defaut.
   static Future<void> initializeSonare() async {
-    Settings.mapUrl =
-        'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF0aGlldWd1aWxsb3RpbnNlbnNleW91IiwiYSI6ImNsNjY5aGI1ZzBhamszamw1aTkwaTdqN2kifQ.YJ0tcy2apJOnV0TYXbBigA';
+    // Vérifie si l'endpoint est vide
+    if (Settings.apiInfoEndpoint.isEmpty) {
+      return;
+    }
 
-    Settings.apiVersion = '1.0.0';
+    try {
+      Uri finalUri = Uri.parse(Settings.apiUrl + Settings.apiInfoEndpoint);
+
+      final response = await http.get(finalUri);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+        if (data.containsKey("mapUrl") && data["mapUrl"] != null) {
+          Settings.mapUrl = data["mapUrl"];
+        }
+
+        if (data.containsKey("apiVersion") && data["apiVersion"] != null) {
+          Settings.apiVersion = data["apiVersion"];
+        }
+      }
+    } catch (e) {}
   }
 
   /// -------------------------- Permissions --------------------------
@@ -409,8 +452,8 @@ class Common {
         (currentMin, element) => currentMin < element ? currentMin : element);
   }
 
-  static int getFaunaLevel(LatLng me, LatLng FaunaSonare) {
-    double distance = Common.calculateDistance(me, FaunaSonare);
+  static int getFaunaLevel(LatLng me, LatLng fauna) {
+    double distance = Common.calculateDistance(me, fauna);
 
     if (distance <= Settings.urgentThreshold) {
       return 1;

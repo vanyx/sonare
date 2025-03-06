@@ -179,19 +179,19 @@ class SonarePageState extends State<SonarePage> {
       });
     }
 
-    // fetch
-    List<LatLng> faunas = await Common.getFaunaByPosition(_currentPosition!);
+    List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
 
-    for (var position in faunas) {
-      if (Common.calculateDistance(_currentPosition!, position) <=
+    for (var fauna in faunas) {
+      if (Common.calculateDistance(_currentPosition!, fauna.position) <=
           Settings.furthestThreshold) {
         _faunas.add(FaunaSonare(
-            position: position,
-            visible: false,
-            angle: 0.0,
-            circlePosition: Offset(0, 0),
-            type: 'fish',
-            level: Common.getFaunaLevel(_currentPosition!, position)));
+          position: fauna.position,
+          visible: false,
+          angle: 0.0,
+          circlePosition: Offset.zero,
+          type: fauna.type,
+          level: Common.getFaunaLevel(_currentPosition!, fauna.position),
+        ));
       }
     }
 
@@ -212,8 +212,8 @@ class SonarePageState extends State<SonarePage> {
     double apiCallDistanceThreshold = Settings.furthestThreshold / 10;
 
     // filtrage
-    _faunas.removeWhere((fish) =>
-        Common.calculateDistance(_currentPosition!, fish.position) >
+    _faunas.removeWhere((fauna) =>
+        Common.calculateDistance(_currentPosition!, fauna.position) >
         Settings.furthestThreshold);
 
     if (_lastApiPosition != null) {
@@ -229,27 +229,31 @@ class SonarePageState extends State<SonarePage> {
       });
     }
     updateFaunaParams();
+    fetchFaunaAndIntegrate();
   }
 
   Future<void> fetchFaunaAndIntegrate() async {
-    List<LatLng> faunas = await Common.getFaunaByPosition(_currentPosition!);
+    List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
 
     List<int> tmpLevels = [];
 
-    for (var position in faunas) {
-      if (!existPositionInFauna(position) &&
-          Common.calculateDistance(_currentPosition!, position) <=
+    for (var fauna in faunas) {
+      if (!existPositionInFauna(fauna.position) &&
+          Common.calculateDistance(_currentPosition!, fauna.position) <=
               Settings.furthestThreshold) {
-        _faunas.add(FaunaSonare(
-            position: position,
-            visible: false,
-            angle: 0.0,
-            circlePosition: Offset(0, 0),
-            type: 'fish',
-            level: Common.getFaunaLevel(_currentPosition!, position)));
+        int level = Common.getFaunaLevel(_currentPosition!, fauna.position);
 
-        // util pour les sons
-        tmpLevels.add(Common.getFaunaLevel(_currentPosition!, position));
+        _faunas.add(FaunaSonare(
+          position: fauna.position,
+          visible: false,
+          angle: 0.0,
+          circlePosition: Offset.zero,
+          type: fauna.type,
+          level: level,
+        ));
+
+        // Util pour les sons
+        tmpLevels.add(level);
       }
     }
 
@@ -377,25 +381,25 @@ class SonarePageState extends State<SonarePage> {
 
     if (mounted) {
       setState(() {
-        for (var fish in _faunas) {
+        for (var fauna in _faunas) {
           // Visibilite
-          fish.visible = checkTargetVisibility(fish.position);
+          fauna.visible = checkTargetVisibility(fauna.position);
 
           // Calcul de l'angle
-          fish.angle = Common.azimutBetweenCenterAndPointRadian(
+          fauna.angle = Common.azimutBetweenCenterAndPointRadian(
                   _currentPosition!.latitude,
                   _currentPosition!.longitude,
-                  fish.position.latitude,
-                  fish.position.longitude) -
+                  fauna.position.latitude,
+                  fauna.position.longitude) -
               Common.degreesToRadians(_bearing != null ? _bearing! : 0);
 
           double x = ((_screenSize!.width) / 2) +
-              _blueRadius! * cos(fish.angle) -
-              fish.size / 2;
+              _blueRadius! * cos(fauna.angle) -
+              fauna.size / 2;
           double y = ((_screenSize!.width) / 2) +
-              _blueRadius! * sin(fish.angle) -
-              fish.size / 2;
-          fish.circlePosition = Offset(x, y);
+              _blueRadius! * sin(fauna.angle) -
+              fauna.size / 2;
+          fauna.circlePosition = Offset(x, y);
 
           // Calcul de la taille en fonction de la distance
           /**
@@ -408,31 +412,32 @@ class SonarePageState extends State<SonarePage> {
            * Moi
            */
           double distance =
-              Common.calculateDistance(_currentPosition!, fish.position);
+              Common.calculateDistance(_currentPosition!, fauna.position);
 
           if (distance >= Settings.furthestThreshold) {
-            fish.size = FaunaSonare.minSizeValue;
+            fauna.size = FaunaSonare.minSizeValue;
           } else if (distance <= Settings.furthestThreshold / 5) {
-            fish.size = FaunaSonare.maxSizeValue;
+            fauna.size = FaunaSonare.maxSizeValue;
           } else {
             double normalizedDistance = 1 -
                 (distance - (Settings.furthestThreshold / 5)) /
                     (Settings.furthestThreshold -
                         (Settings.furthestThreshold / 5));
 
-            fish.size = FaunaSonare.minSizeValue +
+            fauna.size = FaunaSonare.minSizeValue +
                 (FaunaSonare.maxSizeValue - FaunaSonare.minSizeValue) *
                     pow(normalizedDistance, 4);
           }
 
           // Calcul level + sons a eventuellement annoncer
-          int newLevel = Common.getFaunaLevel(_currentPosition!, fish.position);
+          int newLevel =
+              Common.getFaunaLevel(_currentPosition!, fauna.position);
 
-          if (newLevel < fish.level) {
+          if (newLevel < fauna.level) {
             levelsToAnnounce.add(newLevel);
           }
-          if (newLevel != fish.level) {
-            fish.level = newLevel;
+          if (newLevel != fauna.level) {
+            fauna.level = newLevel;
           }
         }
 
@@ -519,19 +524,19 @@ class SonarePageState extends State<SonarePage> {
                           MarkerLayer(
                             markers: [
                               // FAUNAS - MARKERS
-                              for (var fish in _faunas)
-                                if (fish.visible)
+                              for (var fauna in _faunas)
+                                if (fauna.visible)
                                   Marker(
                                     width: FaunaSonare.maxSizeValue,
                                     height: FaunaSonare.maxSizeValue,
-                                    point: fish.position,
+                                    point: fauna.position,
                                     child: Transform.rotate(
                                       angle: _bearing != null
                                           ? _bearing! * (pi / 180)
                                           : 0.0, // rotation inverse
                                       child: CustomMarker(
                                         size: FaunaSonare.maxSizeValue,
-                                        type: fish.type == "fish"
+                                        type: fauna.type == "fish"
                                             ? "fish"
                                             : "shell",
                                       ),
@@ -601,26 +606,26 @@ class SonarePageState extends State<SonarePage> {
                     ),
                     child: Stack(
                       children: [
-                        for (var fish in _faunas)
-                          if (!fish.visible)
+                        for (var fauna in _faunas)
+                          if (!fauna.visible)
                             Positioned(
-                              left: fish.circlePosition.dx,
-                              top: fish.circlePosition.dy,
+                              left: fauna.circlePosition.dx,
+                              top: fauna.circlePosition.dy,
                               child: Container(
-                                width: fish.size,
-                                height: fish.size,
+                                width: fauna.size,
+                                height: fauna.size,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: fish.type == "fish"
+                                  color: fauna.type == "fish"
                                       ? AppColors.iconBackgroundFish
-                                      : (fish.type == "shell"
+                                      : (fauna.type == "shell"
                                           ? AppColors.iconBackgroundShell
                                           : Colors
                                               .transparent // Couleur par défaut si aucune condition
                                       ),
                                   border: Border.all(
                                     color: Colors.white,
-                                    width: fish.size / 9,
+                                    width: fauna.size / 9,
                                   ),
                                   boxShadow: [
                                     BoxShadow(

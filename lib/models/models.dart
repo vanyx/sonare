@@ -1,2 +1,2 @@
 export 'faunaSonare.dart';
-export 'faunaExplorer.dart';
+export 'Fauna.dart';

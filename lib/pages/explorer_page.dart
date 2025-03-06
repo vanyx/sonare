@@ -1,4 +1,4 @@
-import 'package:Sonare/models/faunaExplorer.dart';
+import 'package:Sonare/models/Fauna.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -44,7 +44,7 @@ class ExplorerPageState extends State<ExplorerPage> {
   bool _mapReady = false;
 
   LatLng? _currentPosition;
-  List<FaunaExplorer> _faunas = [];
+  List<Fauna> _faunas = [];
 
   double distanceThreshold = 200.0; // Seuil en m
 
@@ -74,6 +74,7 @@ class ExplorerPageState extends State<ExplorerPage> {
     setState(() {
       _mapReady = true;
     });
+    initFauna();
   }
 
   Future<void> _initializeLocationServices() async {
@@ -130,6 +131,11 @@ class ExplorerPageState extends State<ExplorerPage> {
     } catch (e) {}
   }
 
+  Future<void> initFauna() async {
+    if (_currentPosition == null) return;
+    _onMapChanged(_mapController.camera, false);
+  }
+
   void _onMapChanged(MapCamera camera, bool? hasGesture) {
     if (mounted) {
       setState(() {
@@ -151,17 +157,13 @@ class ExplorerPageState extends State<ExplorerPage> {
 
     _debounceTimer = Timer(const Duration(milliseconds: 200), () {
       var bounds = camera.visibleBounds;
-      var northEast = bounds.northEast;
-      var southWest = bounds.southWest;
 
-      Common.getFaunaByWindows(northEast.latitude, southWest.latitude,
-              southWest.longitude, northEast.longitude)
-          .then((newFish) {
+      Common.getFaunaByWindow(
+              bounds.east, bounds.south, bounds.west, bounds.north)
+          .then((newFaunas) {
         if (mounted) {
           setState(() {
-            _faunas = newFish
-                .map((pos) => FaunaExplorer(position: pos, type: "fish"))
-                .toList();
+            _faunas = newFaunas;
           });
         }
       });

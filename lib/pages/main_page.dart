@@ -111,7 +111,7 @@ class _MainPageState extends State<MainPage> {
     showDialog(
       context: context,
       barrierDismissible:
-          false, // empêche la fermeture en cliquant en dehors du dialog
+          false, // empeche la fermeture en cliquant en dehors du dialog
       builder: (BuildContext context) {
         return UpdateDialog();
       },
@@ -177,6 +177,7 @@ class _MainPageState extends State<MainPage> {
               _isBottomSheetOpen = false;
             });
           },
+          position: _currentPosition!,
         );
       },
     ).whenComplete(() {
