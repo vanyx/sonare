@@ -118,7 +118,6 @@ class BackgroundService {
     // Notif eventuelle du fauna le plus proche si URGENT (level <= 2)
     int firstMaxLevel =
         Common.getMaxLevel(_faunas.map((fauna) => fauna.level).toList());
-    print(firstMaxLevel);
     if (firstMaxLevel <= 2 &&
         Settings.notificationPermission &&
         Settings.notificationEnable) {

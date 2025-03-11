@@ -299,16 +299,16 @@ class _MainPageState extends State<MainPage> {
                         ),
                 ),
                 // SPEED
-                if (_speed * 3.6 >= _minSpeedometerLimit)
-                  Positioned(
-                      bottom: _marginTop,
-                      left: _marginRight,
-                      child: _isBottomSheetOpen
-                          ? Container()
-                          : Speedometer(
-                              speed: _speed * 3.6,
-                              mode: _selectedMode,
-                            )),
+                // if (_speed * 3.6 >= _minSpeedometerLimit)
+                Positioned(
+                    bottom: _marginTop,
+                    left: _marginRight,
+                    child: _isBottomSheetOpen
+                        ? Container()
+                        : Speedometer(
+                            speed: _speed * 3.6,
+                            mode: _selectedMode,
+                          )),
                 // SETTINGS
                 Positioned(
                   top: _marginTop * 1.3,

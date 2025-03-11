@@ -112,13 +112,15 @@ class ExplorerPageState extends State<ExplorerPage> {
               if (_lastPosition == null ||
                   Common.calculateDistance(_lastPosition!, _currentPosition!) >
                       distanceThreshold) {
-                if (mounted) {
-                  setState(() {
-                    _lastPosition = _currentPosition;
-                  });
-                }
+                if (!widget.explorerUserMovedCamera) {
+                  if (mounted) {
+                    setState(() {
+                      _lastPosition = _currentPosition;
+                    });
+                  }
 
-                _onMapChanged(_mapController.camera, false);
+                  _onMapChanged(_mapController.camera, false);
+                }
               }
             }
           } else {
