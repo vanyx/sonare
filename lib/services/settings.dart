@@ -7,6 +7,8 @@ class Settings {
     soundEnable = await Common.getSoundEnabled();
     notificationEnable = await Common.getNotificationsEnabled();
     tutorialDone = await Common.getTutorialDone();
+    fishEnable = await Common.getFishEnabled();
+    shellEnable = await Common.getShellEnabled();
   }
 
   /// -------------------------- SETTINGS DATA --------------------------
@@ -23,6 +25,10 @@ class Settings {
 
   static bool notificationEnable = false;
 
+  static bool fishEnable = false;
+
+  static bool shellEnable = false;
+
   static const String version = '1.0.0'; //current version
 
   static String apiVersion = '1.0.0'; //version returned by api
@@ -35,7 +41,7 @@ class Settings {
 
   /**************** API - endpoints ****************/
 
-  static String apiUrl = 'http://172.20.10.2:8080';
+  static String apiUrl = 'http://192.168.1.37:8080';
 
   static String apiInfoEndpoint = '/api/infos';
 
@@ -63,4 +69,6 @@ class Settings {
   static const String tutorialKey = 'tutorialDone';
   static const String soundKey = 'soundEnabled';
   static const String notificationsKey = 'notificationsEnabled';
+  static const String fishKey = 'fishEnabled';
+  static const String shellKey = 'shellEnabled';
 }

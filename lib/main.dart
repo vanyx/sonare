@@ -28,7 +28,6 @@ class _SonareState extends State<Sonare> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    // _backgroundService.initialize(); // initialize background
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -43,8 +42,6 @@ class _SonareState extends State<Sonare> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       Settings.appIsActive = false;
-
-      print(Settings.notificationEnable);
 
       if (Settings.tutorialDone && Settings.notificationEnable) {
         _backgroundService

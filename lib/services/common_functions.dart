@@ -37,13 +37,13 @@ class Common {
 
         List<Fauna> faunas = [];
 
-        if (data.containsKey("fishes")) {
+        if (Settings.fishEnable && data.containsKey("fishes")) {
           faunas.addAll(data["fishes"]
               .map<Fauna>((json) => Fauna.fromJson(json, "fish"))
               .toList());
         }
 
-        if (data.containsKey("shells")) {
+        if (Settings.shellEnable && data.containsKey("shells")) {
           faunas.addAll(data["shells"]
               .map<Fauna>((json) => Fauna.fromJson(json, "shell"))
               .toList());
@@ -77,13 +77,13 @@ class Common {
 
         List<Fauna> faunas = [];
 
-        if (data.containsKey("fishes")) {
+        if (Settings.fishEnable && data.containsKey("fishes")) {
           faunas.addAll(data["fishes"]
               .map<Fauna>((json) => Fauna.fromJson(json, "fish"))
               .toList());
         }
 
-        if (data.containsKey("shells")) {
+        if (Settings.shellEnable && data.containsKey("shells")) {
           faunas.addAll(data["shells"]
               .map<Fauna>((json) => Fauna.fromJson(json, "shell"))
               .toList());
@@ -265,6 +265,30 @@ class Common {
   static Future<bool> getNotificationsEnabled() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(Settings.notificationsKey) ?? true;
+  }
+
+  // fish enabled
+  static Future<void> setFishEnabled(bool enabled) async {
+    Settings.fishEnable = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(Settings.fishKey, enabled);
+  }
+
+  static Future<bool> getFishEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(Settings.fishKey) ?? true;
+  }
+
+  // shell enabled
+  static Future<void> setShellEnabled(bool enabled) async {
+    Settings.shellEnable = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(Settings.shellKey, enabled);
+  }
+
+  static Future<bool> getShellEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(Settings.shellKey) ?? true;
   }
 
   /// -------------------------- SOUNDS --------------------------

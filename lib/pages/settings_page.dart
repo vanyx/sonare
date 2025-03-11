@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import '../widgets/closeButton.dart';
 import '../styles/AppColors.dart';
 import '../styles/AppFonts.dart';
-import './settings/lexique_page.dart';
 import './settings/sound_notification_page.dart';
 import './settings/terms_page.dart';
+import './settings/signalisation_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -87,7 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => LexiquePage(),
+                  builder: (context) => SignalisationPage(),
                 ),
               );
             },
@@ -99,12 +99,12 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               horizontalTitleGap: horizontalPadding,
               leading: Icon(
-                CupertinoIcons.lightbulb,
+                CupertinoIcons.exclamationmark_triangle,
                 color: AppColors.buttonMain,
                 size: iconWidth,
               ),
               title: Text(
-                'Lexique',
+                'Signalisation',
                 style: AppFonts.settingsList,
               ),
               trailing: Icon(

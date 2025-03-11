@@ -27,8 +27,6 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 );
 
 
-OPTION POUR DESACTIVER LES FISHS (pour la loi)
-
 ### A tester sur android :
 - textes des autorisations
 - notif, sons, musique en arriere plan et que apres un son la musique reprenne,
