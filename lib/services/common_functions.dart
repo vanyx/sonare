@@ -10,6 +10,7 @@ import 'dart:math';
 import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/material.dart';
 
 class Common {
   /// -------------------------- WEB --------------------------
@@ -267,9 +268,15 @@ class Common {
     return prefs.getBool(Settings.notificationsKey) ?? true;
   }
 
+  // Notifier pour anoncer un changement dans les fauna enable
+  static ValueNotifier<bool> faunaNotifier = ValueNotifier(true);
+
   // fish enabled
+
   static Future<void> setFishEnabled(bool enabled) async {
     Settings.fishEnable = enabled;
+    faunaNotifier.value =
+        !faunaNotifier.value; // Change la valeur pour notifier
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(Settings.fishKey, enabled);
   }
@@ -282,6 +289,8 @@ class Common {
   // shell enabled
   static Future<void> setShellEnabled(bool enabled) async {
     Settings.shellEnable = enabled;
+    faunaNotifier.value =
+        !faunaNotifier.value; // Change la valeur pour notifier
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(Settings.shellKey, enabled);
   }

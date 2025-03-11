@@ -38,7 +38,7 @@ class SonarePageState extends State<SonarePage> {
 
   StreamSubscription<Position>? _positionSubscription;
 
-  double _zoomLevel = 15.5;
+  double _zoomLevel = 17;
 
   double _sizeScreenCoef = 0.9; //min 0.0 et max 1.0
 
@@ -73,6 +73,8 @@ class SonarePageState extends State<SonarePage> {
 
   List<FaunaSonare> _faunas = [];
 
+  late VoidCallback _faunaSonareListener;
+
   @override
   void initState() {
     super.initState();
@@ -98,11 +100,23 @@ class SonarePageState extends State<SonarePage> {
     });
     initFauna();
     _listenToCompass();
+
+    // si les permissions d'affichage des fauna changent, on reload
+    _faunaSonareListener = () {
+      if (mounted)
+        setState(() {
+          _faunas = [];
+        });
+      ();
+      fetchFaunaAndIntegrate();
+    };
+    Common.faunaNotifier.addListener(_faunaSonareListener);
   }
 
   @override
   void dispose() {
     _positionSubscription?.cancel();
+    Common.faunaNotifier.removeListener(_faunaSonareListener);
     super.dispose();
   }
 
@@ -665,7 +679,7 @@ class SonarePageState extends State<SonarePage> {
                                   icon: Icon(CupertinoIcons.minus,
                                       color: Colors.white),
                                   onPressed: () {
-                                    if (_zoomLevel > 13.0) {
+                                    if (_zoomLevel > 13.5) {
                                       setState(() {
                                         _zoomLevel -= 0.5;
                                       });
@@ -679,7 +693,7 @@ class SonarePageState extends State<SonarePage> {
                                   icon: Icon(CupertinoIcons.plus,
                                       color: Colors.white),
                                   onPressed: () {
-                                    if (_zoomLevel < 17.5) {
+                                    if (_zoomLevel < 18) {
                                       setState(() {
                                         _zoomLevel += 0.5;
                                       });

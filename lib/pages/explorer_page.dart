@@ -54,6 +54,8 @@ class ExplorerPageState extends State<ExplorerPage> {
   LatLng? _lastPosition;
   DateTime? _lastUpdateTime;
 
+  late VoidCallback _faunaExplorerListener;
+
   StreamSubscription<Position>? _positionSubscription;
 
   @override
@@ -67,6 +69,7 @@ class ExplorerPageState extends State<ExplorerPage> {
   void dispose() {
     _debounceTimer?.cancel();
     _positionSubscription?.cancel();
+    Common.faunaNotifier.removeListener(_faunaExplorerListener);
     super.dispose();
   }
 
@@ -75,6 +78,12 @@ class ExplorerPageState extends State<ExplorerPage> {
       _mapReady = true;
     });
     initFauna();
+
+    // si les permissions d'affichage des fauna changent, on reload
+    _faunaExplorerListener = () {
+      _onMapChanged(_mapController.camera, false);
+    };
+    Common.faunaNotifier.addListener(_faunaExplorerListener);
   }
 
   Future<void> _initializeLocationServices() async {
