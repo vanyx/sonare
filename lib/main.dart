@@ -43,9 +43,12 @@ class _SonareState extends State<Sonare> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       Settings.appIsActive = false;
-      if (Settings.tutorialDone) {
+
+      print(Settings.notificationEnable);
+
+      if (Settings.tutorialDone && Settings.notificationEnable) {
         _backgroundService
-            .start(); // Ne fonctionne que si le tuto a deja ete fait
+            .start(); // Ne fonctionne que si le tuto a deja ete fait et notif activees
       }
     } else if (state == AppLifecycleState.resumed) {
       Settings.appIsActive = true;

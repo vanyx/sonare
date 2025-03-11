@@ -144,7 +144,11 @@ class Common {
     try {
       Uri finalUri = Uri.parse(Settings.apiUrl + Settings.apiInfoEndpoint);
 
-      final response = await http.get(finalUri);
+      final response = await http.get(finalUri).timeout(
+            const Duration(seconds: 5),
+            onTimeout: () =>
+                http.Response('{}', 408), // reponse vite apres 5s sans reponse
+          );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
