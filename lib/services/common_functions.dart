@@ -103,7 +103,7 @@ class Common {
                   Police(position: LatLng(json["latitude"], json["longitude"])))
               .toList());
         }
-        if (Settings.controlZoneEnable && data.containsKey("shell")) {
+        if (Settings.controlZoneEnable && data.containsKey("shells")) {
           alerts.addAll(data["shells"]
               .where((json) =>
                   json.containsKey("latitude") && json.containsKey("longitude"))

@@ -56,11 +56,7 @@ class _SignalisationPageState extends State<SignalisationPage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => SignalisationDetailPage(
-                      type: 'police',
-                      title: 'Police',
-                      description:
-                          "@TODO a refaire Mobile, le poisson sillonne les eaux en constante évolution. Toujours en mouvement, il peut apparaître là où on l’attend le moins.",
-                    ),
+                        type: 'police', title: 'Police'),
                   ),
                 );
               },
@@ -113,11 +109,7 @@ class _SignalisationPageState extends State<SignalisationPage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => SignalisationDetailPage(
-                      type: 'controlZone',
-                      title: 'Zone de contrôle',
-                      description:
-                          "@TODO a refaire Immobile, le coquillage veille en silence à son emplacement fixe. Il est une présence constante, marquant des lieux clés que l’on croise toujours au même endroit.",
-                    ),
+                        type: 'controlZone', title: 'Zone de contrôle'),
                   ),
                 );
               },

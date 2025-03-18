@@ -8,13 +8,11 @@ import '../../services/settings.dart';
 
 class SignalisationDetailPage extends StatefulWidget {
   final String title;
-  final String description;
   final String type;
 
   const SignalisationDetailPage({
     Key? key,
     required this.title,
-    required this.description,
     required this.type,
   })  : assert(type == "police" || type == "controlZone",
             'Type must be "police" or "controlZone"'),
@@ -107,7 +105,7 @@ class _SignalisationDetailPageState extends State<SignalisationDetailPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                widget.description,
+                "@TODO a refaire, alors voila on peut desactiver ou non les merdes",
                 style: AppFonts.settingsNotifSubtitle,
               ),
             ),

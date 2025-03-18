@@ -7,7 +7,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_compass/flutter_compass.dart';
-import '../../models/models.dart';
 import '../models/Alert.dart';
 import '../models/AlertSonareWrapper.dart';
 import '../models/ControlZone.dart';
@@ -397,7 +396,12 @@ class SonarePageState extends State<SonarePage> {
       setState(() {
         for (var item in _alerts) {
           // Visibilite
-          item.visible = checkPoliceVisibility(item.alert.position);
+          if (item.alert is ControlZone) {
+            item.visible = checkControlZoneVisibility(
+                item.alert.position, (item.alert as ControlZone).radius);
+          } else {
+            item.visible = checkPoliceVisibility(item.alert.position);
+          }
 
           // Calcul de l'angle
           item.angle = Common.azimutBetweenCenterAndPointRadian(
@@ -425,8 +429,16 @@ class SonarePageState extends State<SonarePage> {
            * .
            * Moi
            */
-          double distance =
-              Common.calculateDistance(_currentPosition!, item.alert.position);
+
+          double distance = 0;
+          if (item.alert is ControlZone) {
+            distance = Common.calculateDistance(
+                    _currentPosition!, item.alert.position) -
+                (item.alert as ControlZone).radius;
+          } else {
+            distance = Common.calculateDistance(
+                _currentPosition!, item.alert.position);
+          }
 
           if (distance >= Settings.furthestThreshold) {
             item.size = alertCircleMinSize;
@@ -468,6 +480,7 @@ class SonarePageState extends State<SonarePage> {
   }
 
   bool checkPoliceVisibility(LatLng toCheck) {
+    // rayon de la carte affichee en pixel
     final double mapRadiusInPixels =
         (MediaQuery.of(context).size.width * _sizeScreenCoef) / 2;
 
@@ -488,27 +501,31 @@ class SonarePageState extends State<SonarePage> {
     return pixelDistance <= mapRadiusInPixels;
   }
 
-  bool checkControlZoneVisibility(LatLng toCheck) {
-    //@TODOOOOOSOSOSOSOSO
-
+  bool checkControlZoneVisibility(LatLng zoneCenter, double radiusInMeter) {
+    // rayon de la carte affichee en pixel
     final double mapRadiusInPixels =
         (MediaQuery.of(context).size.width * _sizeScreenCoef) / 2;
 
-    // Calcul la distance geographique entre currentPosition et la position cible
-    final distanceInMeters = const Distance().as(
+    // distance geographique entre currentPosition et le centre de la zone de controle
+    final distanceCenterToZoneMeters = const Distance().as(
       LengthUnit.Meter,
       _currentPosition!,
-      toCheck,
+      zoneCenter,
     );
 
-    // Converti de la distance en pixels
-    final pixelDistance = distanceInMeters /
+    // converti de la distance en pixel
+    final distanceCenterToZonePixel = distanceCenterToZoneMeters /
         (156543.03392 *
             cos(_currentPosition!.latitude * pi / 180) /
             pow(2, _zoomLevel));
 
-    // Compare la distance en pixels avec le rayon du cercle
-    return pixelDistance <= mapRadiusInPixels;
+    // rayon de la zone de controle en pixel
+    final radiusZonePixel = radiusInMeter /
+        (156543.03392 *
+            cos(_currentPosition!.latitude * pi / 180) /
+            pow(2, _zoomLevel));
+
+    return distanceCenterToZonePixel - radiusZonePixel <= mapRadiusInPixels;
   }
 
   @override

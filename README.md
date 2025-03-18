@@ -34,9 +34,14 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 
  ### Modifiage de fauna mdr
 
+ // TERMS ET CONDITIONS
+// ICONS
+
 // FRONT
 
-- Modifier check controlZoneVisibility
+- Tuto a refaire
+
+- Texts a changer
 
 - modifier les assets son 
   modifier la maniere dont c'est anoncé en vocal (faire 2 diffrents, et non le plus proche)

@@ -27,7 +27,7 @@ class _MainPageState extends State<MainPage> {
   double _marginRight = 20;
 
   double _speed = 0; // m/s
-  static const double _minSpeedometerLimit = 15; // km/h
+//  static const double _minSpeedometerLimit = 15; // km/h
 
   LatLng? _currentPosition;
 
