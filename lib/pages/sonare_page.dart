@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:Sonare/models/Police.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -7,6 +8,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import '../../models/models.dart';
+import '../models/Alert.dart';
+import '../models/AlertSonareWrapper.dart';
+import '../models/ControlZone.dart';
 import '../styles/AppColors.dart';
 import 'package:shimmer/shimmer.dart';
 import '../widgets/customMarker.dart';
@@ -71,9 +75,13 @@ class SonarePageState extends State<SonarePage> {
 
   LatLng? _lastApiPosition;
 
-  List<FaunaSonare> _faunas = [];
+  List<AlertSonareWrapper> _alerts = [];
 
-  late VoidCallback _faunaSonareListener;
+  late VoidCallback _alertSonareListener;
+
+  static const double alertCircleMinSize = 10.0;
+  static const double alertCircleMaxSize = 30.0;
+  static const double alertCircleDefaultSize = 15.0;
 
   @override
   void initState() {
@@ -98,31 +106,31 @@ class SonarePageState extends State<SonarePage> {
     setState(() {
       _mapReady = true;
     });
-    initFauna();
+    initAlerts();
     _listenToCompass();
 
-    // si les permissions d'affichage des fauna changent, on reload
-    _faunaSonareListener = () {
+    // si les permissions d'affichage des alertes changent, on reload
+    _alertSonareListener = () {
       if (mounted)
         setState(() {
-          _faunas = [];
+          _alerts = [];
         });
       ();
-      fetchFaunaAndIntegrate();
+      fetchAlertsAndIntegrate();
     };
-    Common.faunaNotifier.addListener(_faunaSonareListener);
+    Common.alertNotifier.addListener(_alertSonareListener);
   }
 
   @override
   void dispose() {
     _positionSubscription?.cancel();
-    Common.faunaNotifier.removeListener(_faunaSonareListener);
+    Common.alertNotifier.removeListener(_alertSonareListener);
     super.dispose();
   }
 
   Future<void> _initializeLocationServices() async {
     await _getCurrentLocation();
-    updateFaunaParams();
+    updateAlertsParams();
     _listeningToLocationChanges();
   }
 
@@ -152,7 +160,7 @@ class SonarePageState extends State<SonarePage> {
               _animateMarker(_currentPosition!,
                   LatLng(position.latitude, position.longitude));
 
-              updateFauna();
+              updateAlerts();
             }
           } else {
             _currentPosition = LatLng(position.latitude, position.longitude);
@@ -176,7 +184,7 @@ class SonarePageState extends State<SonarePage> {
             setState(() {
               _bearing = _heading;
             });
-            updateFaunaParams();
+            updateAlertsParams();
             _mapController.rotate(-_heading!);
           }
         }
@@ -184,7 +192,7 @@ class SonarePageState extends State<SonarePage> {
     } catch (e) {}
   }
 
-  Future<void> initFauna() async {
+  Future<void> initAlerts() async {
     if (_currentPosition == null) return;
 
     if (mounted) {
@@ -193,41 +201,37 @@ class SonarePageState extends State<SonarePage> {
       });
     }
 
-    List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
+    List<Alert> alerts = await Common.getAlertByRadius(_currentPosition!);
 
-    for (var fauna in faunas) {
-      if (Common.calculateDistance(_currentPosition!, fauna.position) <=
+    for (var item in alerts) {
+      if (Common.calculateDistance(_currentPosition!, item.position) <=
           Settings.furthestThreshold) {
-        _faunas.add(FaunaSonare(
-          position: fauna.position,
-          visible: false,
-          angle: 0.0,
-          circlePosition: Offset.zero,
-          type: fauna.type,
-          level: Common.getFaunaLevel(_currentPosition!, fauna.position),
-        ));
+        _alerts.add(AlertSonareWrapper(
+            alert: item,
+            level: Common.getMinAlertLevel(_currentPosition!, item.position),
+            size: alertCircleDefaultSize));
       }
     }
 
-    updateFaunaParams();
+    updateAlertsParams();
 
-    // Annonce sonore eventuelle du fauna le plus proche
+    // Annonce sonore eventuelle de l'alert le plus proche
     int firstMaxLevel =
-        Common.getMaxLevel(_faunas.map((fauna) => fauna.level).toList());
+        Common.getMaxLevel(_alerts.map((item) => item.level).toList());
     if (firstMaxLevel != -1 && Settings.soundEnable) {
       Common.playWarningByLevel(firstMaxLevel);
     }
   }
 
-  Future<void> updateFauna() async {
+  Future<void> updateAlerts() async {
     if (_currentPosition == null) return;
 
     // Distance min avant nouvel appel API en m
     double apiCallDistanceThreshold = Settings.furthestThreshold / 10;
 
     // filtrage
-    _faunas.removeWhere((fauna) =>
-        Common.calculateDistance(_currentPosition!, fauna.position) >
+    _alerts.removeWhere((item) =>
+        Common.calculateDistance(_currentPosition!, item.alert.position) >
         Settings.furthestThreshold);
 
     if (_lastApiPosition != null) {
@@ -242,48 +246,44 @@ class SonarePageState extends State<SonarePage> {
         _lastApiPosition = _currentPosition;
       });
     }
-    updateFaunaParams();
-    fetchFaunaAndIntegrate();
+    updateAlertsParams();
+    fetchAlertsAndIntegrate();
   }
 
-  Future<void> fetchFaunaAndIntegrate() async {
-    List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
+  Future<void> fetchAlertsAndIntegrate() async {
+    List<Alert> alerts = await Common.getAlertByRadius(_currentPosition!);
 
     List<int> tmpLevels = [];
 
-    for (var fauna in faunas) {
-      if (!existPositionInFauna(fauna.position) &&
-          Common.calculateDistance(_currentPosition!, fauna.position) <=
+    for (var item in alerts) {
+      if (!existPositionInAlerts(item.position) &&
+          Common.calculateDistance(_currentPosition!, item.position) <=
               Settings.furthestThreshold) {
-        int level = Common.getFaunaLevel(_currentPosition!, fauna.position);
+        int level = Common.getMinAlertLevel(_currentPosition!, item.position);
 
-        _faunas.add(FaunaSonare(
-          position: fauna.position,
-          visible: false,
-          angle: 0.0,
-          circlePosition: Offset.zero,
-          type: fauna.type,
-          level: level,
-        ));
+        _alerts.add(AlertSonareWrapper(
+            alert: item,
+            level: Common.getMinAlertLevel(_currentPosition!, item.position),
+            size: alertCircleDefaultSize));
 
         // Util pour les sons
         tmpLevels.add(level);
       }
     }
 
-    // Annonce sonore eventuelle du nouveau fauna le plus proche
+    // Annonce sonore eventuelle de la nouvelle alerte le plus proche
     int firstMaxLevel = Common.getMaxLevel(tmpLevels);
     if (firstMaxLevel != -1 && Settings.soundEnable) {
       Common.playWarningByLevel(firstMaxLevel);
     }
 
-    updateFaunaParams();
+    updateAlertsParams();
   }
 
-  bool existPositionInFauna(LatLng position) {
-    for (var fauna in _faunas) {
-      if (fauna.position.latitude == position.latitude &&
-          fauna.position.longitude == position.longitude) {
+  bool existPositionInAlerts(LatLng position) {
+    for (var item in _alerts) {
+      if (item.alert.position.latitude == position.latitude &&
+          item.alert.position.longitude == position.longitude) {
         return true;
       }
     }
@@ -356,7 +356,7 @@ class SonarePageState extends State<SonarePage> {
           });
         }
 
-        updateFaunaParams();
+        updateAlertsParams();
 
         _mapController.move(interpolatedPosition, _zoomLevel);
       });
@@ -380,13 +380,13 @@ class SonarePageState extends State<SonarePage> {
             _bearing = interpolatedBearing;
           });
         }
-        updateFaunaParams();
+        updateAlertsParams();
         _mapController.rotate(-interpolatedBearing);
       });
     }
   }
 
-  void updateFaunaParams() {
+  void updateAlertsParams() {
     if (_currentPosition == null || _center == null || _blueRadius == null) {
       return;
     }
@@ -395,25 +395,25 @@ class SonarePageState extends State<SonarePage> {
 
     if (mounted) {
       setState(() {
-        for (var fauna in _faunas) {
+        for (var item in _alerts) {
           // Visibilite
-          fauna.visible = checkTargetVisibility(fauna.position);
+          item.visible = checkPoliceVisibility(item.alert.position);
 
           // Calcul de l'angle
-          fauna.angle = Common.azimutBetweenCenterAndPointRadian(
+          item.angle = Common.azimutBetweenCenterAndPointRadian(
                   _currentPosition!.latitude,
                   _currentPosition!.longitude,
-                  fauna.position.latitude,
-                  fauna.position.longitude) -
+                  item.alert.position.latitude,
+                  item.alert.position.longitude) -
               Common.degreesToRadians(_bearing != null ? _bearing! : 0);
 
           double x = ((_screenSize!.width) / 2) +
-              _blueRadius! * cos(fauna.angle) -
-              fauna.size / 2;
+              _blueRadius! * cos(item.angle) -
+              item.size / 2;
           double y = ((_screenSize!.width) / 2) +
-              _blueRadius! * sin(fauna.angle) -
-              fauna.size / 2;
-          fauna.circlePosition = Offset(x, y);
+              _blueRadius! * sin(item.angle) -
+              item.size / 2;
+          item.circlePosition = Offset(x, y);
 
           // Calcul de la taille en fonction de la distance
           /**
@@ -426,37 +426,37 @@ class SonarePageState extends State<SonarePage> {
            * Moi
            */
           double distance =
-              Common.calculateDistance(_currentPosition!, fauna.position);
+              Common.calculateDistance(_currentPosition!, item.alert.position);
 
           if (distance >= Settings.furthestThreshold) {
-            fauna.size = FaunaSonare.minSizeValue;
+            item.size = alertCircleMinSize;
           } else if (distance <= Settings.furthestThreshold / 5) {
-            fauna.size = FaunaSonare.maxSizeValue;
+            item.size = alertCircleMaxSize;
           } else {
             double normalizedDistance = 1 -
                 (distance - (Settings.furthestThreshold / 5)) /
                     (Settings.furthestThreshold -
                         (Settings.furthestThreshold / 5));
 
-            fauna.size = FaunaSonare.minSizeValue +
-                (FaunaSonare.maxSizeValue - FaunaSonare.minSizeValue) *
+            item.size = alertCircleMinSize +
+                (alertCircleMaxSize - alertCircleMinSize) *
                     pow(normalizedDistance, 4);
           }
 
           // Calcul level + sons a eventuellement annoncer
           int newLevel =
-              Common.getFaunaLevel(_currentPosition!, fauna.position);
+              Common.getMinAlertLevel(_currentPosition!, item.alert.position);
 
-          if (newLevel < fauna.level) {
+          if (newLevel < item.level) {
             levelsToAnnounce.add(newLevel);
           }
-          if (newLevel != fauna.level) {
-            fauna.level = newLevel;
+          if (newLevel != item.level) {
+            item.level = newLevel;
           }
         }
 
-        // Tri les fauna du plus petit au plus grand (utile pour l'affichage des ronds autour de la carte)
-        _faunas.sort((a, b) => a.size.compareTo(b.size));
+        // Tri les alertes du plus petit au plus grand (utile pour l'affichage des ronds autour de la carte)
+        _alerts.sort((a, b) => a.size.compareTo(b.size));
       });
     }
 
@@ -467,7 +467,30 @@ class SonarePageState extends State<SonarePage> {
     }
   }
 
-  bool checkTargetVisibility(LatLng toCheck) {
+  bool checkPoliceVisibility(LatLng toCheck) {
+    final double mapRadiusInPixels =
+        (MediaQuery.of(context).size.width * _sizeScreenCoef) / 2;
+
+    // Calcul la distance geographique entre currentPosition et la position cible
+    final distanceInMeters = const Distance().as(
+      LengthUnit.Meter,
+      _currentPosition!,
+      toCheck,
+    );
+
+    // Converti de la distance en pixels
+    final pixelDistance = distanceInMeters /
+        (156543.03392 *
+            cos(_currentPosition!.latitude * pi / 180) /
+            pow(2, _zoomLevel));
+
+    // Compare la distance en pixels avec le rayon du cercle
+    return pixelDistance <= mapRadiusInPixels;
+  }
+
+  bool checkControlZoneVisibility(LatLng toCheck) {
+    //@TODOOOOOSOSOSOSOSO
+
     final double mapRadiusInPixels =
         (MediaQuery.of(context).size.width * _sizeScreenCoef) / 2;
 
@@ -535,27 +558,46 @@ class SonarePageState extends State<SonarePage> {
                         ),
                         children: [
                           TileLayer(urlTemplate: Settings.mapUrl),
+
+                          // CONTROL ZONE - CIRCLELAYERS
+                          CircleLayer(
+                            circles: [
+                              for (var item in _alerts)
+                                if (item.alert is ControlZone)
+                                  if (item.visible)
+                                    CircleMarker(
+                                      point: item.alert.position,
+                                      color: AppColors.iconBackgroundControlZone
+                                          .withValues(alpha: 0.5),
+                                      borderColor:
+                                          AppColors.iconBackgroundControlZone,
+                                      borderStrokeWidth: 2,
+                                      radius:
+                                          (item.alert as ControlZone).radius,
+                                      useRadiusInMeter: true,
+                                    ),
+                            ],
+                          ),
                           MarkerLayer(
                             markers: [
-                              // FAUNAS - MARKERS
-                              for (var fauna in _faunas)
-                                if (fauna.visible)
-                                  Marker(
-                                    width: FaunaSonare.maxSizeValue,
-                                    height: FaunaSonare.maxSizeValue,
-                                    point: fauna.position,
-                                    child: Transform.rotate(
-                                      angle: _bearing != null
-                                          ? _bearing! * (pi / 180)
-                                          : 0.0, // rotation inverse
-                                      child: CustomMarker(
-                                        size: FaunaSonare.maxSizeValue,
-                                        type: fauna.type == "fish"
-                                            ? "fish"
-                                            : "shell",
+                              // POLICE - MARKERS
+                              for (var item in _alerts)
+                                if (item.alert is Police)
+                                  if (item.visible)
+                                    Marker(
+                                      width: alertCircleMaxSize,
+                                      height: alertCircleMaxSize,
+                                      point: item.alert.position,
+                                      child: Transform.rotate(
+                                        angle: _bearing != null
+                                            ? _bearing! * (pi / 180)
+                                            : 0.0, // rotation inverse
+                                        child: CustomMarker(
+                                          size: alertCircleMaxSize,
+                                          type: "police",
+                                        ),
                                       ),
                                     ),
-                                  ),
 
                               // Icon navigation
                               Marker(
@@ -603,7 +645,7 @@ class SonarePageState extends State<SonarePage> {
                     ),
                   ),
 
-                  // FAUNAS - POINTS
+                  // ALERTS - POINTS
                   Container(
                     /*
                     - Le container joue le role de repere, dans lequel on positionne les points
@@ -620,26 +662,24 @@ class SonarePageState extends State<SonarePage> {
                     ),
                     child: Stack(
                       children: [
-                        for (var fauna in _faunas)
-                          if (!fauna.visible)
+                        for (var item in _alerts)
+                          if (!item.visible)
                             Positioned(
-                              left: fauna.circlePosition.dx,
-                              top: fauna.circlePosition.dy,
+                              left: item.circlePosition.dx,
+                              top: item.circlePosition.dy,
                               child: Container(
-                                width: fauna.size,
-                                height: fauna.size,
+                                width: item.size,
+                                height: item.size,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: fauna.type == "fish"
-                                      ? AppColors.iconBackgroundFish
-                                      : (fauna.type == "shell"
-                                          ? AppColors.iconBackgroundShell
-                                          : Colors
-                                              .transparent // Couleur par défaut si aucune condition
-                                      ),
+
+                                  // Choix couleur
+                                  color: item.alert is Police
+                                      ? AppColors.iconBackgroundPolice
+                                      : AppColors.iconBackgroundControlZone,
                                   border: Border.all(
                                     color: Colors.white,
-                                    width: fauna.size / 9,
+                                    width: item.size / 9,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
@@ -685,7 +725,7 @@ class SonarePageState extends State<SonarePage> {
                                       });
                                       _mapController.move(
                                           _currentPosition!, _zoomLevel);
-                                      updateFaunaParams();
+                                      updateAlertsParams();
                                     }
                                   },
                                 ),
@@ -699,7 +739,7 @@ class SonarePageState extends State<SonarePage> {
                                       });
                                       _mapController.move(
                                           _currentPosition!, _zoomLevel);
-                                      updateFaunaParams();
+                                      updateAlertsParams();
                                     }
                                   },
                                 ),

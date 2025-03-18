@@ -4,7 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/Fauna.dart';
+import '../models/Alert.dart';
+import '../models/ControlZone.dart';
+import '../models/Police.dart';
 import '../services/settings.dart';
 import 'dart:math';
 import 'dart:io';
@@ -14,7 +16,7 @@ import 'package:flutter/material.dart';
 
 class Common {
   /// -------------------------- WEB --------------------------
-  static Future<List<Fauna>> getFaunaByWindow(
+  static Future<List<Alert>> getAlertByWindow(
       double east, double south, double west, double north) async {
     if (Settings.getByWindowEndpoint.isEmpty) {
       return [];
@@ -36,20 +38,35 @@ class Common {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
 
-        List<Fauna> faunas = [];
+        List<Alert> alerts = [];
 
-        if (Settings.fishEnable && data.containsKey("fishes")) {
-          faunas.addAll(data["fishes"]
-              .map<Fauna>((json) => Fauna.fromJson(json, "fish"))
+        if (Settings.policeEnable && data.containsKey("fishes")) {
+          alerts.addAll(data["fishes"]
+              .where((json) =>
+                  json.containsKey("latitude") && json.containsKey("longitude"))
+              .map<Alert>((json) =>
+                  Police(position: LatLng(json["latitude"], json["longitude"])))
               .toList());
         }
 
-        if (Settings.shellEnable && data.containsKey("shells")) {
-          faunas.addAll(data["shells"]
-              .map<Fauna>((json) => Fauna.fromJson(json, "shell"))
-              .toList());
+        if (Settings.controlZoneEnable && data.containsKey("shells")) {
+          alerts.addAll(data["shells"]
+              .where((json) =>
+                  json.containsKey("latitude") && json.containsKey("longitude"))
+              .map<Alert>((json) {
+            bool? centroid =
+                json.containsKey("centroid") ? json["centroid"] : null;
+            return ControlZone(
+              position: LatLng(json["latitude"], json["longitude"]),
+              //@TODO a moidifier
+              radius: 500,
+              centroid: centroid ??
+                  false, // Si centroid n'est pas recu, false par defaut
+            );
+          }).toList());
         }
-        return faunas;
+
+        return alerts;
       }
     } catch (e) {
       return [];
@@ -57,7 +74,7 @@ class Common {
     return [];
   }
 
-  static Future<List<Fauna>> getFaunaByRadius(LatLng position) async {
+  static Future<List<Alert>> getAlertByRadius(LatLng position) async {
     if (Settings.getByRadiusEndpoint.isEmpty) {
       return [];
     }
@@ -76,20 +93,28 @@ class Common {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
 
-        List<Fauna> faunas = [];
+        List<Alert> alerts = [];
 
-        if (Settings.fishEnable && data.containsKey("fishes")) {
-          faunas.addAll(data["fishes"]
-              .map<Fauna>((json) => Fauna.fromJson(json, "fish"))
+        if (Settings.policeEnable && data.containsKey("fishes")) {
+          alerts.addAll(data["fishes"]
+              .where((json) =>
+                  json.containsKey("latitude") && json.containsKey("longitude"))
+              .map<Alert>((json) =>
+                  Police(position: LatLng(json["latitude"], json["longitude"])))
+              .toList());
+        }
+        if (Settings.controlZoneEnable && data.containsKey("shell")) {
+          alerts.addAll(data["shells"]
+              .where((json) =>
+                  json.containsKey("latitude") && json.containsKey("longitude"))
+              .map<Alert>((json) => ControlZone(
+                  position: LatLng(json["latitude"], json["longitude"]),
+                  //@TODO a moidifier
+                  radius: 500))
               .toList());
         }
 
-        if (Settings.shellEnable && data.containsKey("shells")) {
-          faunas.addAll(data["shells"]
-              .map<Fauna>((json) => Fauna.fromJson(json, "shell"))
-              .toList());
-        }
-        return faunas;
+        return alerts;
       }
     } catch (e) {
       return [];
@@ -97,9 +122,9 @@ class Common {
     return [];
   }
 
-  static Future<void> postFauna(LatLng position, String type) async {
-    if (Settings.postFishEndpoint.isEmpty ||
-        Settings.postShellEndpoint.isEmpty) {
+  static Future<void> postAlert(LatLng position, String type) async {
+    if (Settings.postPoliceEndpoint.isEmpty ||
+        Settings.postControlZoneEndpoint.isEmpty) {
       return;
     }
 
@@ -110,10 +135,10 @@ class Common {
 
     try {
       String endpoint = "";
-      if (type == "shell") {
-        endpoint = Settings.postShellEndpoint;
-      } else if (type == "fish") {
-        endpoint = Settings.postFishEndpoint;
+      if (type == "controlZone") {
+        endpoint = Settings.postControlZoneEndpoint;
+      } else if (type == "police") {
+        endpoint = Settings.postPoliceEndpoint;
       } else {
         return;
       }
@@ -268,36 +293,35 @@ class Common {
     return prefs.getBool(Settings.notificationsKey) ?? true;
   }
 
-  // Notifier pour anoncer un changement dans les fauna enable
-  static ValueNotifier<bool> faunaNotifier = ValueNotifier(true);
+  // Notifier pour anoncer un changement
+  static ValueNotifier<bool> alertNotifier = ValueNotifier(true);
 
-  // fish enabled
-
-  static Future<void> setFishEnabled(bool enabled) async {
-    Settings.fishEnable = enabled;
-    faunaNotifier.value =
-        !faunaNotifier.value; // Change la valeur pour notifier
+  // police enabled
+  static Future<void> setPoliceEnabled(bool enabled) async {
+    Settings.policeEnable = enabled;
+    alertNotifier.value =
+        !alertNotifier.value; // Change la valeur pour notifier
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool(Settings.fishKey, enabled);
+    prefs.setBool(Settings.policeKey, enabled);
   }
 
-  static Future<bool> getFishEnabled() async {
+  static Future<bool> getPoliceEnabled() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(Settings.fishKey) ?? true;
+    return prefs.getBool(Settings.policeKey) ?? true;
   }
 
-  // shell enabled
-  static Future<void> setShellEnabled(bool enabled) async {
-    Settings.shellEnable = enabled;
-    faunaNotifier.value =
-        !faunaNotifier.value; // Change la valeur pour notifier
+  // controlZones enabled
+  static Future<void> setControlZoneEnabled(bool enabled) async {
+    Settings.controlZoneEnable = enabled;
+    alertNotifier.value =
+        !alertNotifier.value; // Change la valeur pour notifier
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool(Settings.shellKey, enabled);
+    prefs.setBool(Settings.controlZoneKey, enabled);
   }
 
-  static Future<bool> getShellEnabled() async {
+  static Future<bool> getControlZoneEnabled() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(Settings.shellKey) ?? true;
+    return prefs.getBool(Settings.controlZoneKey) ?? true;
   }
 
   /// -------------------------- SOUNDS --------------------------
@@ -478,7 +502,7 @@ class Common {
     return R * c;
   }
 
-  /// -------------------------- FAUNA --------------------------
+  /// -------------------------- TOOLS --------------------------
 
   // Return le plus petit entier d'une liste
   static int getMaxLevel(List<int> levels) {
@@ -489,8 +513,8 @@ class Common {
         (currentMin, element) => currentMin < element ? currentMin : element);
   }
 
-  static int getFaunaLevel(LatLng me, LatLng fauna) {
-    double distance = Common.calculateDistance(me, fauna);
+  static int getMinAlertLevel(LatLng me, LatLng alert) {
+    double distance = Common.calculateDistance(me, alert);
 
     if (distance <= Settings.urgentThreshold) {
       return 1;

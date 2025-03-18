@@ -55,7 +55,7 @@ class Step2Widget extends StatelessWidget {
                           TextSpan(
                             text: 'fixes',
                             style: AppFonts.tutorialCardText.copyWith(
-                              color: AppColors.iconBackgroundShell,
+                              color: AppColors.iconBackgroundControlZone,
                             ),
                           ),
                           TextSpan(
@@ -64,7 +64,7 @@ class Step2Widget extends StatelessWidget {
                           TextSpan(
                             text: 'mobiles',
                             style: AppFonts.tutorialCardText.copyWith(
-                              color: AppColors.iconBackgroundFish,
+                              color: AppColors.iconBackgroundPolice,
                             ),
                           ),
                           TextSpan(

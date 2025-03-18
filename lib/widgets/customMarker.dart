@@ -15,8 +15,7 @@ class CustomMarker extends StatelessWidget {
   final String type;
 
   CustomMarker({required this.size, required this.type})
-      : assert(type == "fish" || type == "shell",
-            'Type must be either "fish" or "shell".');
+      : assert(type == "police", 'Type must be "police"');
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +31,9 @@ class CustomMarker extends StatelessWidget {
               height: size,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: type == "fish"
-                    ? AppColors.iconBackgroundFish
-                    : (type == "shell"
-                        ? AppColors.iconBackgroundShell
-                        : AppColors.iconBackgroundFish), //valeur par defaut
+                color: type == "police"
+                    ? AppColors.iconBackgroundPolice // @TODO a modifier
+                    : AppColors.iconBackgroundPolice, //valeur par defaut
                 border: Border.all(
                   color: Colors.white,
                   width: size / 9,
@@ -53,9 +50,9 @@ class CustomMarker extends StatelessWidget {
             ),
             Positioned(
               child: Image.asset(
-                type == 'fish'
-                    ? 'assets/images/fish.webp'
-                    : 'assets/images/shell.webp',
+                type == 'police'
+                    ? 'assets/images/police.png'
+                    : 'assets/images/police.png',
                 width: size * 0.6,
                 height: size * 0.6,
               ),

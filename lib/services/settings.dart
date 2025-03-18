@@ -7,8 +7,8 @@ class Settings {
     soundEnable = await Common.getSoundEnabled();
     notificationEnable = await Common.getNotificationsEnabled();
     tutorialDone = await Common.getTutorialDone();
-    fishEnable = await Common.getFishEnabled();
-    shellEnable = await Common.getShellEnabled();
+    policeEnable = await Common.getPoliceEnabled();
+    controlZoneEnable = await Common.getControlZoneEnabled();
   }
 
   /// -------------------------- SETTINGS DATA --------------------------
@@ -25,9 +25,9 @@ class Settings {
 
   static bool notificationEnable = false;
 
-  static bool fishEnable = false;
+  static bool policeEnable = false;
 
-  static bool shellEnable = false;
+  static bool controlZoneEnable = false;
 
   static const String version = '1.0.0'; //current version
 
@@ -49,9 +49,9 @@ class Settings {
 
   static String getByRadiusEndpoint = '/api/fauna/radius';
 
-  static String postFishEndpoint = '/api/fauna/fish';
+  static String postPoliceEndpoint = '/api/fauna/fish';
 
-  static String postShellEndpoint = '/api/fauna/shell';
+  static String postControlZoneEndpoint = '/api/fauna/shell';
 
   /**************** Seuils ****************/
 
@@ -69,6 +69,6 @@ class Settings {
   static const String tutorialKey = 'tutorialDone';
   static const String soundKey = 'soundEnabled';
   static const String notificationsKey = 'notificationsEnabled';
-  static const String fishKey = 'fishEnabled';
-  static const String shellKey = 'shellEnabled';
+  static const String policeKey = 'policeEnabled';
+  static const String controlZoneKey = 'controlZoneEnabled';
 }
