@@ -32,25 +32,20 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 - notif, sons, musique en arriere plan et que apres un son la musique reprenne,
  boussole, vibrations, webview qui fonctionnement correctement, son des notifs, background
 
- ### Modifiage de fauna mdr
 
- // TERMS ET CONDITIONS
-// ICONS
+## TODO
 
-// FRONT
+- Termes et conditions
+- Refaire les icons et l'image du tuto
 
-- Tuto a refaire
+- refaire le systeme de son : assets, systeme d'avertissement, essayer de le Common
 
-- Texts a changer
+- notifications
 
-- modifier les assets son 
-  modifier la maniere dont c'est anoncé en vocal (faire 2 diffrents, et non le plus proche)
-
-- notifications...
+- Une fois API finie : modifier le common.fetchBy...
 
 // BACK
- modifier l'api (pas post si exist deja une zone de controle)
- modifier pour exporter tout dans models, et n'importer dans les objets que ça
- modifier toute l'api (les noms, les models etc)
- modifier les scripts de boost et de fitre
- modifier les nom et contenu des common.fetch...
+
+- API : modifier tous les noms, ajouter radius pour zone de controle, pas post si exist deja une zone de controle
+- Modifier les scripts de boost et de filtrage
+- Ne cron que le filtrage

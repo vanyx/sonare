@@ -1,12 +1,10 @@
-import 'package:Sonare/models/Alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:shimmer/shimmer.dart';
-import '../models/ControlZone.dart';
-import '../models/Police.dart';
+import '../models/models.dart';
 import '../styles/AppColors.dart';
 import '../services/common_functions.dart';
 import '../services/settings.dart';

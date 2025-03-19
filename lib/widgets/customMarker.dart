@@ -32,7 +32,7 @@ class CustomMarker extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: type == "police"
-                    ? AppColors.iconBackgroundPolice // @TODO a modifier
+                    ? AppColors.iconBackgroundPolice
                     : AppColors.iconBackgroundPolice, //valeur par defaut
                 border: Border.all(
                   color: Colors.white,

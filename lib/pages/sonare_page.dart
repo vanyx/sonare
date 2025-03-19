@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:Sonare/models/Police.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_compass/flutter_compass.dart';
-import '../models/Alert.dart';
-import '../models/AlertSonareWrapper.dart';
-import '../models/ControlZone.dart';
+import '../models/models.dart';
 import '../styles/AppColors.dart';
 import 'package:shimmer/shimmer.dart';
 import '../widgets/customMarker.dart';
@@ -214,11 +211,11 @@ class SonarePageState extends State<SonarePage> {
 
     updateAlertsParams();
 
-    // Annonce sonore eventuelle de l'alert le plus proche
+    // Annonce sonore eventuelle de l'alerte la plus proche
     int firstMaxLevel =
         Common.getMaxLevel(_alerts.map((item) => item.level).toList());
     if (firstMaxLevel != -1 && Settings.soundEnable) {
-      Common.playWarningByLevel(firstMaxLevel);
+      Common.playPoliceByLevel(firstMaxLevel);
     }
   }
 
@@ -270,10 +267,10 @@ class SonarePageState extends State<SonarePage> {
       }
     }
 
-    // Annonce sonore eventuelle de la nouvelle alerte le plus proche
+    // Annonce sonore eventuelle de la nouvelle alerte la plus proche
     int firstMaxLevel = Common.getMaxLevel(tmpLevels);
     if (firstMaxLevel != -1 && Settings.soundEnable) {
-      Common.playWarningByLevel(firstMaxLevel);
+      Common.playPoliceByLevel(firstMaxLevel);
     }
 
     updateAlertsParams();
@@ -474,7 +471,7 @@ class SonarePageState extends State<SonarePage> {
 
     // Annonce eventuelle d'un level
     if (levelsToAnnounce.isNotEmpty && Settings.soundEnable) {
-      Common.playWarningByLevel(
+      Common.playPoliceByLevel(
           levelsToAnnounce.reduce((a, b) => a < b ? a : b));
     }
   }

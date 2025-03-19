@@ -4,6 +4,7 @@ import 'package:Sonare/services/common_functions.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import '../models/models.dart';
 
 /*****************
  * 

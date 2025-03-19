@@ -7,7 +7,11 @@ class AlertSonareWrapper {
   double angle;
   Offset circlePosition;
   double size;
-  int level; // 1: urgent, 2: medium, 3: far
+  /**
+   * Police       1: urgent, 2: medium, 3: far
+   * ControlZone  1: dedans, 2: medium, 3: far 
+   */
+  int level;
 
   AlertSonareWrapper({
     required this.alert,

@@ -105,7 +105,7 @@ class _SignalisationDetailPageState extends State<SignalisationDetailPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "@TODO a refaire, alors voila on peut desactiver ou non les merdes",
+                "Affiche les signalements sur la carte et alerte à leur approche.",
                 style: AppFonts.settingsNotifSubtitle,
               ),
             ),

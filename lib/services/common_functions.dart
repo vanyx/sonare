@@ -4,9 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/Alert.dart';
-import '../models/ControlZone.dart';
-import '../models/Police.dart';
+import '../models/models.dart';
 import '../services/settings.dart';
 import 'dart:math';
 import 'dart:io';
@@ -326,7 +324,7 @@ class Common {
 
   /// -------------------------- SOUNDS --------------------------
 
-  static Future<void> playWarningByLevel(int level) async {
+  static Future<void> playPoliceByLevel(int level) async {
     final soundFiles = {
       1: 'sounds/400m.mp3',
       2: 'sounds/800m.mp3',
