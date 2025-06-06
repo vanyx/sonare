@@ -113,6 +113,7 @@ class SonarePageState extends State<SonarePage> {
         });
       ();
       fetchAlertsAndIntegrate();
+      updateAlertsParams();
     };
     Common.alertNotifier.addListener(_alertSonareListener);
   }
@@ -201,21 +202,37 @@ class SonarePageState extends State<SonarePage> {
 
     for (var item in alerts) {
       if (Common.calculateDistance(_currentPosition!, item.position) <=
-          Settings.furthestThreshold) {
+          Settings.policeThreshold3) {
         _alerts.add(AlertSonareWrapper(
             alert: item,
-            level: Common.getMinAlertLevel(_currentPosition!, item.position),
+            level: Common.getPoliceLevel(_currentPosition!, item.position),
             size: alertCircleDefaultSize));
       }
     }
 
     updateAlertsParams();
 
-    // Annonce sonore eventuelle de l'alerte la plus proche
-    int firstMaxLevel =
-        Common.getMaxLevel(_alerts.map((item) => item.level).toList());
-    if (firstMaxLevel != -1 && Settings.soundEnable) {
-      Common.playPoliceByLevel(firstMaxLevel);
+    //@TODO : a tester quand 2 alertes en meme temps
+    /********* Avertissement sonore - POLICE *********/
+    var policeAlerts = _alerts.where((item) => item.alert is Police).toList();
+
+    int policesMinLevel =
+        Common.getMinLevel(policeAlerts.map((item) => item.level).toList());
+    print(policesMinLevel);
+    if (policesMinLevel != -1 && Settings.soundEnable) {
+      Common.playPoliceByLevel(policesMinLevel);
+    }
+
+    /********* Avertissement sonore - CONTROLE ZONE *********/
+
+    var controlZoneAlerts =
+        _alerts.where((item) => item.alert is ControlZone).toList();
+
+    int controlZonesMinLevel = Common.getMinLevel(
+        controlZoneAlerts.map((item) => item.level).toList());
+    print(controlZonesMinLevel);
+    if (controlZonesMinLevel != -1 && Settings.soundEnable) {
+      Common.PlayControlZoneByLevel(controlZonesMinLevel);
     }
   }
 
@@ -223,12 +240,12 @@ class SonarePageState extends State<SonarePage> {
     if (_currentPosition == null) return;
 
     // Distance min avant nouvel appel API en m
-    double apiCallDistanceThreshold = Settings.furthestThreshold / 10;
+    double apiCallDistanceThreshold = Settings.policeThreshold3 / 10;
 
     // filtrage
     _alerts.removeWhere((item) =>
         Common.calculateDistance(_currentPosition!, item.alert.position) >
-        Settings.furthestThreshold);
+        Settings.policeThreshold3);
 
     if (_lastApiPosition != null) {
       if (Common.calculateDistance(_lastApiPosition!, _currentPosition!) <
@@ -242,8 +259,8 @@ class SonarePageState extends State<SonarePage> {
         _lastApiPosition = _currentPosition;
       });
     }
-    updateAlertsParams();
     fetchAlertsAndIntegrate();
+    updateAlertsParams();
   }
 
   Future<void> fetchAlertsAndIntegrate() async {
@@ -254,12 +271,15 @@ class SonarePageState extends State<SonarePage> {
     for (var item in alerts) {
       if (!existPositionInAlerts(item.position) &&
           Common.calculateDistance(_currentPosition!, item.position) <=
-              Settings.furthestThreshold) {
-        int level = Common.getMinAlertLevel(_currentPosition!, item.position);
+              Settings.policeThreshold3) {
+        int level = Common.getPoliceLevel(_currentPosition!, item.position);
 
         _alerts.add(AlertSonareWrapper(
             alert: item,
-            level: Common.getMinAlertLevel(_currentPosition!, item.position),
+            level: item is ControlZone
+                ? Common.getControlZoneLevel(
+                    _currentPosition!, item.position, item.radius)
+                : Common.getPoliceLevel(_currentPosition!, item.position),
             size: alertCircleDefaultSize));
 
         // Util pour les sons
@@ -267,8 +287,9 @@ class SonarePageState extends State<SonarePage> {
       }
     }
 
+    //@TODO son a refaire
     // Annonce sonore eventuelle de la nouvelle alerte la plus proche
-    int firstMaxLevel = Common.getMaxLevel(tmpLevels);
+    int firstMaxLevel = Common.getMinLevel(tmpLevels);
     if (firstMaxLevel != -1 && Settings.soundEnable) {
       Common.playPoliceByLevel(firstMaxLevel);
     }
@@ -387,12 +408,13 @@ class SonarePageState extends State<SonarePage> {
       return;
     }
 
+    // @TODO : a modifier... gerer le type d'alertes
     List<int> levelsToAnnounce = [];
 
     if (mounted) {
       setState(() {
         for (var item in _alerts) {
-          // Visibilite
+          /********* VISIBILITE *********/
           if (item.alert is ControlZone) {
             item.visible = checkControlZoneVisibility(
                 item.alert.position, (item.alert as ControlZone).radius);
@@ -400,7 +422,7 @@ class SonarePageState extends State<SonarePage> {
             item.visible = checkPoliceVisibility(item.alert.position);
           }
 
-          // Calcul de l'angle
+          /********* ANGLE *********/
           item.angle = Common.azimutBetweenCenterAndPointRadian(
                   _currentPosition!.latitude,
                   _currentPosition!.longitude,
@@ -416,17 +438,7 @@ class SonarePageState extends State<SonarePage> {
               item.size / 2;
           item.circlePosition = Offset(x, y);
 
-          // Calcul de la taille en fonction de la distance
-          /**
-           * Settings.furthestThreshold : distance la plus loin
-           * .
-           * .
-           * .
-           * Seuil median : Settings.furthestThreshold / 5
-           * .
-           * Moi
-           */
-
+          /********* DISTANCE *********/
           double distance = 0;
           if (item.alert is ControlZone) {
             distance = Common.calculateDistance(
@@ -437,43 +449,51 @@ class SonarePageState extends State<SonarePage> {
                 _currentPosition!, item.alert.position);
           }
 
-          if (distance >= Settings.furthestThreshold) {
+          if (distance >= Settings.policeThreshold3) {
             item.size = alertCircleMinSize;
-          } else if (distance <= Settings.furthestThreshold / 5) {
+          } else if (distance <= Settings.policeThreshold3 / 5) {
             item.size = alertCircleMaxSize;
           } else {
             double normalizedDistance = 1 -
-                (distance - (Settings.furthestThreshold / 5)) /
-                    (Settings.furthestThreshold -
-                        (Settings.furthestThreshold / 5));
+                (distance - (Settings.policeThreshold3 / 5)) /
+                    (Settings.policeThreshold3 -
+                        (Settings.policeThreshold3 / 5));
 
             item.size = alertCircleMinSize +
                 (alertCircleMaxSize - alertCircleMinSize) *
                     pow(normalizedDistance, 4);
           }
 
-          // Calcul level + sons a eventuellement annoncer
-          int newLevel =
-              Common.getMinAlertLevel(_currentPosition!, item.alert.position);
+          /********* LEVEL + ANNONCE SONORE *********/
+          if (item.alert is ControlZone) {
+            item.level = Common.getControlZoneLevel(_currentPosition!,
+                item.alert.position, (item.alert as ControlZone).radius);
+          } else {
+            item.level =
+                Common.getPoliceLevel(_currentPosition!, item.alert.position);
+          }
+          // int newLevel =
+          //     Common.getPoliceLevel(_currentPosition!, item.alert.position);
 
-          if (newLevel < item.level) {
-            levelsToAnnounce.add(newLevel);
-          }
-          if (newLevel != item.level) {
-            item.level = newLevel;
-          }
+          // if (newLevel < item.level) {
+          //   levelsToAnnounce.add(newLevel);
+          // }
+          // if (newLevel != item.level) {
+          //   item.level = newLevel;
+          // }
         }
 
-        // Tri les alertes du plus petit au plus grand (utile pour l'affichage des ronds autour de la carte)
+        /********* TRI (utile pour l'affichage des cercles) *********/
         _alerts.sort((a, b) => a.size.compareTo(b.size));
       });
     }
 
-    // Annonce eventuelle d'un level
-    if (levelsToAnnounce.isNotEmpty && Settings.soundEnable) {
-      Common.playPoliceByLevel(
-          levelsToAnnounce.reduce((a, b) => a < b ? a : b));
-    }
+    // @TODO a refaire
+    // // Annonce eventuelle d'un level
+    // if (levelsToAnnounce.isNotEmpty && Settings.soundEnable) {
+    //   Common.playPoliceByLevel(
+    //       levelsToAnnounce.reduce((a, b) => a < b ? a : b));
+    // }
   }
 
   bool checkPoliceVisibility(LatLng toCheck) {

@@ -324,11 +324,23 @@ class Common {
 
   /// -------------------------- SOUNDS --------------------------
 
+  // @TODO : a tester
+  static Future<void> PlayControlZoneByLevel(int level) async {
+    final soundFiles = {
+      1: 'sounds/enterControlZone.mp3',
+      2: 'sounds/controlZone800m.mp3'
+    };
+
+    if (soundFiles.containsKey(level)) {
+      await playSound(soundFiles[level]!);
+    }
+  }
+
   static Future<void> playPoliceByLevel(int level) async {
     final soundFiles = {
-      1: 'sounds/400m.mp3',
-      2: 'sounds/800m.mp3',
-      3: 'sounds/3km.mp3',
+      1: 'sounds/police400m.mp3',
+      2: 'sounds/police800m.mp3',
+      3: 'sounds/police3km.mp3',
     };
 
     if (soundFiles.containsKey(level)) {
@@ -503,7 +515,7 @@ class Common {
   /// -------------------------- TOOLS --------------------------
 
   // Return le plus petit entier d'une liste
-  static int getMaxLevel(List<int> levels) {
+  static int getMinLevel(List<int> levels) {
     // A prendre en compte dans l'appel de la fonction
     if (levels.isEmpty) return -1;
 
@@ -511,15 +523,68 @@ class Common {
         (currentMin, element) => currentMin < element ? currentMin : element);
   }
 
-  static int getMinAlertLevel(LatLng me, LatLng alert) {
+  /**
+   * Police
+   *  1: urgent, 2: medium, 3: far
+   * 
+   * Schema :
+   * 
+   *      Police
+   *      |
+   *   1  |
+   *      |
+   *      <Settings.policeThreshold1>
+   *      |
+   *   2  |
+   *      |
+   *      <Settings.policeThreshold2>
+   *      |
+   *   3  |
+   *      |
+   *      <Settings.policeThreshold3>
+   * 
+   *   3
+   */
+  static int getPoliceLevel(LatLng me, LatLng alert) {
     double distance = Common.calculateDistance(me, alert);
 
-    if (distance <= Settings.urgentThreshold) {
+    if (distance <= Settings.policeThreshold1) {
       return 1;
-    } else if (distance <= Settings.medianThreshold) {
+    } else if (distance <= Settings.policeThreshold2) {
       return 2;
-    } else if (distance <= Settings.furthestThreshold) {
+    } else if (distance <= Settings.policeThreshold3) {
       return 3;
+    }
+    return 3;
+  }
+
+  /**
+   * ControlZone
+   *  1: dedans, 2: medium, 3: far
+   * 
+   * Schema : 
+   * 
+   *      <Point central>
+   *      |
+   *  1   |  zone de controle
+   *      |
+   *      <rayon>
+   *      |
+   *  2   |  Settings.controlZoneThreshold
+   *      |
+   *      <Seuil d'alerte>
+   * 
+   *  3
+   */
+  static int getControlZoneLevel(
+      LatLng me, LatLng alert, double radiusOfControlZone) {
+    double distance = Common.calculateDistance(me, alert);
+
+    if (distance <= radiusOfControlZone) {
+      return 1;
+    } else if (distance - radiusOfControlZone <=
+        Settings.controlZoneThreshold) {
+      return 2;
     }
     return 3;
   }

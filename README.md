@@ -1,4 +1,4 @@
-# \\\_|\_/ SONARE
+# Sonare
 
 ## 1. Seuils
 
@@ -6,14 +6,22 @@
 - Avertissement **median** : 800m
 - Avertissement **urgent** : 400m
 
-## 2. Avantage PREMIUM
+## 2. Dev : help & tips
 
-- Carte stylé
-- Possibilité de connecter un boitier
+### 2.1 Build Xcode failed
 
-## 3. Dev
+```
+cd ios
+rm -rf Pods Podfile.lock
+pod cache clean --all
+pod install
+cd ..
+flutter clean
+flutter pub get
+flutter build ios
+```
 
-### 3.1 Modifier son de notification
+### 2.2 Modifier son de notification
 
 1. Dans Xcode :
 Faire glisser le fichier audio (<sound_name>.aiff) depuis le finder vers le dossier Runner dans la section Project Navigator (sur la gauche).
@@ -23,22 +31,21 @@ Une boîte de dialogue s'affiche : cliquer sur OK.
 const DarwinNotificationDetails iosPlatformChannelSpecifics =
   DarwinNotificationDetails(
   ...
-  sound: '<sound_name>.aiff', // Nom du fichier sans chemin
+  sound: '<sound_name>.aiff', // Nom du fichier (sans son path)
 );
-
-
-### A tester sur android :
-- textes des autorisations
-- notif, sons, musique en arriere plan et que apres un son la musique reprenne,
- boussole, vibrations, webview qui fonctionnement correctement, son des notifs, background
 
 
 ## TODO
 
+- Apres signaler un bail, refresh
+
 - Termes et conditions
+
 - Refaire les icons et l'image du tuto
 
-- refaire le systeme de son : assets, systeme d'avertissement, essayer de le Common
+- refaire le systeme de son
+
+- modifier assets son police par "police à moins de x distance (changer presence et detecté)"
 
 - notifications
 

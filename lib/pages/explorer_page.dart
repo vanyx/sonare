@@ -81,8 +81,13 @@ class ExplorerPageState extends State<ExplorerPage> {
 
     // si les permissions d'affichage des alerts changent, on reload
     _alertExplorerListener = () {
+      if (mounted)
+        setState(() {
+          _alerts = [];
+        });
       refreshAlerts();
     };
+
     Common.alertNotifier.addListener(_alertExplorerListener);
   }
 

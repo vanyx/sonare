@@ -119,11 +119,11 @@ class BackgroundService {
 //     List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
 //     for (var fauna in faunas) {
 //       if (Common.calculateDistance(_currentPosition!, fauna.position) <=
-//           Settings.furthestThreshold) {
+//           Settings.policeThreshold3) {
 //         _faunas.add(FaunaBackground(
 //           type: fauna.type,
 //           position: fauna.position,
-//           level: Common.getMinAlertLevel(_currentPosition!, fauna.position),
+//           level: Common.getLevel(_currentPosition!, fauna.position),
 //         ));
 //       }
 //     }
@@ -142,12 +142,12 @@ class BackgroundService {
 //     if (_currentPosition == null) return;
 
 //     // Distance min avant nouvel appel API en m
-//     double apiCallDistanceThreshold = Settings.furthestThreshold / 10;
+//     double apiCallDistanceThreshold = Settings.policeThreshold3 / 10;
 
 //     // filtrage
 //     _faunas.removeWhere((fauna) =>
 //         Common.calculateDistance(_currentPosition!, fauna.position) >
-//         Settings.furthestThreshold);
+//         Settings.policeThreshold3);
 
 //     bool firstAnounced = false;
 
@@ -155,7 +155,7 @@ class BackgroundService {
 
 //     // Update des levels existants
 //     for (var fauna in _faunas) {
-//       int newLevel = Common.getMinAlertLevel(_currentPosition!, fauna.position);
+//       int newLevel = Common.getLevel(_currentPosition!, fauna.position);
 
 //       if (newLevel < fauna.level) {
 //         levelsToAnnounce.add(newLevel);
@@ -190,14 +190,14 @@ class BackgroundService {
 //     for (var fauna in faunas) {
 //       if (!existPositionInFauna(fauna.position) &&
 //           Common.calculateDistance(_currentPosition!, fauna.position) <=
-//               Settings.furthestThreshold) {
+//               Settings.policeThreshold3) {
 //         _faunas.add(FaunaBackground(
 //           position: fauna.position,
 //           type: fauna.type,
-//           level: Common.getMinAlertLevel(_currentPosition!, fauna.position),
+//           level: Common.getLevel(_currentPosition!, fauna.position),
 //         ));
 
-//         tmpLevels.add(Common.getMinAlertLevel(_currentPosition!, fauna.position));
+//         tmpLevels.add(Common.getLevel(_currentPosition!, fauna.position));
 //       }
 //     }
 

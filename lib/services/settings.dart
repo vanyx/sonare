@@ -21,13 +21,13 @@ class Settings {
 
   static bool notificationPermission = false;
 
-  static bool soundEnable = false;
+  static bool soundEnable = true;
 
-  static bool notificationEnable = false;
+  static bool notificationEnable = true;
 
-  static bool policeEnable = false;
+  static bool policeEnable = true;
 
-  static bool controlZoneEnable = false;
+  static bool controlZoneEnable = true;
 
   static const String version = '1.0.0'; //current version
 
@@ -41,7 +41,7 @@ class Settings {
 
   /**************** API - endpoints ****************/
 
-  static String apiUrl = 'http://192.168.1.37:8080';
+  static String apiUrl = 'http://172.20.10.2:8080';
 
   static String apiInfoEndpoint = '/api/infos';
 
@@ -56,13 +56,16 @@ class Settings {
   /**************** Seuils ****************/
 
   /// Seuil d'alerte le plus éloigné en m.
-  static double furthestThreshold = 3000;
+  static double policeThreshold3 = 3000;
 
   /// Seuil d'alerte médian en m.
-  static double medianThreshold = 800;
+  static double policeThreshold2 = 800;
 
   /// Seuil d'alerte urgent en m.
-  static double urgentThreshold = 400;
+  static double policeThreshold1 = 400;
+
+  /// Seuil d'alerte en m.
+  static double controlZoneThreshold = 800;
 
   /**************** Notif sharedPreferences keys ****************/
 
