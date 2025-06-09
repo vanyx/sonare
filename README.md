@@ -39,20 +39,6 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 
 - Apres signaler un bail, refresh
 
-- Termes et conditions
-
-- Refaire les icons et l'image du tuto
-
-- refaire le systeme de son
-
 - modifier assets son police par "police à moins de x distance (changer presence et detecté)"
 
 - notifications
-
-- Une fois API finie : modifier le common.fetchBy...
-
-// BACK
-
-- API : modifier tous les noms, ajouter radius pour zone de controle, pas post si exist deja une zone de controle
-- Modifier les scripts de boost et de filtrage
-- Ne cron que le filtrage

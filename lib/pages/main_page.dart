@@ -169,10 +169,10 @@ class _MainPageState extends State<MainPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
-      builder: (BuildContext context) {
+      builder: (BuildContext modalContext) {
         return ReportSheet(
           onClose: () {
-            Navigator.of(context).pop();
+            Navigator.of(modalContext).pop();
             setState(() {
               _isBottomSheetOpen = false;
             });

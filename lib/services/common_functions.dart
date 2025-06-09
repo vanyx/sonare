@@ -38,8 +38,8 @@ class Common {
 
         List<Alert> alerts = [];
 
-        if (Settings.policeEnable && data.containsKey("fishes")) {
-          alerts.addAll(data["fishes"]
+        if (Settings.policeEnable && data.containsKey("polices")) {
+          alerts.addAll(data["polices"]
               .where((json) =>
                   json.containsKey("latitude") && json.containsKey("longitude"))
               .map<Alert>((json) =>
@@ -47,8 +47,8 @@ class Common {
               .toList());
         }
 
-        if (Settings.controlZoneEnable && data.containsKey("shells")) {
-          alerts.addAll(data["shells"]
+        if (Settings.controlZoneEnable && data.containsKey("control-zones")) {
+          alerts.addAll(data["control-zones"]
               .where((json) =>
                   json.containsKey("latitude") && json.containsKey("longitude"))
               .map<Alert>((json) {
@@ -56,7 +56,6 @@ class Common {
                 json.containsKey("centroid") ? json["centroid"] : null;
             return ControlZone(
               position: LatLng(json["latitude"], json["longitude"]),
-              //@TODO a moidifier
               radius: 500,
               centroid: centroid ??
                   false, // Si centroid n'est pas recu, false par defaut
@@ -93,21 +92,20 @@ class Common {
 
         List<Alert> alerts = [];
 
-        if (Settings.policeEnable && data.containsKey("fishes")) {
-          alerts.addAll(data["fishes"]
+        if (Settings.policeEnable && data.containsKey("polices")) {
+          alerts.addAll(data["polices"]
               .where((json) =>
                   json.containsKey("latitude") && json.containsKey("longitude"))
               .map<Alert>((json) =>
                   Police(position: LatLng(json["latitude"], json["longitude"])))
               .toList());
         }
-        if (Settings.controlZoneEnable && data.containsKey("shells")) {
-          alerts.addAll(data["shells"]
+        if (Settings.controlZoneEnable && data.containsKey("control-zones")) {
+          alerts.addAll(data["control-zones"]
               .where((json) =>
                   json.containsKey("latitude") && json.containsKey("longitude"))
               .map<Alert>((json) => ControlZone(
                   position: LatLng(json["latitude"], json["longitude"]),
-                  //@TODO a moidifier
                   radius: 500))
               .toList());
         }
@@ -324,7 +322,6 @@ class Common {
 
   /// -------------------------- SOUNDS --------------------------
 
-  // @TODO : a tester
   static Future<void> PlayControlZoneByLevel(int level) async {
     final soundFiles = {
       1: 'sounds/enterControlZone.mp3',

@@ -41,17 +41,17 @@ class Settings {
 
   /**************** API - endpoints ****************/
 
-  static String apiUrl = 'http://172.20.10.2:8080';
+  static String apiUrl = 'http://192.168.1.233:8080';
 
   static String apiInfoEndpoint = '/api/infos';
 
-  static String getByWindowEndpoint = '/api/fauna/window';
+  static String getByWindowEndpoint = '/api/alerts/window';
 
-  static String getByRadiusEndpoint = '/api/fauna/radius';
+  static String getByRadiusEndpoint = '/api/alerts/radius';
 
-  static String postPoliceEndpoint = '/api/fauna/fish';
+  static String postPoliceEndpoint = '/api/alerts/police';
 
-  static String postControlZoneEndpoint = '/api/fauna/shell';
+  static String postControlZoneEndpoint = '/api/alerts/control-zone';
 
   /**************** Seuils ****************/
 

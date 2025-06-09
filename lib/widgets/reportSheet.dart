@@ -153,7 +153,7 @@ class _ReportSheetState extends State<ReportSheet> {
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: selectedCircle == 1
-                                          ? AppColors.sonareFlashi
+                                          ? AppColors.iconBorderControlZone
                                           : Colors.transparent,
                                       width: 3,
                                     ),
@@ -165,7 +165,7 @@ class _ReportSheetState extends State<ReportSheet> {
                                       child: FittedBox(
                                         fit: BoxFit.contain,
                                         child: Image.asset(
-                                            'assets/images/radar.png'),
+                                            'assets/images/control-zone.png'),
                                       ),
                                     ),
                                   ),
