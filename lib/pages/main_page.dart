@@ -172,7 +172,10 @@ class _MainPageState extends State<MainPage> {
       builder: (BuildContext modalContext) {
         return ReportSheet(
           onClose: () {
-            Navigator.of(modalContext).pop();
+            // Utilisation de modalContext pour garantir un contexte valide
+            if (Navigator.canPop(modalContext)) {
+              Navigator.of(modalContext).pop();
+            }
             setState(() {
               _isBottomSheetOpen = false;
             });

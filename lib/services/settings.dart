@@ -41,6 +41,7 @@ class Settings {
 
   /**************** API - endpoints ****************/
 
+  // @TODO: Change this to your API URL
   static String apiUrl = 'http://172.20.10.2:8080';
 
   static String apiInfoEndpoint = '/api/infos';
