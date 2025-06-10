@@ -1,9 +1,18 @@
+import 'package:Sonare/services/common_functions.dart';
+import 'package:Sonare/services/settings.dart';
 import 'package:flutter/material.dart';
-import '../widgets/floating_menu_button.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:latlong2/latlong.dart';
 import 'explorer_page.dart';
 import 'sonare_page.dart';
-import 'test_page.dart';
-import 'test2.dart';
+import 'settings_page.dart';
+import '../widgets/selectModeSheet.dart';
+import '../widgets/reportSheet.dart';
+import '../widgets/updateDialog.dart';
+import '../styles/AppColors.dart';
+import '../widgets/speedometer.dart';
+import 'dart:async';
+import 'package:geolocator/geolocator.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -13,175 +22,167 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedMode = 1; // 1 : Explorer, 2 : Sonare
   bool _explorerUserMovedCamera = false;
-  bool isBottomSheetOpen = false;
+  bool _isBottomSheetOpen = false;
+  double _marginTop = 40;
+  double _marginRight = 20;
+
+  double _speed = 0; // m/s
+  static const double _minSpeedometerLimit = 15; // km/h
+
+  LatLng? _currentPosition;
 
   final GlobalKey<ExplorerPageState> _explorerKey =
       GlobalKey<ExplorerPageState>();
 
-  void _changeMode(int mode) {
-    setState(() {
-      _selectedMode = mode;
-    });
-    if (mode == 1) {
-      setState(() {
-        _explorerUserMovedCamera = false;
+  final StreamController<Position> _positionStreamController =
+      StreamController.broadcast();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeLocationServices();
+    _checkAppVersion();
+  }
+
+  @override
+  void dispose() {
+    _positionStreamController.close();
+    super.dispose();
+  }
+
+  Future<void> _initializeLocationServices() async {
+    await Common.requestPermissions();
+    await _getCurrentLocation();
+    _startListeningPosition();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    if (!Settings.locationPermission) {
+      await Geolocator.openLocationSettings();
+      // Si permission de position refusee, on ouvre la carte sur Paris
+      if (mounted) {
+        setState(() {
+          _currentPosition = LatLng(48.8566, 2.3522);
+        });
+      }
+      return;
+    }
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
+      if (mounted) {
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+        });
+      }
+    } catch (e) {}
+  }
+
+  void _startListeningPosition() {
+    if (!Settings.locationPermission) {
+      return;
+    }
+    try {
+      Geolocator.getPositionStream(
+        locationSettings: LocationSettings(
+            accuracy: LocationAccuracy.high, distanceFilter: 1),
+      ).listen((Position position) {
+        // Stream de position
+        _positionStreamController.add(position);
+
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+          _speed = position.speed;
+        });
+      });
+    } catch (e) {}
+  }
+
+  Future<void> _checkAppVersion() async {
+    if (Settings.version != Settings.apiVersion) {
+      // Differer l'execution de l'affichage du dialogue
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showUpdateDialog();
       });
     }
   }
 
-  void _showBottomSheet() {
+  void _showUpdateDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible:
+          false, // empeche la fermeture en cliquant en dehors du dialog
+      builder: (BuildContext context) {
+        return UpdateDialog();
+      },
+    );
+  }
+
+  void _showSelectModeSheet() {
     setState(() {
-      isBottomSheetOpen = true;
+      _isBottomSheetOpen = true;
     });
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: AppColors.background2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+      ),
       builder: (BuildContext context) {
         return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Choisir un mode',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.close),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            setState(() {
-                              isBottomSheetOpen = false;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _changeMode(1);
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18.0),
-                              border: Border.all(
-                                color: _selectedMode == 1
-                                    ? Color.fromARGB(255, 64, 18, 181)
-                                    : Colors.grey,
-                                width: 2.0,
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.0),
-                              child: Stack(
-                                children: [
-                                  Image.asset(
-                                    'assets/explorer.png',
-                                    width: 150,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5.0, horizontal: 8.0),
-                                      color: Colors.white.withOpacity(0.95),
-                                      child: Text(
-                                        'Explorer',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _changeMode(2);
-                            });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18.0),
-                              border: Border.all(
-                                color: _selectedMode == 2
-                                    ? Color.fromARGB(255, 64, 18, 181)
-                                    : Colors.grey,
-                                width: 2.0,
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.0),
-                              child: Stack(
-                                children: [
-                                  Image.asset(
-                                    'assets/sonare.jpg',
-                                    width: 150,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5.0, horizontal: 8.0),
-                                      color: Colors.white.withOpacity(0.95),
-                                      child: Text(
-                                        'Sonare',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+          builder: (BuildContext context, StateSetter setModalState) {
+            return SelectModeSheet(
+              selectedMode: _selectedMode,
+              onModeSelected: (int mode) {
+                setState(() {
+                  _selectedMode = mode;
+                });
+                setModalState(() {}); // refresh la bottom sheet
+                if (mode == 1) {
+                  setState(() {
+                    _explorerUserMovedCamera = false;
+                  });
+                }
+              },
             );
           },
         );
       },
     ).whenComplete(() {
       setState(() {
-        isBottomSheetOpen = false;
+        _isBottomSheetOpen = false;
+      });
+    });
+  }
+
+  void _showReportSheet() {
+    setState(() {
+      _isBottomSheetOpen = true;
+    });
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.background2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+      ),
+      builder: (BuildContext context) {
+        return ReportSheet(
+          onClose: () {
+            Navigator.of(context).pop();
+            setState(() {
+              _isBottomSheetOpen = false;
+            });
+          },
+          position: _currentPosition!,
+        );
+      },
+    ).whenComplete(() {
+      setState(() {
+        _isBottomSheetOpen = false;
       });
     });
   }
@@ -193,7 +194,9 @@ class _MainPageState extends State<MainPage> {
     if (_selectedMode == 1) {
       currentPage = ExplorerPage(
         key: _explorerKey,
+        positionStream: _positionStreamController.stream,
         explorerUserMovedCamera: _explorerUserMovedCamera,
+        initPosition: _currentPosition,
         userMovedCamera: (hasMoved) {
           setState(() {
             _explorerUserMovedCamera = hasMoved;
@@ -201,8 +204,11 @@ class _MainPageState extends State<MainPage> {
         },
       );
     } else {
-      currentPage = SonarePage();
-      // currentPage = Test2Page();
+      currentPage = SonarePage(
+        positionStream: _positionStreamController.stream,
+        initPosition: _currentPosition,
+        speed: _speed * 3.6,
+      );
     }
 
     return Scaffold(
@@ -214,35 +220,57 @@ class _MainPageState extends State<MainPage> {
               children: [
                 currentPage,
                 Positioned(
-                  top: 30.0,
-                  right: 20.0,
-                  child: isBottomSheetOpen
+                  bottom: _marginTop,
+                  right: _marginRight,
+                  child: _isBottomSheetOpen
                       ? Container()
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            //REPORT
                             ElevatedButton(
                               onPressed: () {
-                                _showBottomSheet();
+                                _showReportSheet();
                               },
                               style: ElevatedButton.styleFrom(
+                                elevation: _selectedMode == 2 ? 0 : 2,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
-                                minimumSize: const Size(40, 40),
+                                minimumSize: const Size(45, 45),
                                 padding: EdgeInsets.all(0),
-                                backgroundColor: Colors.white,
-                                overlayColor: Colors.white,
-                                elevation: 4,
+                                backgroundColor: AppColors.button,
                               ),
                               child: Icon(
-                                Icons.map_outlined,
-                                color: Colors.black,
+                                CupertinoIcons.plus,
+                                color: AppColors.white,
                                 size: 25.0,
                               ),
                             ),
+                            const SizedBox(height: 5),
 
-                            // Dispo uniquement en mode explorer
+                            // CHOIX MODE
+                            ElevatedButton(
+                              onPressed: () {
+                                _showSelectModeSheet();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                elevation: _selectedMode == 2 ? 0 : 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                minimumSize: const Size(45, 45),
+                                padding: EdgeInsets.all(0),
+                                backgroundColor: AppColors.button,
+                              ),
+                              child: Icon(
+                                CupertinoIcons.map,
+                                color: AppColors.white,
+                                size: 25.0,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            // FLECHE (dispo uniquement en mode explorer)
                             if (_selectedMode == 1) ...[
                               ElevatedButton(
                                 onPressed: () {
@@ -250,38 +278,87 @@ class _MainPageState extends State<MainPage> {
                                       ?.animateToCurrentPosition();
                                 },
                                 style: ElevatedButton.styleFrom(
+                                  elevation: _selectedMode == 2 ? 0 : 2,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
-                                  minimumSize: const Size(40, 40),
+                                  minimumSize: const Size(45, 45),
                                   padding: EdgeInsets.all(0),
-                                  backgroundColor: Colors.white,
-                                  overlayColor: Colors.white,
-                                  elevation: 4,
+                                  backgroundColor: AppColors.button,
                                 ),
-                                child: Transform.rotate(
-                                  angle: 45 * 3.14159 / 180,
-                                  child: Icon(
-                                    _explorerUserMovedCamera
-                                        ? Icons.navigation_outlined
-                                        : Icons.navigation,
-                                    color: Colors.black,
-                                    size: 25.0,
-                                  ),
+                                child: Icon(
+                                  _explorerUserMovedCamera
+                                      ? CupertinoIcons.location
+                                      : CupertinoIcons.location_fill,
+                                  color: AppColors.white,
+                                  size: 25.0,
                                 ),
                               ),
                             ],
                           ],
                         ),
-                )
+                ),
+                // SPEED
+                // if (_speed * 3.6 >= _minSpeedometerLimit)
+                Positioned(
+                    bottom: _marginTop,
+                    left: _marginRight,
+                    child: _isBottomSheetOpen
+                        ? Container()
+                        : Speedometer(
+                            speed: _speed * 3.6,
+                            mode: _selectedMode,
+                          )),
+                // SETTINGS
+                Positioned(
+                  top: _marginTop * 1.3,
+                  left: _marginRight,
+                  child: _isBottomSheetOpen
+                      ? SizedBox.shrink()
+                      : ElevatedButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: AppColors.background,
+                              builder: (BuildContext context) {
+                                return DraggableScrollableSheet(
+                                  initialChildSize: 1.0,
+                                  minChildSize: 1.0,
+                                  maxChildSize: 1.0,
+                                  builder: (BuildContext context,
+                                      ScrollController scrollController) {
+                                    return SingleChildScrollView(
+                                      controller: scrollController,
+                                      child: SettingsPage(),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                              elevation: _selectedMode == 2 ? 0 : 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              minimumSize: const Size(45, 45),
+                              padding: EdgeInsets.all(0),
+                              backgroundColor: AppColors.button),
+                          child: Image.asset(
+                            'assets/images/icons/burgermenu.webp',
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            width: 25,
+                            height: 25,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                ),
               ],
             ),
           ),
         ],
       ),
-      floatingActionButton:
-          isBottomSheetOpen ? SizedBox.shrink() : FloatingMenuButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
   }
 }

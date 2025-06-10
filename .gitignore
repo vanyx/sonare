@@ -1,0 +1,28 @@
+# Fichiers générés automatiquement
+.dart_tool/
+.packages
+build/
+
+# Fichiers relatifs aux IDEs
+.idea/
+*.iml
+.vscode/
+
+# Configurations spécifiques
+.DS_Store
+*.swp
+Thumbs.db
+
+# Fichiers spécifiques à Android
+android/.gradle/
+android/local.properties
+
+# Fichiers spécifiques à iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/App.framework/
+
+# Windows et Linux build output
+windows/flutter/ephemeral/
+linux/flutter/ephemeral/
+macos/flutter/ephemeral/

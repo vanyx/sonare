@@ -1,21 +1,28 @@
+import 'package:Sonare/models/Fauna.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
 import 'package:shimmer/shimmer.dart';
-import 'dart:math';
+import '../styles/AppColors.dart';
+import '../services/common_functions.dart';
+import '../services/settings.dart';
+import '../widgets/explorerExpandableMarker.dart';
+import '../models/models.dart';
 
 class ExplorerPage extends StatefulWidget {
   final Function(bool) userMovedCamera;
   final bool explorerUserMovedCamera;
+  final Stream<Position> positionStream;
+  final LatLng? initPosition;
 
   ExplorerPage(
       {Key? key,
       required this.userMovedCamera,
-      required this.explorerUserMovedCamera})
+      required this.explorerUserMovedCamera,
+      required this.positionStream,
+      required this.initPosition})
       : super(key: key);
 
   @override
@@ -26,102 +33,134 @@ class ExplorerPageState extends State<ExplorerPage> {
   double _baseZoom = 15.0;
   double _currentZoom = 15.0;
 
+  /// ----------- Sizes -----------
+
+  double _zoomThreshold = 12.5;
+  double _markerSize = 37;
+  double _miniMarkerSize = 12;
+
+  /// -----------------------------
+
+  bool _mapReady = false;
+
   LatLng? _currentPosition;
-  List<LatLng> _sonare = [];
-  List<LatLng> _waze = [];
-  int _maxRetry = 3;
+  List<Fauna> _faunas = [];
+
+  double distanceThreshold = 200.0; // Seuil en m
+
   MapController _mapController = MapController();
   Timer? _debounceTimer;
 
   LatLng? _lastPosition;
-  double distanceThreshold = 200.0; // Seuil en mètres
+  DateTime? _lastUpdateTime;
+
+  late VoidCallback _faunaExplorerListener;
+
+  StreamSubscription<Position>? _positionSubscription;
 
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
-  }
-
-  Future<void> _getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      return;
-    }
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    if (mounted) {
-      setState(() {
-        _currentPosition = LatLng(position.latitude, position.longitude);
-      });
-    }
-  }
-
-  StreamSubscription<Position>? _positionSubscription;
-
-  void _startListeningToLocationChanges() {
-    _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
-    ).listen((Position position) {
-      if (mounted) {
-        setState(() {
-          _currentPosition = LatLng(position.latitude, position.longitude);
-        });
-
-        if (!widget.explorerUserMovedCamera) {
-          _mapController.move(_currentPosition!, _currentZoom);
-        }
-
-        // Check automatiquement les fish si l'user se deplace
-        if (_lastPosition == null ||
-            calculateDistance(_lastPosition!, _currentPosition!) >
-                distanceThreshold) {
-          setState(() {
-            _lastPosition = _currentPosition;
-          });
-
-          var camera = _mapController.camera;
-          _onMapChanged(camera, false);
-        }
-      }
-    });
-  }
-
-  double calculateDistance(LatLng start, LatLng end) {
-    const double R = 6371000; // Rayon de la Terre en mètres
-    double lat1 = start.latitude * (3.141592653589793 / 180.0);
-    double lat2 = end.latitude * (3.141592653589793 / 180.0);
-    double deltaLat =
-        (end.latitude - start.latitude) * (3.141592653589793 / 180.0);
-    double deltaLon =
-        (end.longitude - start.longitude) * (3.141592653589793 / 180.0);
-
-    double a = (sin(deltaLat / 2) * sin(deltaLat / 2)) +
-        cos(lat1) * cos(lat2) * (sin(deltaLon / 2) * sin(deltaLon / 2));
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
-    return R * c; // Distance en mètres
+    _initializeLocationServices();
+    ();
   }
 
   @override
   void dispose() {
     _debounceTimer?.cancel();
     _positionSubscription?.cancel();
+    Common.faunaNotifier.removeListener(_faunaExplorerListener);
     super.dispose();
   }
 
-  void _onMapChanged(MapCamera camera, bool? hasGesture) {
+  void _onMapReady() {
     setState(() {
-      _currentZoom = camera.zoom;
+      _mapReady = true;
     });
+    initFauna();
+
+    // si les permissions d'affichage des fauna changent, on reload
+    _faunaExplorerListener = () {
+      _onMapChanged(_mapController.camera, false);
+    };
+    Common.faunaNotifier.addListener(_faunaExplorerListener);
+  }
+
+  Future<void> _initializeLocationServices() async {
+    await _getCurrentLocation();
+    _listeningToLocationChanges();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    if (!Settings.locationPermission) {
+      await Geolocator.openLocationSettings();
+      return;
+    }
+
+    if (mounted && widget.initPosition != null) {
+      setState(() {
+        _currentPosition = widget.initPosition;
+      });
+    }
+  }
+
+  void _listeningToLocationChanges() {
+    if (!Settings.locationPermission) {
+      return;
+    }
+    try {
+      _positionSubscription = widget.positionStream.listen((Position position) {
+        // Ne fait rien si l'app est en arriere plan
+        if (Settings.appIsActive) {
+          if (_mapReady) {
+            if (mounted) {
+              animateMarker(_currentPosition!,
+                  LatLng(position.latitude, position.longitude));
+
+              // Check automatiquement les fauna si l'user se deplace
+              if (_lastPosition == null ||
+                  Common.calculateDistance(_lastPosition!, _currentPosition!) >
+                      distanceThreshold) {
+                if (!widget.explorerUserMovedCamera) {
+                  if (mounted) {
+                    setState(() {
+                      _lastPosition = _currentPosition;
+                    });
+                  }
+
+                  _onMapChanged(_mapController.camera, false);
+                }
+              }
+            }
+          } else {
+            setState(() {
+              _currentPosition = LatLng(position.latitude, position.longitude);
+            });
+          }
+        }
+      });
+    } catch (e) {}
+  }
+
+  Future<void> initFauna() async {
+    if (_currentPosition == null) return;
+    _onMapChanged(_mapController.camera, false);
+  }
+
+  void _onMapChanged(MapCamera camera, bool? hasGesture) {
+    if (mounted) {
+      setState(() {
+        _currentZoom = camera.zoom;
+      });
+    }
 
     if (hasGesture!) {
       if (hasGesture) {
-        setState(() {
-          widget.userMovedCamera(true);
-        });
+        if (mounted) {
+          setState(() {
+            widget.userMovedCamera(true);
+          });
+        }
       }
     }
 
@@ -129,110 +168,54 @@ class ExplorerPageState extends State<ExplorerPage> {
 
     _debounceTimer = Timer(const Duration(milliseconds: 200), () {
       var bounds = camera.visibleBounds;
-      var northEast = bounds.northEast;
-      var southWest = bounds.southWest;
 
-      // _fetchSonare(northEast.latitude, southWest.latitude,
-      //     southWest.longitude, northEast.longitude, _maxRetry);
-
-      _fetchWaze(northEast.latitude, southWest.latitude, southWest.longitude,
-          northEast.longitude, _maxRetry);
+      Common.getFaunaByWindow(
+              bounds.east, bounds.south, bounds.west, bounds.north)
+          .then((newFaunas) {
+        if (mounted) {
+          setState(() {
+            _faunas = newFaunas;
+          });
+        }
+      });
     });
   }
 
-  Future<void> _fetchSonare(
-      double north, double south, double west, double east, int retries) async {
-    String url =
-        'http://192.168.1.40:8000/sonare/all/${north}/${south}/${west}/${east}';
+  void animateMarker(LatLng from, LatLng to) {
+    DateTime now = DateTime.now();
 
-    try {
-      Uri uri = Uri.parse(url);
-
-      final response = await http.get(uri);
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body) as List;
-        List<LatLng> newFish = [];
-
-        for (var item in data) {
-          double latitude = item['latitude'];
-          double longitude = item['longitude'];
-          LatLng fishPosition = LatLng(latitude, longitude);
-          newFish.add(fishPosition);
-        }
-
-        if (mounted) {
-          setState(() {
-            _sonare = newFish;
-          });
-        }
-      } else {
-        if (retries > 0) {
-          await Future.delayed(Duration(milliseconds: 200));
-          _fetchSonare(north, south, west, east, retries - 1);
-        } else {
-          throw Exception('Failed to load fish data after multiple attempts');
-        }
-      }
-    } catch (e) {
-      print(e);
-      if (retries > 0) {
-        await Future.delayed(Duration(milliseconds: 200));
-        _fetchSonare(north, south, west, east, retries - 1);
+    if (_lastUpdateTime == null) {
+      _lastUpdateTime = now;
+      if (mounted) {
+        setState(() {
+          _currentPosition = to;
+        });
+        return;
       }
     }
-  }
 
-  Future<void> _fetchWaze(
-      double north, double south, double west, double east, int retries) async {
-    String url = 'https://www.waze.com/live-map/api/georss';
+    double animationDuration = 1000;
 
-    Map<String, String> queryParams = {
-      "top": north.toString(),
-      "bottom": south.toString(),
-      "left": west.toString(),
-      "right": east.toString(),
-      "env": "row",
-      "types": "alerts"
-    };
+    const int steps = 30;
+    double stepDuration = animationDuration / steps; // Duree par étape
 
-    try {
-      Uri uri = Uri.parse(url);
-      final finalUri = uri.replace(queryParameters: queryParams);
-
-      final response = await http.get(finalUri);
-
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        List<LatLng> newFish = [];
-
-        if (data['alerts'] != null) {
-          for (var alert in data['alerts']) {
-            var location = alert['location'];
-            if (location != null && alert['type'] == 'POLICE') {
-              LatLng fishPosition = LatLng(location['y'], location['x']);
-              newFish.add(fishPosition);
-            }
-          }
-        }
+    for (int i = 0; i <= steps; i++) {
+      Future.delayed(Duration(milliseconds: (stepDuration * i).toInt()), () {
+        double t = i / steps;
+        LatLng interpolatedPosition = Common.lerp(from, to, t);
         if (mounted) {
           setState(() {
-            _waze = newFish;
+            _currentPosition = interpolatedPosition;
           });
         }
-      } else {
-        if (retries > 0) {
-          await Future.delayed(Duration(milliseconds: 200));
-          _fetchWaze(north, south, west, east, retries - 1);
-        } else {
-          throw Exception('Failed to load fish data after multiple attempts');
+
+        if (!widget.explorerUserMovedCamera) {
+          _mapController.move(interpolatedPosition, _currentZoom);
         }
-      }
-    } catch (e) {
-      if (retries > 0) {
-        await Future.delayed(Duration(milliseconds: 200));
-        _fetchWaze(north, south, west, east, retries - 1);
-      }
+      });
     }
+
+    _lastUpdateTime = now;
   }
 
   Future<void> animateToCurrentPosition() async {
@@ -244,18 +227,16 @@ class ExplorerPageState extends State<ExplorerPage> {
       const int steps = 30;
       double stepDuration = duration / steps;
 
-      // position actuelle de la caméra
       LatLng currentCenter = _mapController.camera.center;
       double currentZoom = _mapController.camera.zoom;
       double currentRotation = _mapController.camera.rotation;
 
       double targetRotation = 0.0;
 
-      // animation
       for (int i = 0; i <= steps; i++) {
         double t = i / steps;
 
-        // Interpolation linéaire pour le centre
+        // Interpolation pour le centre
         double interpolatedLat = currentCenter.latitude +
             (targetPosition.latitude - currentCenter.latitude) * t;
         double interpolatedLng = currentCenter.longitude +
@@ -273,7 +254,6 @@ class ExplorerPageState extends State<ExplorerPage> {
 
         _mapController.rotate(interpolatedRotation);
 
-        // Pause entre chaque étape
         await Future.delayed(Duration(milliseconds: stepDuration.toInt()));
       }
     }
@@ -304,82 +284,66 @@ class ExplorerPageState extends State<ExplorerPage> {
                 minZoom: 7.0,
                 maxZoom: 18.0,
                 onPositionChanged: _onMapChanged,
-                onMapReady: _startListeningToLocationChanges,
-                onTap: (tapPosition, point) {}, // Ajout pour éviter l'erreur
+                onMapReady: _onMapReady,
+                onTap: (tapPosition, point) {},
                 onLongPress: (tapPosition, point) {},
               ),
               children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.app',
-                ),
+                TileLayer(urlTemplate: Settings.mapUrl),
                 MarkerLayer(
                   markers: [
-                    for (var fishPosition in _waze)
+                    if (_mapReady)
+
+                      // MARKERs
+                      for (var item in _faunas)
+                        Marker(
+                          width: _currentZoom > _zoomThreshold
+                              ? _markerSize
+                              : _miniMarkerSize,
+                          height: _currentZoom > _zoomThreshold
+                              ? _markerSize
+                              : _miniMarkerSize,
+                          point: item.position,
+                          child: ExplorerExpandableMarker(
+                            zoom: _currentZoom,
+                            type: item.type,
+                            color: item.type == "fish"
+                                ? AppColors.iconBackgroundFish
+                                : AppColors.iconBackgroundShell,
+                            position: item.position,
+                            rotationAngle: _mapController.camera.rotation,
+                            markerSize: _markerSize,
+                            miniMarkerSize: _miniMarkerSize,
+                            zoomThreshold: _zoomThreshold,
+                          ),
+                        ),
+
+                    // ME
+                    if (Settings.locationPermission)
                       Marker(
-                        width: _currentZoom > 13 ? 30.0 : 10.0,
-                        height: _currentZoom > 13 ? 30.0 : 10.0,
-                        point: fishPosition,
-                        child: _currentZoom > 13
-                            ? Image.asset(
-                                'assets/waze_police.png',
-                                width: 30.0,
-                                height: 30.0,
-                              )
-                            : Container(
-                                width: 10.0,
-                                height: 10.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color.fromARGB(255, 98, 190, 239),
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 2,
-                                  ),
-                                ),
+                        width: 25,
+                        height: 25,
+                        point: _currentPosition!,
+                        child: Container(
+                          width: 30.0,
+                          height: 30.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color.fromARGB(255, 37, 90, 254),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 3.5,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.15),
+                                spreadRadius: 2,
+                                blurRadius: 8,
                               ),
-                      ),
-                    for (var fishPosition in _sonare)
-                      Marker(
-                        width: _currentZoom > 13 ? 30.0 : 10.0,
-                        height: _currentZoom > 13 ? 30.0 : 10.0,
-                        point: fishPosition,
-                        child: _currentZoom > 13
-                            ? Image.asset(
-                                'assets/waze_police.png',
-                                width: 30.0,
-                                height: 30.0,
-                              )
-                            : Container(
-                                width: 10.0,
-                                height: 10.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color.fromARGB(255, 214, 44, 25),
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                      ),
-                    Marker(
-                      width: 25.0,
-                      height: 25.0,
-                      point: _currentPosition!,
-                      child: Container(
-                        width: 30.0,
-                        height: 30.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color.fromARGB(255, 37, 90, 254),
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 3.5,
+                            ],
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ],
