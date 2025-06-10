@@ -37,7 +37,7 @@ PHOTOS
     Le déplacement de la carte suit de manière fluide la position de l’utilisateur sans à-coups.
 
 
-- **Mode Sonare** : Interface inspirée d'un sonar sous-marin et de la mini-carte de GTA.
+  - **Mode Sonare** : Interface inspirée d'un sonar sous-marin et de la mini-carte de GTA.
     Carte centrée sur la position de l’utilisateur, avec possibilité de zoomer mais sans déplacement manuel de la carte.  
     Les alertes à l’intérieur du cercle apparaissent sous forme de marqueurs comme dans le mode Explorer.  
     Les alertes hors du cercle sont affichées sur la bordure sous forme de points dynamiques, qui tournent avec la rotation de la carte et dont la taille varie en fonction de la distance.  
@@ -60,7 +60,7 @@ Avertissements :
 **Compteur de vitesse** flottant, affichant la vitesse de l’utilisateur en temps réel, présent dans les deux modes de navigation.
   
 Plusieurs boutons :
-- Paramètres (menu burger)
+- Paramètres (burger menu)
 - Centre la caméra sur la position utilisateur (caméra qui suit les déplacements)
 - Ouvre un panneau bas (bottom sheet) pour signaler une zone de contrôle ou présence policière
 - Change de mode de visualisation
@@ -86,7 +86,7 @@ PHOTOS / GIF
 
 ### 1. API
 
-Dans le dossier de l'API *spring*, lancez :
+Dans le dossier de l'API **"spring"**, lancez :
 ```bash
 docker-compose up -d
 ```
@@ -109,7 +109,7 @@ flutter run
 
 ### 1. Build Xcode failed
 
-```
+```bash
 cd ios
 rm -rf Pods Podfile.lock
 pod cache clean --all
@@ -123,7 +123,7 @@ flutter build ios
 ### 2. Modifier son de notification
 
 1. Dans Xcode :
-Faire glisser le fichier audio (<sound_name>.aiff) depuis le finder vers le dossier Runner dans la section Project Navigator (sur la gauche).
+Faire glisser le fichier audio (*<sound_name>.aiff*) depuis le finder vers le dossier Runner dans la section Project Navigator (sur la gauche).
 Une boîte de dialogue s'affiche : cliquer sur OK.
 
 2. Ajouter le son dans le code :
