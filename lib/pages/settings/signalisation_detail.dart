@@ -8,16 +8,14 @@ import '../../services/settings.dart';
 
 class SignalisationDetailPage extends StatefulWidget {
   final String title;
-  final String description;
   final String type;
 
   const SignalisationDetailPage({
     Key? key,
     required this.title,
-    required this.description,
     required this.type,
-  })  : assert(type == "fish" || type == "shell",
-            'Type must be "fish" or "shell"'),
+  })  : assert(type == "police" || type == "controlZone",
+            'Type must be "police" or "controlZone"'),
         super(key: key);
 
   @override
@@ -31,8 +29,9 @@ class _SignalisationDetailPageState extends State<SignalisationDetailPage> {
   @override
   void initState() {
     super.initState();
-    isToggled =
-        widget.type == "fish" ? Settings.fishEnable : Settings.shellEnable;
+    isToggled = widget.type == "police"
+        ? Settings.policeEnable
+        : Settings.controlZoneEnable;
   }
 
   void _handleToggle(bool value) {
@@ -40,10 +39,10 @@ class _SignalisationDetailPageState extends State<SignalisationDetailPage> {
       isToggled = value;
     });
 
-    if (widget.type == "fish") {
-      Common.setFishEnabled(value);
+    if (widget.type == "police") {
+      Common.setPoliceEnabled(value);
     } else {
-      Common.setShellEnabled(value);
+      Common.setControlZoneEnabled(value);
     }
   }
 
@@ -106,7 +105,7 @@ class _SignalisationDetailPageState extends State<SignalisationDetailPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                widget.description,
+                "Affiche les signalements sur la carte et alerte à leur approche.",
                 style: AppFonts.settingsNotifSubtitle,
               ),
             ),

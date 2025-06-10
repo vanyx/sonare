@@ -7,8 +7,8 @@ class Settings {
     soundEnable = await Common.getSoundEnabled();
     notificationEnable = await Common.getNotificationsEnabled();
     tutorialDone = await Common.getTutorialDone();
-    fishEnable = await Common.getFishEnabled();
-    shellEnable = await Common.getShellEnabled();
+    policeEnable = await Common.getPoliceEnabled();
+    controlZoneEnable = await Common.getControlZoneEnabled();
   }
 
   /// -------------------------- SETTINGS DATA --------------------------
@@ -21,13 +21,13 @@ class Settings {
 
   static bool notificationPermission = false;
 
-  static bool soundEnable = false;
+  static bool soundEnable = true;
 
-  static bool notificationEnable = false;
+  static bool notificationEnable = true;
 
-  static bool fishEnable = false;
+  static bool policeEnable = true;
 
-  static bool shellEnable = false;
+  static bool controlZoneEnable = true;
 
   static const String version = '1.0.0'; //current version
 
@@ -41,34 +41,38 @@ class Settings {
 
   /**************** API - endpoints ****************/
 
-  static String apiUrl = 'http://192.168.1.37:8080';
+  // @TODO: Change this to your API URL
+  static String apiUrl = 'http://172.20.10.2:8080';
 
   static String apiInfoEndpoint = '/api/infos';
 
-  static String getByWindowEndpoint = '/api/fauna/window';
+  static String getByWindowEndpoint = '/api/alerts/window';
 
-  static String getByRadiusEndpoint = '/api/fauna/radius';
+  static String getByRadiusEndpoint = '/api/alerts/radius';
 
-  static String postFishEndpoint = '/api/fauna/fish';
+  static String postPoliceEndpoint = '/api/alerts/police';
 
-  static String postShellEndpoint = '/api/fauna/shell';
+  static String postControlZoneEndpoint = '/api/alerts/control-zone';
 
   /**************** Seuils ****************/
 
   /// Seuil d'alerte le plus éloigné en m.
-  static double furthestThreshold = 3000;
+  static double policeThreshold3 = 3000;
 
   /// Seuil d'alerte médian en m.
-  static double medianThreshold = 800;
+  static double policeThreshold2 = 800;
 
   /// Seuil d'alerte urgent en m.
-  static double urgentThreshold = 400;
+  static double policeThreshold1 = 400;
+
+  /// Seuil d'alerte en m.
+  static double controlZoneThreshold = 800;
 
   /**************** Notif sharedPreferences keys ****************/
 
   static const String tutorialKey = 'tutorialDone';
   static const String soundKey = 'soundEnabled';
   static const String notificationsKey = 'notificationsEnabled';
-  static const String fishKey = 'fishEnabled';
-  static const String shellKey = 'shellEnabled';
+  static const String policeKey = 'policeEnabled';
+  static const String controlZoneKey = 'controlZoneEnabled';
 }

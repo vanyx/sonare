@@ -38,7 +38,7 @@ class Step2Widget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Soyez informé des zones de contrôle.',
+                      'Soyez informé en temps réel.',
                       style: AppFonts.tutorialCardTitle,
                       textAlign: TextAlign.left,
                     ),
@@ -50,25 +50,7 @@ class Step2Widget extends StatelessWidget {
                         children: [
                           TextSpan(
                             text:
-                                'Recevez des alertes en temps réel quand vous pénétrez dans une zone de contrôle. Contribuez en alertant la communauté et soyez informé des présences autour de vous, qu’elles soient ',
-                          ),
-                          TextSpan(
-                            text: 'fixes',
-                            style: AppFonts.tutorialCardText.copyWith(
-                              color: AppColors.iconBackgroundShell,
-                            ),
-                          ),
-                          TextSpan(
-                            text: ' ou ',
-                          ),
-                          TextSpan(
-                            text: 'mobiles',
-                            style: AppFonts.tutorialCardText.copyWith(
-                              color: AppColors.iconBackgroundFish,
-                            ),
-                          ),
-                          TextSpan(
-                            text: '.',
+                                'Recevez des alertes en temps réel quand vous pénétrez dans une zone de contrôle. Contribuez en alertant la communauté et soyez informé des signalements autour de vous.',
                           ),
                         ],
                       ),

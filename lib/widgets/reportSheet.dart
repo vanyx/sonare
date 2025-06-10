@@ -18,7 +18,8 @@ class ReportSheet extends StatefulWidget {
 }
 
 class _ReportSheetState extends State<ReportSheet> {
-  int? selectedCircle; // 0 : fish, 1 : shell, null : aucun cercle sélectionné
+  int?
+      selectedCircle; // 0 : police, 1 : controlZone, null : aucun cercle sélectionné
   bool isReported = false;
   double opacity = 1.0;
 
@@ -35,9 +36,9 @@ class _ReportSheetState extends State<ReportSheet> {
   void report() {
     if (selectedCircle != null) {
       if (selectedCircle == 0) {
-        Common.postFauna(widget.position, "fish");
+        Common.postAlert(widget.position, "police");
       } else if (selectedCircle == 1) {
-        Common.postFauna(widget.position, "shell");
+        Common.postAlert(widget.position, "controlZone");
       }
     }
 
@@ -123,7 +124,7 @@ class _ReportSheetState extends State<ReportSheet> {
                                       child: FittedBox(
                                         fit: BoxFit.contain,
                                         child: Image.asset(
-                                            'assets/images/fish.webp'),
+                                            'assets/images/police.png'),
                                       ),
                                     ),
                                   ),
@@ -133,7 +134,7 @@ class _ReportSheetState extends State<ReportSheet> {
                                   height:
                                       8), // Espacement entre cercle et texte
                               Text(
-                                'Poisson',
+                                'Police',
                                 style: AppFonts.sheetReportItem,
                               ),
                             ],
@@ -152,7 +153,7 @@ class _ReportSheetState extends State<ReportSheet> {
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: selectedCircle == 1
-                                          ? AppColors.sonareFlashi
+                                          ? AppColors.iconBorderControlZone
                                           : Colors.transparent,
                                       width: 3,
                                     ),
@@ -164,7 +165,7 @@ class _ReportSheetState extends State<ReportSheet> {
                                       child: FittedBox(
                                         fit: BoxFit.contain,
                                         child: Image.asset(
-                                            'assets/images/shell.webp'),
+                                            'assets/images/control-zone.png'),
                                       ),
                                     ),
                                   ),
@@ -172,7 +173,7 @@ class _ReportSheetState extends State<ReportSheet> {
                               ),
                               SizedBox(height: 8),
                               Text(
-                                'Coquillage',
+                                'Zone de contrôle',
                                 style: AppFonts.sheetReportItem,
                               ),
                             ],

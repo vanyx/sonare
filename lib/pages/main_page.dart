@@ -27,7 +27,7 @@ class _MainPageState extends State<MainPage> {
   double _marginRight = 20;
 
   double _speed = 0; // m/s
-  static const double _minSpeedometerLimit = 15; // km/h
+//  static const double _minSpeedometerLimit = 15; // km/h
 
   LatLng? _currentPosition;
 
@@ -169,10 +169,13 @@ class _MainPageState extends State<MainPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
-      builder: (BuildContext context) {
+      builder: (BuildContext modalContext) {
         return ReportSheet(
           onClose: () {
-            Navigator.of(context).pop();
+            // Utilisation de modalContext pour garantir un contexte valide
+            if (Navigator.canPop(modalContext)) {
+              Navigator.of(modalContext).pop();
+            }
             setState(() {
               _isBottomSheetOpen = false;
             });

@@ -1,15 +1,14 @@
-import 'package:Sonare/models/Fauna.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:shimmer/shimmer.dart';
+import '../models/models.dart';
 import '../styles/AppColors.dart';
 import '../services/common_functions.dart';
 import '../services/settings.dart';
-import '../widgets/explorerExpandableMarker.dart';
-import '../models/models.dart';
+import '../widgets/customMarker.dart';
 
 class ExplorerPage extends StatefulWidget {
   final Function(bool) userMovedCamera;
@@ -44,7 +43,8 @@ class ExplorerPageState extends State<ExplorerPage> {
   bool _mapReady = false;
 
   LatLng? _currentPosition;
-  List<Fauna> _faunas = [];
+
+  List<Alert> _alerts = [];
 
   double distanceThreshold = 200.0; // Seuil en m
 
@@ -54,7 +54,7 @@ class ExplorerPageState extends State<ExplorerPage> {
   LatLng? _lastPosition;
   DateTime? _lastUpdateTime;
 
-  late VoidCallback _faunaExplorerListener;
+  late VoidCallback _alertExplorerListener;
 
   StreamSubscription<Position>? _positionSubscription;
 
@@ -69,7 +69,7 @@ class ExplorerPageState extends State<ExplorerPage> {
   void dispose() {
     _debounceTimer?.cancel();
     _positionSubscription?.cancel();
-    Common.faunaNotifier.removeListener(_faunaExplorerListener);
+    Common.alertNotifier.removeListener(_alertExplorerListener);
     super.dispose();
   }
 
@@ -77,13 +77,18 @@ class ExplorerPageState extends State<ExplorerPage> {
     setState(() {
       _mapReady = true;
     });
-    initFauna();
+    initAlerts();
 
-    // si les permissions d'affichage des fauna changent, on reload
-    _faunaExplorerListener = () {
-      _onMapChanged(_mapController.camera, false);
+    // si les permissions d'affichage des alerts changent, on reload
+    _alertExplorerListener = () {
+      if (mounted)
+        setState(() {
+          _alerts = [];
+        });
+      refreshAlerts();
     };
-    Common.faunaNotifier.addListener(_faunaExplorerListener);
+
+    Common.alertNotifier.addListener(_alertExplorerListener);
   }
 
   Future<void> _initializeLocationServices() async {
@@ -117,7 +122,7 @@ class ExplorerPageState extends State<ExplorerPage> {
               animateMarker(_currentPosition!,
                   LatLng(position.latitude, position.longitude));
 
-              // Check automatiquement les fauna si l'user se deplace
+              // Check automatiquement les alerts si l'user se deplace
               if (_lastPosition == null ||
                   Common.calculateDistance(_lastPosition!, _currentPosition!) >
                       distanceThreshold) {
@@ -127,8 +132,7 @@ class ExplorerPageState extends State<ExplorerPage> {
                       _lastPosition = _currentPosition;
                     });
                   }
-
-                  _onMapChanged(_mapController.camera, false);
+                  refreshAlerts();
                 }
               }
             }
@@ -142,9 +146,9 @@ class ExplorerPageState extends State<ExplorerPage> {
     } catch (e) {}
   }
 
-  Future<void> initFauna() async {
+  Future<void> initAlerts() async {
     if (_currentPosition == null) return;
-    _onMapChanged(_mapController.camera, false);
+    refreshAlerts();
   }
 
   void _onMapChanged(MapCamera camera, bool? hasGesture) {
@@ -167,18 +171,22 @@ class ExplorerPageState extends State<ExplorerPage> {
     if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel();
 
     _debounceTimer = Timer(const Duration(milliseconds: 200), () {
-      var bounds = camera.visibleBounds;
-
-      Common.getFaunaByWindow(
-              bounds.east, bounds.south, bounds.west, bounds.north)
-          .then((newFaunas) {
-        if (mounted) {
-          setState(() {
-            _faunas = newFaunas;
-          });
-        }
-      });
+      refreshAlerts();
     });
+  }
+
+  void refreshAlerts() async {
+    List<Alert> newAlerts = await Common.getAlertByWindow(
+        _mapController.camera.visibleBounds.east,
+        _mapController.camera.visibleBounds.south,
+        _mapController.camera.visibleBounds.west,
+        _mapController.camera.visibleBounds.north);
+
+    if (mounted) {
+      setState(() {
+        _alerts = newAlerts;
+      });
+    }
   }
 
   void animateMarker(LatLng from, LatLng to) {
@@ -290,33 +298,91 @@ class ExplorerPageState extends State<ExplorerPage> {
               ),
               children: [
                 TileLayer(urlTemplate: Settings.mapUrl),
+                CircleLayer(
+                  circles: [
+                    for (var item in _alerts)
+                      if (item is ControlZone)
+                        if (!item.centroid)
+                          CircleMarker(
+                            point: item.position,
+                            color: AppColors.iconBackgroundControlZone
+                                .withValues(alpha: 0.5),
+                            borderColor: AppColors.iconBackgroundControlZone,
+                            borderStrokeWidth: 2,
+                            radius: item.radius,
+                            useRadiusInMeter: true,
+                          ),
+                  ],
+                ),
                 MarkerLayer(
                   markers: [
                     if (_mapReady)
-
-                      // MARKERs
-                      for (var item in _faunas)
-                        Marker(
-                          width: _currentZoom > _zoomThreshold
-                              ? _markerSize
-                              : _miniMarkerSize,
-                          height: _currentZoom > _zoomThreshold
-                              ? _markerSize
-                              : _miniMarkerSize,
-                          point: item.position,
-                          child: ExplorerExpandableMarker(
-                            zoom: _currentZoom,
-                            type: item.type,
-                            color: item.type == "fish"
-                                ? AppColors.iconBackgroundFish
-                                : AppColors.iconBackgroundShell,
-                            position: item.position,
-                            rotationAngle: _mapController.camera.rotation,
-                            markerSize: _markerSize,
-                            miniMarkerSize: _miniMarkerSize,
-                            zoomThreshold: _zoomThreshold,
-                          ),
-                        ),
+                      for (var item in _alerts)
+                        if (item is Police)
+                          Marker(
+                              width: _currentZoom > _zoomThreshold
+                                  ? _markerSize
+                                  : _miniMarkerSize,
+                              height: _currentZoom > _zoomThreshold
+                                  ? _markerSize
+                                  : _miniMarkerSize,
+                              point: item.position,
+                              child: _currentZoom > _zoomThreshold
+                                  ? Transform.rotate(
+                                      angle: -_mapController.camera.rotation *
+                                          (pi / 180),
+                                      child: CustomMarker(
+                                        size: _markerSize,
+                                        type: 'police',
+                                      ),
+                                    )
+                                  : Container(
+                                      width: _miniMarkerSize,
+                                      height: _miniMarkerSize,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: AppColors.iconBackgroundPolice,
+                                        border: Border.all(
+                                          color: Colors.white,
+                                          width: 2,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black
+                                                .withValues(alpha: 0.3),
+                                            blurRadius: 3.0,
+                                            spreadRadius: 0.0,
+                                          ),
+                                        ],
+                                      ),
+                                    ))
+                        else if (item is ControlZone)
+                          if (item.centroid)
+                            Marker(
+                              width: _miniMarkerSize,
+                              height: _miniMarkerSize,
+                              point: item.position,
+                              child: Container(
+                                width: _miniMarkerSize,
+                                height: _miniMarkerSize,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.iconBackgroundControlZone,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.15),
+                                      spreadRadius: 2,
+                                      blurRadius: 8,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
 
                     // ME
                     if (Settings.locationPermission)

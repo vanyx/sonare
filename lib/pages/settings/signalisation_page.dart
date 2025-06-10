@@ -56,11 +56,7 @@ class _SignalisationPageState extends State<SignalisationPage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => SignalisationDetailPage(
-                      type: 'fish',
-                      title: 'Poisson',
-                      description:
-                          "Mobile, le poisson sillonne les eaux en constante évolution. Toujours en mouvement, il peut apparaître là où on l’attend le moins.",
-                    ),
+                        type: 'police', title: 'Police'),
                   ),
                 );
               },
@@ -75,20 +71,20 @@ class _SignalisationPageState extends State<SignalisationPage> {
                   width: iconWidth,
                   height: iconWidth,
                   decoration: BoxDecoration(
-                    color: AppColors.iconBackgroundFish,
+                    color: AppColors.iconBackgroundPolice,
                     borderRadius: BorderRadius.circular(6.0),
                   ),
                   child: Padding(
                     padding:
                         EdgeInsets.all(3.0), // taille de l'image a l'interieur
                     child: Image.asset(
-                      'assets/images/fish.webp',
+                      'assets/images/police.png',
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
                 title: Text(
-                  'Poisson',
+                  'Police',
                   style: AppFonts.settingsList,
                 ),
                 trailing: Icon(
@@ -113,11 +109,7 @@ class _SignalisationPageState extends State<SignalisationPage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => SignalisationDetailPage(
-                      type: 'shell',
-                      title: 'Coquillage',
-                      description:
-                          "Immobile, le coquillage veille en silence à son emplacement fixe. Il est une présence constante, marquant des lieux clés que l’on croise toujours au même endroit.",
-                    ),
+                        type: 'controlZone', title: 'Zone de contrôle'),
                   ),
                 );
               },
@@ -132,20 +124,20 @@ class _SignalisationPageState extends State<SignalisationPage> {
                   width: iconWidth,
                   height: iconWidth,
                   decoration: BoxDecoration(
-                    color: AppColors.iconBackgroundShell,
+                    color: AppColors.iconBackgroundControlZone,
                     borderRadius: BorderRadius.circular(6.0),
                   ),
                   child: Padding(
                     padding:
                         EdgeInsets.all(3.0), // taille de l'image a l'interieur
                     child: Image.asset(
-                      'assets/images/shell.webp',
+                      'assets/images/control-zone.png',
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
                 title: Text(
-                  'Coquillage',
+                  'Zone de contrôle',
                   style: AppFonts.settingsList,
                 ),
                 trailing: Icon(

@@ -78,7 +78,7 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Emettre un signal sonore lorsque vous approchez d'une présence.",
+                "Emettre un signal sonore lorsque vous approchez d'un signalement.",
                 style: AppFonts.settingsNotifSubtitle,
               ),
             ),
@@ -115,7 +115,7 @@ class _SoundNotificationPageState extends State<SoundNotificationPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Recevez des notifications en arrière-plan lorsque vous approchez d'une présence.",
+                "Recevez des notifications en arrière-plan lorsque vous approchez d'un signalement.",
                 style: AppFonts.settingsNotifSubtitle,
               ),
             ),

@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'package:Sonare/models/FaunaBackground.dart';
 import 'package:Sonare/services/settings.dart';
 import 'package:Sonare/services/common_functions.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-
-import '../models/Fauna.dart';
+import '../models/models.dart';
 
 class BackgroundService {
   bool running = false;
@@ -18,7 +16,7 @@ class BackgroundService {
   LatLng? _currentPosition;
   LatLng? _lastApiPosition;
 
-  List<FaunaBackground> _faunas = [];
+  List<AlertSonareWrapper> _alerts = [];
 
   bool _locationInitializationIsOk = false;
 
@@ -60,7 +58,7 @@ class BackgroundService {
   void start() async {
     running = true;
 
-    _faunas = [];
+    _alerts = [];
 
     _lastApiPosition = null;
 
@@ -80,7 +78,7 @@ class BackgroundService {
 
   StreamSubscription<LocationData>? _locationSubscription;
   void _streamLocation() {
-    bool _faunaInited = false;
+    bool alertsInitialized = false;
 
     _locationSubscription =
         _location.onLocationChanged.listen((LocationData location) {
@@ -89,76 +87,113 @@ class BackgroundService {
         return;
       }
       _currentPosition = LatLng(location.latitude!, location.longitude!);
-      if (!_faunaInited) {
-        _faunaInited = true;
-        initFaunas();
+      if (!alertsInitialized) {
+        alertsInitialized = true;
+        initAlerts();
       } else {
         updateBackground();
       }
     });
   }
 
-  Future<void> initFaunas() async {
+  Future<void> initAlerts() async {
     if (_currentPosition == null) return;
 
     _lastApiPosition = _currentPosition;
 
-    List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
-    for (var fauna in faunas) {
-      if (Common.calculateDistance(_currentPosition!, fauna.position) <=
-          Settings.furthestThreshold) {
-        _faunas.add(FaunaBackground(
-          type: fauna.type,
-          position: fauna.position,
-          level: Common.getFaunaLevel(_currentPosition!, fauna.position),
-        ));
+    List<Alert> alerts = await Common.getAlertByRadius(_currentPosition!);
+
+    List<Map<String, dynamic>> levelsToAnnounce = [];
+
+    for (var item in alerts) {
+      if (Common.calculateDistance(_currentPosition!, item.position) <=
+          Settings.policeThreshold3) {
+        int level;
+        String type;
+
+        if (item is ControlZone) {
+          level = Common.getControlZoneLevel(
+              _currentPosition!, item.position, item.radius);
+          type = "ControlZone";
+        } else if (item is Police) {
+          level = Common.getPoliceLevel(_currentPosition!, item.position);
+          type = "Police";
+        } else {
+          continue; // Ignore les types inconnus
+        }
+
+        _alerts.add(AlertSonareWrapper(alert: item, level: level, size: 1));
+        levelsToAnnounce.add({"level": level, "type": type});
       }
     }
 
-    // Notif eventuelle du fauna le plus proche si URGENT (level <= 2)
-    int firstMaxLevel =
-        Common.getMaxLevel(_faunas.map((fauna) => fauna.level).toList());
-    if (firstMaxLevel <= 2 &&
-        Settings.notificationPermission &&
-        Settings.notificationEnable) {
-      notifyByLevel(firstMaxLevel);
+    // Notification pour l'alerte la plus prioritaire
+    if (levelsToAnnounce.isNotEmpty) {
+      var minAlert = levelsToAnnounce.reduce((a, b) {
+        if (a["level"] == b["level"]) {
+          // Priorité à la Police si les niveaux sont égaux
+          return a["type"] == "Police" ? a : b;
+        }
+        return a["level"] < b["level"] ? a : b;
+      });
+
+      if (Settings.notificationPermission && Settings.notificationEnable) {
+        notifyByLevel(minAlert["level"], minAlert["type"]);
+      }
     }
   }
 
   void updateBackground() async {
     if (_currentPosition == null) return;
 
-    // Distance min avant nouvel appel API en m
-    double apiCallDistanceThreshold = Settings.furthestThreshold / 10;
+    // Distance minimale avant un nouvel appel API en mètres
+    double apiCallDistanceThreshold = Settings.policeThreshold3 / 10;
 
-    // filtrage
-    _faunas.removeWhere((fauna) =>
-        Common.calculateDistance(_currentPosition!, fauna.position) >
-        Settings.furthestThreshold);
+    // Filtrage des alertes existantes
+    _alerts.removeWhere((item) =>
+        Common.calculateDistance(_currentPosition!, item.alert.position) >
+        Settings.policeThreshold3);
 
-    bool firstAnounced = false;
+    List<Map<String, dynamic>> levelsToAnnounce = [];
 
-    List<int> levelsToAnnounce = [];
-
-    // Update des levels existants
-    for (var fauna in _faunas) {
-      int newLevel = Common.getFaunaLevel(_currentPosition!, fauna.position);
-
-      if (newLevel < fauna.level) {
-        levelsToAnnounce.add(newLevel);
+    // Mise à jour des niveaux des alertes existantes
+    for (var item in _alerts) {
+      int newLevel;
+      if (item.alert is ControlZone) {
+        newLevel = Common.getControlZoneLevel(_currentPosition!,
+            item.alert.position, (item.alert as ControlZone).radius);
+      } else if (item.alert is Police) {
+        newLevel =
+            Common.getPoliceLevel(_currentPosition!, item.alert.position);
+      } else {
+        continue; // Ignore les types inconnus
       }
-      if (newLevel != fauna.level) {
-        fauna.level = newLevel;
+
+      if (newLevel < item.level) {
+        levelsToAnnounce.add(
+            {"level": newLevel, "type": item.alert.runtimeType.toString()});
+      }
+      if (newLevel != item.level) {
+        item.level = newLevel; // Met à jour le niveau
       }
     }
-    // Annonce notif eventuelle du fauna le plus proche si changement
-    int firstMaxLevelExisting = Common.getMaxLevel(levelsToAnnounce);
-    if (firstMaxLevelExisting != -1 && Settings.soundEnable) {
-      firstAnounced = true;
-      notifyByLevel(firstMaxLevelExisting);
+
+    // Notification pour l'alerte la plus prioritaire
+    if (levelsToAnnounce.isNotEmpty) {
+      var minAlert = levelsToAnnounce.reduce((a, b) {
+        if (a["level"] == b["level"]) {
+          // Priorité à la Police si les niveaux sont égaux
+          return a["type"] == "Police" ? a : b;
+        }
+        return a["level"] < b["level"] ? a : b;
+      });
+
+      if (Settings.notificationPermission && Settings.notificationEnable) {
+        notifyByLevel(minAlert["level"], minAlert["type"]);
+      }
     }
 
-    // return si pas assez bougé
+    // Vérifie si la position a suffisamment changé avant de faire un nouvel appel API
     if (_lastApiPosition != null) {
       if (Common.calculateDistance(_lastApiPosition!, _currentPosition!) <
           apiCallDistanceThreshold) {
@@ -166,56 +201,75 @@ class BackgroundService {
       }
     }
 
-    // Sinon, fetch les nouveaux :
-
+    // Sinon, fetch les nouvelles alertes
     _lastApiPosition = _currentPosition;
 
-    List<int> tmpLevels = [];
+    List<Map<String, dynamic>> newLevelsToAnnounce = [];
+    List<Alert> alerts = await Common.getAlertByRadius(_currentPosition!);
 
-    List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
+    for (var item in alerts) {
+      if (!existPositionInAlerts(item.position) &&
+          Common.calculateDistance(_currentPosition!, item.position) <=
+              Settings.policeThreshold3) {
+        int level;
+        String type;
+        if (item is ControlZone) {
+          level = Common.getControlZoneLevel(
+              _currentPosition!, item.position, item.radius);
+          type = "ControlZone";
+        } else if (item is Police) {
+          level = Common.getPoliceLevel(_currentPosition!, item.position);
+          type = "Police";
+        } else {
+          continue; // Ignore les types inconnus
+        }
 
-    for (var fauna in faunas) {
-      if (!existPositionInFauna(fauna.position) &&
-          Common.calculateDistance(_currentPosition!, fauna.position) <=
-              Settings.furthestThreshold) {
-        _faunas.add(FaunaBackground(
-          position: fauna.position,
-          type: fauna.type,
-          level: Common.getFaunaLevel(_currentPosition!, fauna.position),
-        ));
-
-        tmpLevels.add(Common.getFaunaLevel(_currentPosition!, fauna.position));
+        _alerts.add(AlertSonareWrapper(alert: item, level: level, size: 1));
+        newLevelsToAnnounce.add({"level": level, "type": type});
       }
     }
 
-    int firstMaxLevel = Common.getMaxLevel(tmpLevels);
+    // Notification pour les nouvelles alertes
+    if (newLevelsToAnnounce.isNotEmpty) {
+      var minNewAlert = newLevelsToAnnounce.reduce((a, b) {
+        if (a["level"] == b["level"]) {
+          // Priorité à la Police si les niveaux sont égaux
+          return a["type"] == "Police" ? a : b;
+        }
+        return a["level"] < b["level"] ? a : b;
+      });
 
-    if (firstMaxLevel > 0 && !firstAnounced) {
-      // Annonce eventuelle du fauna le plus proche
       if (Settings.notificationPermission && Settings.notificationEnable) {
-        notifyByLevel(firstMaxLevel);
+        notifyByLevel(minNewAlert["level"], minNewAlert["type"]);
       }
     }
   }
 
-  bool existPositionInFauna(LatLng position) {
-    for (Fauna fauna in _faunas) {
-      if (fauna.position.latitude == position.latitude &&
-          fauna.position.longitude == position.longitude) {
+  bool existPositionInAlerts(LatLng position) {
+    for (var item in _alerts) {
+      if (item.alert.position.latitude == position.latitude &&
+          item.alert.position.longitude == position.longitude) {
         return true;
       }
     }
     return false;
   }
 
-  Future<void> notifyByLevel(int level) async {
+  Future<void> notifyByLevel(int level, String type) async {
+    String alertType = type == "Police" ? "Police" : "Zone de contrôle";
+    String message;
+
     if (level == 1) {
-      await sendNotification("Présence détéctée à moins de 400 mètres !");
+      message = "$alertType à moins de 400 mètres !";
     } else if (level == 2) {
-      await sendNotification("Présence détéctée à moins de 800 mètres !");
+      message = "$alertType à moins de 800 mètres !";
     } else if (level == 3) {
-      await sendNotification("Présence détéctée à moins de 3 km.");
+      message = "$alertType à moins de 3 km.";
+    } else {
+      return; // Niveau inconnu
     }
+
+    await sendNotification(message);
   }
 
   Future<void> _initializeNotifications() async {
