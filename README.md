@@ -35,10 +35,15 @@ const DarwinNotificationDetails iosPlatformChannelSpecifics =
 );
 
 
-## TODO
+# @TODO
 
-- Apres signaler un bail, refresh
-
-- modifier assets son police par "police à moins de x distance (changer presence et detecté)"
-
-- notifications
+Quand report la police :
+BUG :
+[ERROR:flutter/runtime/dart_vm_initializer.cc(40)] Unhandled Exception: Null check operator used on a null value
+#0      StatefulElement.state (package:flutter/src/widgets/framework.dart:5848:44)
+framework.dart:5848
+#1      Navigator.of (package:flutter/src/widgets/navigator.dart:2875:38)
+navigator.dart:2875
+#2      _MainPageState._showReportSheet.<anonymous closure>.<anonymous closure> (package:Sonare/pages/main_page.dart:175:23)
+main_page.dart:175
+#3      _ReportSheetState.report.<anonymous closure> (package:Sonare/widgets/reportSheet.dart:60:21)

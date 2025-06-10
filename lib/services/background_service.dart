@@ -6,18 +6,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import '../models/models.dart';
 
-/*****************
- * 
- * 
- * 
- * @TODO : supprimer le systeme des faunas
- * 
- * S'inspirer de mode sonare pour la gestion des listes
- * 
- * Garder ce qui a ete fait pour les polices, mais faire un nouveau systeme pour les zones de controle
- * 
- * Tout le code commenté est à decommenté, si besoin regarder sur git
- */
 class BackgroundService {
   bool running = false;
   final Location _location = Location();
@@ -28,7 +16,7 @@ class BackgroundService {
   LatLng? _currentPosition;
   LatLng? _lastApiPosition;
 
-  // List<FaunaBackground> _faunas = [];
+  List<AlertSonareWrapper> _alerts = [];
 
   bool _locationInitializationIsOk = false;
 
@@ -43,7 +31,7 @@ class BackgroundService {
     );
 
     // Initialisation notifications
-    // await _initializeNotifications();
+    await _initializeNotifications();
 
     // Permissions
     bool serviceEnabled;
@@ -68,12 +56,9 @@ class BackgroundService {
   }
 
   void start() async {
-    //@TODO : modif a supprimer
-    return;
-
     running = true;
 
-    // _faunas = [];
+    _alerts = [];
 
     _lastApiPosition = null;
 
@@ -83,203 +68,259 @@ class BackgroundService {
       return;
     }
 
-    // _streamLocation();
+    _streamLocation();
   }
 
   void stop() {
     running = false;
-    // _locationSubscription?.cancel();
+    _locationSubscription?.cancel();
   }
 
-//   StreamSubscription<LocationData>? _locationSubscription;
-//   void _streamLocation() {
-//     bool _faunaInited = false;
+  StreamSubscription<LocationData>? _locationSubscription;
+  void _streamLocation() {
+    bool alertsInitialized = false;
 
-//     _locationSubscription =
-//         _location.onLocationChanged.listen((LocationData location) {
-//       if (!running || Settings.appIsActive) {
-//         _locationSubscription?.cancel();
-//         return;
-//       }
-//       _currentPosition = LatLng(location.latitude!, location.longitude!);
-//       if (!_faunaInited) {
-//         _faunaInited = true;
-//         initFaunas();
-//       } else {
-//         updateBackground();
-//       }
-//     });
-//   }
+    _locationSubscription =
+        _location.onLocationChanged.listen((LocationData location) {
+      if (!running || Settings.appIsActive) {
+        _locationSubscription?.cancel();
+        return;
+      }
+      _currentPosition = LatLng(location.latitude!, location.longitude!);
+      if (!alertsInitialized) {
+        alertsInitialized = true;
+        initAlerts();
+      } else {
+        updateBackground();
+      }
+    });
+  }
 
-//   Future<void> initFaunas() async {
-//     if (_currentPosition == null) return;
+  Future<void> initAlerts() async {
+    if (_currentPosition == null) return;
 
-//     _lastApiPosition = _currentPosition;
+    _lastApiPosition = _currentPosition;
 
-//     List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
-//     for (var fauna in faunas) {
-//       if (Common.calculateDistance(_currentPosition!, fauna.position) <=
-//           Settings.policeThreshold3) {
-//         _faunas.add(FaunaBackground(
-//           type: fauna.type,
-//           position: fauna.position,
-//           level: Common.getLevel(_currentPosition!, fauna.position),
-//         ));
-//       }
-//     }
+    List<Alert> alerts = await Common.getAlertByRadius(_currentPosition!);
 
-//     // Notif eventuelle du fauna le plus proche si URGENT (level <= 2)
-//     int firstMaxLevel =
-//         Common.getMaxLevel(_faunas.map((fauna) => fauna.level).toList());
-//     if (firstMaxLevel <= 2 &&
-//         Settings.notificationPermission &&
-//         Settings.notificationEnable) {
-//       notifyByLevel(firstMaxLevel);
-//     }
-//   }
+    List<Map<String, dynamic>> levelsToAnnounce = [];
 
-//   void updateBackground() async {
-//     if (_currentPosition == null) return;
+    for (var item in alerts) {
+      if (Common.calculateDistance(_currentPosition!, item.position) <=
+          Settings.policeThreshold3) {
+        int level;
+        String type;
 
-//     // Distance min avant nouvel appel API en m
-//     double apiCallDistanceThreshold = Settings.policeThreshold3 / 10;
+        if (item is ControlZone) {
+          level = Common.getControlZoneLevel(
+              _currentPosition!, item.position, item.radius);
+          type = "ControlZone";
+        } else if (item is Police) {
+          level = Common.getPoliceLevel(_currentPosition!, item.position);
+          type = "Police";
+        } else {
+          continue; // Ignore les types inconnus
+        }
 
-//     // filtrage
-//     _faunas.removeWhere((fauna) =>
-//         Common.calculateDistance(_currentPosition!, fauna.position) >
-//         Settings.policeThreshold3);
+        _alerts.add(AlertSonareWrapper(alert: item, level: level, size: 1));
+        levelsToAnnounce.add({"level": level, "type": type});
+      }
+    }
 
-//     bool firstAnounced = false;
+    // Notification pour l'alerte la plus prioritaire
+    if (levelsToAnnounce.isNotEmpty) {
+      var minAlert = levelsToAnnounce.reduce((a, b) {
+        if (a["level"] == b["level"]) {
+          // Priorité à la Police si les niveaux sont égaux
+          return a["type"] == "Police" ? a : b;
+        }
+        return a["level"] < b["level"] ? a : b;
+      });
 
-//     List<int> levelsToAnnounce = [];
+      if (Settings.notificationPermission && Settings.notificationEnable) {
+        notifyByLevel(minAlert["level"], minAlert["type"]);
+      }
+    }
+  }
 
-//     // Update des levels existants
-//     for (var fauna in _faunas) {
-//       int newLevel = Common.getLevel(_currentPosition!, fauna.position);
+  void updateBackground() async {
+    if (_currentPosition == null) return;
 
-//       if (newLevel < fauna.level) {
-//         levelsToAnnounce.add(newLevel);
-//       }
-//       if (newLevel != fauna.level) {
-//         fauna.level = newLevel;
-//       }
-//     }
-//     // Annonce notif eventuelle du fauna le plus proche si changement
-//     int firstMaxLevelExisting = Common.getMaxLevel(levelsToAnnounce);
-//     if (firstMaxLevelExisting != -1 && Settings.soundEnable) {
-//       firstAnounced = true;
-//       notifyByLevel(firstMaxLevelExisting);
-//     }
+    // Distance minimale avant un nouvel appel API en mètres
+    double apiCallDistanceThreshold = Settings.policeThreshold3 / 10;
 
-//     // return si pas assez bougé
-//     if (_lastApiPosition != null) {
-//       if (Common.calculateDistance(_lastApiPosition!, _currentPosition!) <
-//           apiCallDistanceThreshold) {
-//         return;
-//       }
-//     }
+    // Filtrage des alertes existantes
+    _alerts.removeWhere((item) =>
+        Common.calculateDistance(_currentPosition!, item.alert.position) >
+        Settings.policeThreshold3);
 
-//     // Sinon, fetch les nouveaux :
+    List<Map<String, dynamic>> levelsToAnnounce = [];
 
-//     _lastApiPosition = _currentPosition;
+    // Mise à jour des niveaux des alertes existantes
+    for (var item in _alerts) {
+      int newLevel;
+      if (item.alert is ControlZone) {
+        newLevel = Common.getControlZoneLevel(_currentPosition!,
+            item.alert.position, (item.alert as ControlZone).radius);
+      } else if (item.alert is Police) {
+        newLevel =
+            Common.getPoliceLevel(_currentPosition!, item.alert.position);
+      } else {
+        continue; // Ignore les types inconnus
+      }
 
-//     List<int> tmpLevels = [];
+      if (newLevel < item.level) {
+        levelsToAnnounce.add(
+            {"level": newLevel, "type": item.alert.runtimeType.toString()});
+      }
+      if (newLevel != item.level) {
+        item.level = newLevel; // Met à jour le niveau
+      }
+    }
 
-//     List<Fauna> faunas = await Common.getFaunaByRadius(_currentPosition!);
+    // Notification pour l'alerte la plus prioritaire
+    if (levelsToAnnounce.isNotEmpty) {
+      var minAlert = levelsToAnnounce.reduce((a, b) {
+        if (a["level"] == b["level"]) {
+          // Priorité à la Police si les niveaux sont égaux
+          return a["type"] == "Police" ? a : b;
+        }
+        return a["level"] < b["level"] ? a : b;
+      });
 
-//     for (var fauna in faunas) {
-//       if (!existPositionInFauna(fauna.position) &&
-//           Common.calculateDistance(_currentPosition!, fauna.position) <=
-//               Settings.policeThreshold3) {
-//         _faunas.add(FaunaBackground(
-//           position: fauna.position,
-//           type: fauna.type,
-//           level: Common.getLevel(_currentPosition!, fauna.position),
-//         ));
+      if (Settings.notificationPermission && Settings.notificationEnable) {
+        notifyByLevel(minAlert["level"], minAlert["type"]);
+      }
+    }
 
-//         tmpLevels.add(Common.getLevel(_currentPosition!, fauna.position));
-//       }
-//     }
+    // Vérifie si la position a suffisamment changé avant de faire un nouvel appel API
+    if (_lastApiPosition != null) {
+      if (Common.calculateDistance(_lastApiPosition!, _currentPosition!) <
+          apiCallDistanceThreshold) {
+        return;
+      }
+    }
 
-//     int firstMaxLevel = Common.getMaxLevel(tmpLevels);
+    // Sinon, fetch les nouvelles alertes
+    _lastApiPosition = _currentPosition;
 
-//     if (firstMaxLevel > 0 && !firstAnounced) {
-//       // Annonce eventuelle du fauna le plus proche
-//       if (Settings.notificationPermission && Settings.notificationEnable) {
-//         notifyByLevel(firstMaxLevel);
-//       }
-//     }
-//   }
+    List<Map<String, dynamic>> newLevelsToAnnounce = [];
+    List<Alert> alerts = await Common.getAlertByRadius(_currentPosition!);
 
-//   bool existPositionInFauna(LatLng position) {
-//     for (Fauna fauna in _faunas) {
-//       if (fauna.position.latitude == position.latitude &&
-//           fauna.position.longitude == position.longitude) {
-//         return true;
-//       }
-//     }
-//     return false;
-//   }
+    for (var item in alerts) {
+      if (!existPositionInAlerts(item.position) &&
+          Common.calculateDistance(_currentPosition!, item.position) <=
+              Settings.policeThreshold3) {
+        int level;
+        String type;
+        if (item is ControlZone) {
+          level = Common.getControlZoneLevel(
+              _currentPosition!, item.position, item.radius);
+          type = "ControlZone";
+        } else if (item is Police) {
+          level = Common.getPoliceLevel(_currentPosition!, item.position);
+          type = "Police";
+        } else {
+          continue; // Ignore les types inconnus
+        }
 
-//   Future<void> notifyByLevel(int level) async {
-//     if (level == 1) {
-//       await sendNotification("Présence détéctée à moins de 400 mètres !");
-//     } else if (level == 2) {
-//       await sendNotification("Présence détéctée à moins de 800 mètres !");
-//     } else if (level == 3) {
-//       await sendNotification("Présence détéctée à moins de 3 km.");
-//     }
-//   }
+        _alerts.add(AlertSonareWrapper(alert: item, level: level, size: 1));
+        newLevelsToAnnounce.add({"level": level, "type": type});
+      }
+    }
 
-//   Future<void> _initializeNotifications() async {
-//     const AndroidInitializationSettings initializationSettingsAndroid =
-//         AndroidInitializationSettings('app_icon');
+    // Notification pour les nouvelles alertes
+    if (newLevelsToAnnounce.isNotEmpty) {
+      var minNewAlert = newLevelsToAnnounce.reduce((a, b) {
+        if (a["level"] == b["level"]) {
+          // Priorité à la Police si les niveaux sont égaux
+          return a["type"] == "Police" ? a : b;
+        }
+        return a["level"] < b["level"] ? a : b;
+      });
 
-//     const DarwinInitializationSettings initializationSettingsIOS =
-//         DarwinInitializationSettings();
+      if (Settings.notificationPermission && Settings.notificationEnable) {
+        notifyByLevel(minNewAlert["level"], minNewAlert["type"]);
+      }
+    }
+  }
 
-//     const InitializationSettings initializationSettings =
-//         InitializationSettings(
-//       android: initializationSettingsAndroid,
-//       iOS: initializationSettingsIOS,
-//     );
+  bool existPositionInAlerts(LatLng position) {
+    for (var item in _alerts) {
+      if (item.alert.position.latitude == position.latitude &&
+          item.alert.position.longitude == position.longitude) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-//     await _flutterLocalNotifications.initialize(initializationSettings);
-//   }
+  Future<void> notifyByLevel(int level, String type) async {
+    String alertType = type == "Police" ? "Police" : "Zone de contrôle";
+    String message;
 
-//   Future<void> sendNotification(String notifContent) async {
-//     if (!Settings.notificationPermission || !Settings.notificationEnable) {
-//       return;
-//     }
+    if (level == 1) {
+      message = "$alertType à moins de 400 mètres !";
+    } else if (level == 2) {
+      message = "$alertType à moins de 800 mètres !";
+    } else if (level == 3) {
+      message = "$alertType à moins de 3 km.";
+    } else {
+      return; // Niveau inconnu
+    }
 
-//     try {
-//       const AndroidNotificationDetails androidPlatformChannelSpecifics =
-//           AndroidNotificationDetails('channel_id', 'channel_name',
-//               channelDescription: 'channel_description',
-//               importance: Importance.max,
-//               priority: Priority.high,
-//               playSound: true,
-//               sound: RawResourceAndroidNotificationSound('notification'));
+    await sendNotification(message);
+  }
 
-//       const DarwinNotificationDetails iosPlatformChannelSpecifics =
-//           DarwinNotificationDetails(
-//         presentAlert: true,
-//         presentBadge: true,
-//         presentSound: true,
-//         sound: 'notification.aiff',
-//       );
+  Future<void> _initializeNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
 
-//       const NotificationDetails platformChannelSpecifics = NotificationDetails(
-//         android: androidPlatformChannelSpecifics,
-//         iOS: iosPlatformChannelSpecifics,
-//       );
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
 
-//       await _flutterLocalNotifications.show(
-//         0,
-//         'Sonare',
-//         notifContent,
-//         platformChannelSpecifics,
-//       );
-//     } catch (e) {}
-//   }
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await _flutterLocalNotifications.initialize(initializationSettings);
+  }
+
+  Future<void> sendNotification(String notifContent) async {
+    if (!Settings.notificationPermission || !Settings.notificationEnable) {
+      return;
+    }
+
+    try {
+      const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails('channel_id', 'channel_name',
+              channelDescription: 'channel_description',
+              importance: Importance.max,
+              priority: Priority.high,
+              playSound: true,
+              sound: RawResourceAndroidNotificationSound('notification'));
+
+      const DarwinNotificationDetails iosPlatformChannelSpecifics =
+          DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+        sound: 'notification.aiff',
+      );
+
+      const NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iosPlatformChannelSpecifics,
+      );
+
+      await _flutterLocalNotifications.show(
+        0,
+        'Sonare',
+        notifContent,
+        platformChannelSpecifics,
+      );
+    } catch (e) {}
+  }
 }

@@ -203,10 +203,18 @@ class SonarePageState extends State<SonarePage> {
     for (var item in alerts) {
       if (Common.calculateDistance(_currentPosition!, item.position) <=
           Settings.policeThreshold3) {
+        int level;
+        if (item is ControlZone) {
+          level = Common.getControlZoneLevel(
+              _currentPosition!, item.position, item.radius);
+        } else if (item is Police) {
+          level = Common.getPoliceLevel(_currentPosition!, item.position);
+        } else {
+          continue; // Ignore les types inconnus
+        }
+
         _alerts.add(AlertSonareWrapper(
-            alert: item,
-            level: Common.getPoliceLevel(_currentPosition!, item.position),
-            size: alertCircleDefaultSize));
+            alert: item, level: level, size: alertCircleDefaultSize));
       }
     }
 
