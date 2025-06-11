@@ -18,9 +18,9 @@ Tout usage détourné du code ou des concepts présentés est formellement déco
 
 Sonare est une application mobile de navigation communautaire, conçue pour visualiser en temps réel les zones de contrôle routier et la présence policière.  
   
-Inspirée de l’expérience utilisateur de Waze et de l’interface immersive des mini-cartes comme Grand Theft Auto (GTA), elle propose deux modes de visualisation complémentaires : une carte classique affichant toutes les informations géolocalisées, et une mini-carte circulaire centrée sur l’utilisateur.  
+Inspirée de l’expérience utilisateur de Waze et de l'écran d'un sonar d'un sous-marin, elle propose deux modes de visualisation complémentaires : une carte classique affichant toutes les informations géolocalisées, et une mini-carte circulaire centrée sur l’utilisateur.  
   
-Cette mini-carte, affiche uniquement la zone autour du conducteur dans un cercle. Les zones de contrôle proches apparaissent sous forme de marqueurs directement sur la carte, tandis que celles plus éloignées sont indiquées sur le bord du cercle par des points dont la taille varie selon la distance, offrant ainsi une perception intuitive des alertes à proximité.  
+Cette mini-carte, affiche uniquement la zone autour du conducteur dans un cercle. La police et les zones de contrôle proches apparaissent sous forme de marqueurs et de zone directement sur la carte, tandis que ceux plus éloignés sont indiqués sur le bord du cercle par des points dont la taille varie selon la distance, offrant ainsi une perception intuitive des alertes à proximité.  
   
 L’objectif principal de Sonare est de démontrer une approche technique complète de développement mobile, mêlant géolocalisation, gestion de bases de données, interface utilisateur intuitive et affichage cartographique dynamique.  
 Cette application sert avant tout d’exemple d’exploration technique et d’interface avancée, et n’est pas destinée à un usage réel.
@@ -41,7 +41,7 @@ Cette application sert avant tout d’exemple d’exploration technique et d’i
 - **Mode Sonare** : Interface inspirée d'un sonar sous-marin et de la mini-carte de GTA IV.
   Carte centrée sur la position de l’utilisateur, avec possibilité de zoomer mais sans déplacement manuel de la carte.  
   La rotation de la carte se fait via la boussole du telephone de l'utilisateur, et via le vecteur de direction de deplacement si il est en mouvement.  
-  Les alertes à l’intérieur du cercle apparaissent sous forme de marqueurs comme dans le mode Explorer.  
+  Les alertes à l’intérieur du cercle apparaissent sous forme de marqueurs et de zones comme dans le mode Explorer.  
   Les alertes hors du cercle sont affichées sur la bordure sous forme de points dynamiques, qui tournent avec la rotation de la carte et dont la taille varie en fonction de la distance.
 
 ## Système d’alerte et notifications
@@ -55,17 +55,17 @@ Avertissements :
 - Alertes sonores déclenchées dès qu’une zone de contrôle ou présence policière approche selon ces seuils.
 - Notifications en arrière-plan : L’application envoie des notifications même lorsque l’utilisateur n’est pas actif dans l’application, à chaque franchissement d’un seuil de distance pour une alerte, ou pour chaque nouvelle alerte détectée.
 
-## Interface utilisateur intuitive :
+## Interface utilisateur :
 
 **Tutoriel initial :** un court guide est présenté au premier lancement pour expliquer rapidement les fonctionnalités et l’objectif de l’application.  
   
 **Compteur de vitesse** flottant, affichant la vitesse de l’utilisateur en temps réel, présent dans les deux modes de navigation.
   
-Plusieurs boutons :
+**Plusieurs boutons :**
 - Paramètres (burger menu)
-- Centre la caméra sur la position utilisateur (caméra qui suit les déplacements)
-- Ouvre un panneau bas (bottom sheet) pour signaler une zone de contrôle ou présence policière
-- Change de mode de visualisation
+- Centrer la caméra sur la position utilisateur (caméra qui suit les déplacements)
+- Ouvrir un panneau bas (bottom sheet) pour signaler une zone de contrôle ou présence policière
+- Changer de mode de visualisation
 
 ## Menu paramètres
 
@@ -108,5 +108,3 @@ flutter run
 # 4. Screenshots
 
 @TODO
-- refaire l'image de coquillage
-- mettre des images/gif ici
