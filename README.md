@@ -1,8 +1,4 @@
-# Sonare - Navigation communautaire & affichage immersif (sonar sous-marin/GTA IV)
-
-<p align="center">
-  <img src="flutter/assets/images/logo/icon_and_background.png" alt="logo" width="150"/>
-</p>
+# <img src="flutter/assets/images/logo/icon.png" alt="logo" width="24"/> Sonare - Navigation communautaire & affichage immersif (sonar sous-marin/GTA IV)
 
 # ⚠️ Disclaimer
 
