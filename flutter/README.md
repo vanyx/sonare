@@ -1,4 +1,4 @@
-# Dev : help & tips
+# Dev
 
 ### 1. Build Xcode failed
 

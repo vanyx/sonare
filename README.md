@@ -1,4 +1,8 @@
-# Sonare - Navigation communautaire, affichage immersif
+# Sonare - Navigation communautaire & affichage immersif (sonar sous-marin/GTA IV)
+
+<p align="center">
+  <img src="flutter/assets/images/logo/icon_and_background.png" alt="logo" width="150"/>
+</p>
 
 # ⚠️ Disclaimer
 
@@ -28,18 +32,19 @@ Cette application sert avant tout d’exemple d’exploration technique et d’i
 
 ## Navigation et visualisation
 
-- **2 modes de carte distincts :**
+**2 modes de carte distincts :**
 
-  - **Mode Explorer** : Carte classique, style Google Maps, offrant une vue ouverte et fluide.
-    Affichage en temps réel des zones de contrôle et de la présence policière, signalées à la fois par la communauté et via une base de données intégrée.  
-    Les alertes proches sont affichées sous forme de marqueurs précis. Lors du dézoom, ces marqueurs se regroupent en "centroids" pour éviter la surcharge visuelle.  
-    Le déplacement de la carte suit de manière fluide la position de l’utilisateur sans à-coups.
+- **Mode Explorer** : Carte classique, style Google Maps, offrant une vue ouverte et fluide.
+  Affichage en temps réel des zones de contrôle et de la présence policière, signalées à la fois par la communauté et via une base de données intégrée.  
+  Les alertes proches sont affichées sous forme de marqueurs précis. Lors du dézoom, ces marqueurs se regroupent en "centroids" pour éviter la surcharge visuelle.  
+  Le déplacement de la carte suit de manière fluide la position de l’utilisateur sans à-coups.
 
 
-  - **Mode Sonare** : Interface inspirée d'un sonar sous-marin et de la mini-carte de GTA.
-    Carte centrée sur la position de l’utilisateur, avec possibilité de zoomer mais sans déplacement manuel de la carte.  
-    Les alertes à l’intérieur du cercle apparaissent sous forme de marqueurs comme dans le mode Explorer.  
-    Les alertes hors du cercle sont affichées sur la bordure sous forme de points dynamiques, qui tournent avec la rotation de la carte et dont la taille varie en fonction de la distance.  
+- **Mode Sonare** : Interface inspirée d'un sonar sous-marin et de la mini-carte de GTA IV.
+  Carte centrée sur la position de l’utilisateur, avec possibilité de zoomer mais sans déplacement manuel de la carte.  
+  La rotation de la carte se fait via la boussole du telephone de l'utilisateur, et via le vecteur de direction de deplacement si il est en mouvement.  
+  Les alertes à l’intérieur du cercle apparaissent sous forme de marqueurs comme dans le mode Explorer.  
+  Les alertes hors du cercle sont affichées sur la bordure sous forme de points dynamiques, qui tournent avec la rotation de la carte et dont la taille varie en fonction de la distance.
 
 ## Système d’alerte et notifications
 
@@ -76,8 +81,8 @@ Plusieurs boutons :
 
 ## Prerequis
 
-- Docker (pour l’API)
-- Flutter (pour l’application mobile)
+- Docker
+- Flutter
 
 ## Run
 
