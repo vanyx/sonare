@@ -160,8 +160,8 @@ class _ReportSheetState extends State<ReportSheet> {
                                   ),
                                   child: Center(
                                     child: SizedBox(
-                                      width: circleSize * 0.7,
-                                      height: circleSize * 0.7,
+                                      width: circleSize * 0.8,
+                                      height: circleSize * 0.8,
                                       child: FittedBox(
                                         fit: BoxFit.contain,
                                         child: Image.asset(

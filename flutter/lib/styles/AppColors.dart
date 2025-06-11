@@ -34,7 +34,7 @@ class AppColors {
 
   static const Color iconBackgroundPolice = Color.fromARGB(255, 0, 176, 236);
   static const Color iconBackgroundControlZone =
-      Color.fromARGB(255, 254, 201, 0);
+      Color.fromARGB(255, 229, 179, 244);
 
-  static const Color iconBorderControlZone = Color.fromARGB(255, 255, 103, 0);
+  static const Color iconBorderControlZone = Color.fromARGB(255, 136, 123, 254);
 }

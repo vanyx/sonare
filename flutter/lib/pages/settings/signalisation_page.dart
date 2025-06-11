@@ -129,7 +129,7 @@ class _SignalisationPageState extends State<SignalisationPage> {
                   ),
                   child: Padding(
                     padding:
-                        EdgeInsets.all(3.0), // taille de l'image a l'interieur
+                        EdgeInsets.all(1.0), // taille de l'image a l'interieur
                     child: Image.asset(
                       'assets/images/control-zone.png',
                       fit: BoxFit.contain,

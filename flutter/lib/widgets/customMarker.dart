@@ -53,8 +53,8 @@ class CustomMarker extends StatelessWidget {
                 type == 'police'
                     ? 'assets/images/police.png'
                     : 'assets/images/police.png',
-                width: size * 0.6,
-                height: size * 0.6,
+                width: size * 0.55,
+                height: size * 0.55,
               ),
             ),
             // triangle
