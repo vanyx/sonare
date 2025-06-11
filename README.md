@@ -22,8 +22,7 @@ Cette mini-carte, affiche uniquement la zone autour du conducteur dans un cercle
   
 L’objectif principal de Sonare est de démontrer une approche technique complète de développement mobile, mêlant géolocalisation, gestion de bases de données, interface utilisateur intuitive et affichage cartographique dynamique.  
 Cette application sert avant tout d’exemple d’exploration technique et d’interface avancée, et n’est pas destinée à un usage réel.
-  
-PHOTOS
+
 
 # 2. Fonctionnalités
 
@@ -72,8 +71,6 @@ Plusieurs boutons :
 - Activation/désactivation de l'affichage et alertes spécifiques pour les zones de contrôle ou pour la présence policière
 - Accès aux termes et conditions
 
-  
-PHOTOS / GIF
 
 # 3. Installation
 
@@ -96,7 +93,7 @@ L’API sera accessible sur le port 8080.
 
 - Modifiez dans *settings.dart* la variable **apiUrl** pour y mettre l’IP de la machine où tourne l’API (ex : http://192.168.x.x:8080).
 
-- Récuperez les dépendances :
+- Dans le dossier **"flutter"**, récuperez les dépendances :
 ```bash
 flutter pub get
 ```
@@ -105,32 +102,8 @@ flutter pub get
 flutter run
 ```
 
-## 4. Dev : help & tips
+# 4. Screenshots
 
-### 1. Build Xcode failed
-
-```bash
-cd ios
-rm -rf Pods Podfile.lock
-pod cache clean --all
-pod install
-cd ..
-flutter clean
-flutter pub get
-flutter build ios
-```
-
-### 2. Modifier son de notification
-
-1. Dans Xcode :
-Faire glisser le fichier audio (*<sound_name>.aiff*) depuis le finder vers le dossier Runner dans la section Project Navigator (sur la gauche).
-Une boîte de dialogue s'affiche : cliquer sur OK.
-
-2. Ajouter le son dans le code :
-```dart
-const DarwinNotificationDetails iosPlatformChannelSpecifics =
-  DarwinNotificationDetails(
-  ...
-  sound: '<sound_name>.aiff', // Nom du fichier (sans son path)
-);
-```
+@TODO
+- refaire l'image de coquillage
+- mettre des images/gif ici
