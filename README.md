@@ -1,6 +1,6 @@
 # <img src="flutter/assets/images/logo/icon.png" alt="logo" width="45"/> Sonare
 
-### 🚨 Navigation communautaire & affichage immersif (sonar sous-marin/GTA IV)
+### Navigation communautaire & affichage immersif (sonar sous-marin/GTA IV)
 
 # ⚠️ Disclaimer
 
@@ -16,11 +16,11 @@ Tout usage détourné du code ou des concepts présentés est formellement déco
 
 # 🚔 Description
 
-Sonare est une application mobile de navigation communautaire, conçue pour visualiser en temps réel les zones de contrôle routier et la présence policière.  
+Sonare est une application mobile de **navigation communautaire**, conçue pour visualiser en temps réel les **zones de contrôle routier** et la **présence policière**.  
   
-Inspirée de l’expérience utilisateur de Waze et de l'écran d'un sonar d'un sous-marin, elle propose deux modes de visualisation complémentaires : une carte classique affichant toutes les informations géolocalisées, et une mini-carte circulaire centrée sur l’utilisateur.  
+Inspirée de l’expérience utilisateur de Waze et de l'écran d'un sonar d'un sous-marin, elle propose deux modes de visualisation complémentaires : **une carte classique** affichant toutes les informations géolocalisées, et une **mini-carte circulaire** centrée sur l’utilisateur.  
   
-Cette mini-carte, affiche uniquement la zone autour du conducteur dans un cercle. La police et les zones de contrôle proches apparaissent sous forme de marqueurs et de zone directement sur la carte, tandis que ceux plus éloignés sont indiqués sur le bord du cercle par des points dont la taille varie selon la distance, offrant ainsi une perception intuitive des alertes à proximité.  
+Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un cercle. La **police** et les **zones de contrôle** proches apparaissent sous forme de marqueurs et de zone directement sur la carte, tandis que ceux plus éloignés sont **indiqués sur le bord du cercle** par des points dont la taille varie selon la distance, offrant ainsi une perception intuitive des alertes à proximité.  
   
 L’objectif principal de Sonare est de démontrer une approche technique complète de développement mobile, mêlant géolocalisation, gestion de bases de données, interface utilisateur intuitive et affichage cartographique dynamique.  
 Cette application sert avant tout d’exemple d’exploration technique et d’interface avancée, et n’est pas destinée à un usage réel.
@@ -28,38 +28,38 @@ Cette application sert avant tout d’exemple d’exploration technique et d’i
 
 #  📝 Fonctionnalités
 
-## Navigation et visualisation
+## 1. Navigation et visualisation
 
 **2 modes de carte distincts :**
 
-- **🗺️ Mode Explorer** : Carte classique, style Google Maps, offrant une vue ouverte et fluide.
+- **🗺️ Mode Explorer** : **Carte classique**, style Google Maps, offrant une vue ouverte et fluide.
   Affichage en temps réel des zones de contrôle et de la présence policière, signalées à la fois par la communauté et via une base de données intégrée.  
   Les alertes proches sont affichées sous forme de marqueurs précis. Lors du dézoom, ces marqueurs se regroupent en "centroids" pour éviter la surcharge visuelle.  
   Le déplacement de la carte suit de manière fluide la position de l’utilisateur sans à-coups.
 
 
-- **📡 Mode Sonare** : Interface inspirée d'un sonar sous-marin et de la mini-carte de GTA IV.
+- **🧿​​​ Mode Sonare** : Interface inspirée d'un **sonar sous-marin** et de la **mini-carte de GTA IV**.
   Carte centrée sur la position de l’utilisateur, avec possibilité de zoomer mais sans déplacement manuel de la carte.  
-  La rotation de la carte se fait via la boussole du telephone de l'utilisateur, et via le vecteur de direction de deplacement si il est en mouvement.  
+  La rotation de la carte se fait via la **boussole** du telephone de l'utilisateur, et via le vecteur de **direction de deplacement** si il est en mouvement.  
   Les alertes à l’intérieur du cercle apparaissent sous forme de marqueurs et de zones comme dans le mode Explorer.  
   Les alertes hors du cercle sont affichées sur la bordure sous forme de points dynamiques, qui tournent avec la rotation de la carte et dont la taille varie en fonction de la distance.
 
-## Système d’alerte et notifications
+## 2. Système d’alerte et notifications
 
-Seuils de distance pour les alertes :
+**🚧 Seuils de distance pour les alertes :**
 - Avertissement le plus loin : 3 km
 - Avertissement médian : 800 m
 - Avertissement urgent : 400 m
 
-Avertissements :
-- Alertes sonores déclenchées dès qu’une zone de contrôle ou présence policière approche selon ces seuils.
-- Notifications en arrière-plan : L’application envoie des notifications même lorsque l’utilisateur n’est pas actif dans l’application, à chaque franchissement d’un seuil de distance pour une alerte, ou pour chaque nouvelle alerte détectée.
+**Avertissements :**
+- **🔊 Alertes sonores** déclenchées dès qu’une zone de contrôle ou présence policière approche selon ces seuils.
+- **🔔 Notifications en arrière-plan** : L’application envoie des notifications même lorsque l’utilisateur n’est pas actif dans l’application, à chaque franchissement d’un seuil de distance pour une alerte, ou pour chaque nouvelle alerte détectée.
 
-## Interface utilisateur :
+## 3. Interface utilisateur :
 
-**Tutoriel initial :** un court guide est présenté au premier lancement pour expliquer rapidement les fonctionnalités et l’objectif de l’application.  
+**💡 Tutoriel initial :** un court guide est présenté au premier lancement pour expliquer rapidement les fonctionnalités et l’objectif de l’application.  
   
-**Compteur de vitesse** flottant, affichant la vitesse de l’utilisateur en temps réel, présent dans les deux modes de navigation.
+**⏱️ Compteur de vitesse** flottant, affichant la vitesse de l’utilisateur en temps réel, présent dans les deux modes de navigation.
   
 **Plusieurs boutons :**
 - Paramètres (burger menu)
@@ -67,10 +67,10 @@ Avertissements :
 - Ouvrir un panneau bas (bottom sheet) pour signaler une zone de contrôle ou présence policière
 - Changer de mode de visualisation
 
-## Menu paramètres
+## 4. Menu paramètres
 
-- Activation/désactivation des alertes sonores
-- Activation/désactivation des notifications push
+- Activation/désactivation des **alertes sonores**
+- Activation/désactivation des **notifications push**
 - Activation/désactivation de l'affichage et alertes spécifiques pour les zones de contrôle ou pour la présence policière
 - Accès aux termes et conditions
 
@@ -79,8 +79,8 @@ Avertissements :
 
 ## Prerequis
 
-- Docker
-- Flutter
+- 🐳 Docker
+- 📱 Flutter
 
 ## Run
 
