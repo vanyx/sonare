@@ -25,6 +25,10 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 L’objectif principal de Sonare est de démontrer une approche technique complète de développement mobile, mêlant géolocalisation, gestion de bases de données, interface utilisateur intuitive et affichage cartographique dynamique.  
 Cette application sert avant tout d’exemple d’exploration technique et d’interface avancée, et n’est pas destinée à un usage réel.
 
+# ✨ Design & interface
+
+![Charte graphique](assets/graphic_chart.png)
+
 
 #  📝 Fonctionnalités
 
