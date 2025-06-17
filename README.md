@@ -59,7 +59,7 @@ Cette application sert avant tout d’exemple d’exploration technique et d’i
 - **🔊 Alertes sonores** déclenchées dès qu’une zone de contrôle ou présence policière approche selon ces seuils.
 - **🔔 Notifications en arrière-plan** : L’application envoie des notifications même lorsque l’utilisateur n’est pas actif dans l’application, à chaque franchissement d’un seuil de distance pour une alerte, ou pour chaque nouvelle alerte détectée.
 
-## 3. Interface utilisateur :
+## 3. Interface utilisateur
 
 **💡 Tutoriel initial :** un court guide est présenté au premier lancement pour expliquer rapidement les fonctionnalités et l’objectif de l’application.  
   
