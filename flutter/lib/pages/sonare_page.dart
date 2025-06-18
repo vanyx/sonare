@@ -139,7 +139,8 @@ class SonarePageState extends State<SonarePage> {
 
     if (mounted && widget.initPosition != null) {
       setState(() {
-        _currentPosition = widget.initPosition;
+        // @TODO _currentPosition = widget.initPosition;
+        _currentPosition = LatLng(48.09821300824947, -1.6753622078601924);
       });
     }
   }
@@ -154,13 +155,15 @@ class SonarePageState extends State<SonarePage> {
         if (Settings.appIsActive) {
           if (_mapReady) {
             if (mounted) {
-              _animateMarker(_currentPosition!,
-                  LatLng(position.latitude, position.longitude));
+              // @TODO
+              // _animateMarker(_currentPosition!,
+              //     LatLng(position.latitude, position.longitude));
 
               updateAlerts();
             }
           } else {
-            _currentPosition = LatLng(position.latitude, position.longitude);
+            // @TODO _currentPosition = LatLng(position.latitude, position.longitude);
+            _currentPosition = LatLng(48.09821300824947, -1.6753622078601924);
           }
         }
       });
@@ -281,8 +284,6 @@ class SonarePageState extends State<SonarePage> {
       if (!existPositionInAlerts(item.position) &&
           Common.calculateDistance(_currentPosition!, item.position) <=
               Settings.policeThreshold3) {
-        int level = Common.getPoliceLevel(_currentPosition!, item.position);
-
         _alerts.add(AlertSonareWrapper(
             alert: item,
             level: item is ControlZone

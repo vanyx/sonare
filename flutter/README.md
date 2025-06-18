@@ -1,6 +1,12 @@
 # Dev
 
-### 1. Build Xcode failed
+### 1. Run en mode release
+
+```bash
+flutter run --release
+```
+
+### 2. Build Xcode failed
 
 ```bash
 cd ios
@@ -13,7 +19,7 @@ flutter pub get
 flutter build ios
 ```
 
-### 2. Modifier son de notification
+### 3. Modifier son de notification
 
 1. Dans Xcode :
 Faire glisser le fichier audio (*<sound_name>.aiff*) depuis le finder vers le dossier Runner dans la section Project Navigator (sur la gauche).

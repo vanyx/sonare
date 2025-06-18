@@ -35,7 +35,7 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 **2 modes de carte distincts :**
 
 - **🗺️ Mode Explorer** : **Carte classique**, style Google Maps, offrant une vue ouverte et fluide.
-  Affichage en temps réel des zones de contrôle et de la présence policière, signalées par la communauté et via une base de données intégrée.  
+  Affichage en temps réel des zones de contrôle et de la présence policière, signalées par la communauté.  
   Les alertes proches sont affichées sous forme de marqueurs précis. Lors du dézoom, ces marqueurs se regroupent en "centroids" pour éviter la surcharge visuelle.  
   Le déplacement de la caméra sur la carte suit de manière fluide la position de l’utilisateur sans à-coups.
 
@@ -80,27 +80,19 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 # ✨ Design & interface
 
 ![Charte graphique](assets/graphic_chart.png)
-![Test gif](assets/test.gif)
+![Test gif](assets/mode_sonare.gif)
 
+### Explorer
 
-@TODO: Ajouter ici des GIFs / PHOTOS
+### Sonare
 
-Application qui se lance avec le launch screen, puis ma position sur la carte
+### Parametres
 
-MODE EXPLORER :
-montrer les zones de controle dans le mode explorer : markers, zones de controle, points, centroids, orientation des markers
-montrer le bouton pour re center la cam
-montrer en mouvement
-report la police
-changer de mode
+### Tutoriel
 
-MODE SONAR :
-Montrer l'orientation de la boussole, le passage automatique à la direction quand je demarre
-points autour du cercle, voir un qui passe de la bordure en marker
+### Notifications
 
-tutoriel + demande autorisations
-back home screen : coin bleu + notifcation
-parametres
+---------------------
 
 
 # 🛠️ Installation

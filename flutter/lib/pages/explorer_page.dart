@@ -104,7 +104,8 @@ class ExplorerPageState extends State<ExplorerPage> {
 
     if (mounted && widget.initPosition != null) {
       setState(() {
-        _currentPosition = widget.initPosition;
+        //  @TODO _currentPosition = widget.initPosition;
+        _currentPosition = LatLng(48.09821300824947, -1.6753622078601924);
       });
     }
   }
@@ -119,8 +120,9 @@ class ExplorerPageState extends State<ExplorerPage> {
         if (Settings.appIsActive) {
           if (_mapReady) {
             if (mounted) {
-              animateMarker(_currentPosition!,
-                  LatLng(position.latitude, position.longitude));
+              // @TODO
+              // animateMarker(_currentPosition!,
+              //     LatLng(position.latitude, position.longitude));
 
               // Check automatiquement les alerts si l'user se deplace
               if (_lastPosition == null ||
@@ -138,7 +140,9 @@ class ExplorerPageState extends State<ExplorerPage> {
             }
           } else {
             setState(() {
-              _currentPosition = LatLng(position.latitude, position.longitude);
+              _currentPosition = LatLng(48.09821300824947, -1.6753622078601924);
+
+//@TODO              _currentPosition = LatLng(position.latitude, position.longitude);
             });
           }
         }
