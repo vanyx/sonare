@@ -25,10 +25,6 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 L’objectif principal de Sonare est de démontrer une approche technique complète de développement mobile, mêlant géolocalisation, gestion de bases de données, interface utilisateur intuitive et affichage cartographique dynamique.  
 Cette application sert avant tout d’exemple d’exploration technique et d’interface avancée, et n’est pas destinée à un usage réel.
 
-# ✨ Design & interface
-
-![Charte graphique](assets/graphic_chart.png)
-
 
 #  📝 Fonctionnalités
 
@@ -78,6 +74,22 @@ Cette application sert avant tout d’exemple d’exploration technique et d’i
 - Activation/désactivation de l'affichage et alertes spécifiques pour les zones de contrôle ou pour la présence policière
 - Accès aux termes et conditions
 
+
+# ✨ Design & interface
+
+![Charte graphique](assets/graphic_chart.png)
+![Test gif](assets/test.gif)
+
+
+GIFs / PHOTOS :
+Application qui se lance avec le launch screen, puis ma position sur la carte
+tutoriel + demande autorisations
+back home screen : coin bleu + notifcation
+montrer les radars dans le mode explorer : markers, zones de controle, points, centroids, orientation des markers
+montrer le bouton pour re center la cam
+report un radar
+changer de mode
+parametres
 
 # 🛠️ Installation
 
