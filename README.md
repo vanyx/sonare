@@ -6,12 +6,19 @@
 
 Ce projet est strictement destiné à un usage éducatif et technique.  
   
-Sonare est une expérimentation personnelle en développement mobile, design d’interface et systèmes de géolocalisation.
-Il a été imaginé, conçu et développé dans le seul but de réaliser un projet complet de A à Z, en explorant toutes les étapes : de l’idée initiale à la mise en œuvre technique.  
-Ce projet n’a aucune vocation à être utilisé dans un contexte réel, ni à être publié ou diffusé.  
+Sonare est une expérimentation personnelle en développement mobile et design d’interface.  
+Il a été pensé comme un projet complet, mené de A à Z dans une logique d’apprentissage : de l’idée initiale à la conception d’un produit fonctionnel, en passant par l’architecture, le développement, le design et l’intégration technique.  
   
-L'application ne doit en aucun cas être utilisée en situation de conduite, ni servir à contourner la loi, à éviter des contrôles routiers ou à détecter la présence des forces de l’ordre.  
-Tout usage détourné du code ou des concepts présentés est formellement déconseillé. L’auteur décline toute responsabilité en cas de mauvaise utilisation.  
+Bien que l’application soit entièrement fonctionnelle et comporte des fonctionnalités avancées, elle ne doit en aucun cas être utilisée en situation réelle.  
+  
+Elle n’est pas destinée à être publiée, diffusée ou utilisée dans un contexte de conduite ou de circulation routière.  
+  
+En particulier :
+- L’application ne doit pas être utilisée pour éviter des contrôles routiers ou détecter la présence des forces de l’ordre.
+- Toute tentative de contournement de la loi, ou tout usage dans un contexte réel, est fermement déconseillé.
+- L’auteur décline toute responsabilité en cas d’usage détourné du code, des idées ou de l’application.
+
+
 
 
 # 🚔 Description
@@ -33,14 +40,14 @@ Cette application sert avant tout d’exemple d’exploration technique et d’i
 **2 modes de carte distincts :**
 
 - **🗺️ Mode Explorer** : **Carte classique**, style Google Maps, offrant une vue ouverte et fluide.
-  Affichage en temps réel des zones de contrôle et de la présence policière, signalées à la fois par la communauté et via une base de données intégrée.  
+  Affichage en temps réel des zones de contrôle et de la présence policière, signalées par la communauté et via une base de données intégrée.  
   Les alertes proches sont affichées sous forme de marqueurs précis. Lors du dézoom, ces marqueurs se regroupent en "centroids" pour éviter la surcharge visuelle.  
-  Le déplacement de la carte suit de manière fluide la position de l’utilisateur sans à-coups.
+  Le déplacement de la caméra sur la carte suit de manière fluide la position de l’utilisateur sans à-coups.
 
 
 - **🧿​​​ Mode Sonare** : Interface inspirée d'un **sonar sous-marin** et de la **mini-carte de GTA IV**.
   Carte centrée sur la position de l’utilisateur, avec possibilité de zoomer mais sans déplacement manuel de la carte.  
-  La rotation de la carte se fait via la **boussole** du telephone de l'utilisateur, et via le vecteur de **direction de deplacement** si il est en mouvement.  
+  La rotation de la carte se fait via la **boussole** du telephone de l'utilisateur, et via le vecteur de **direction de déplacement** si il est en mouvement.  
   Les alertes à l’intérieur du cercle apparaissent sous forme de marqueurs et de zones comme dans le mode Explorer.  
   Les alertes hors du cercle sont affichées sur la bordure sous forme de points dynamiques, qui tournent avec la rotation de la carte et dont la taille varie en fonction de la distance.
 
@@ -81,13 +88,14 @@ Cette application sert avant tout d’exemple d’exploration technique et d’i
 ![Test gif](assets/test.gif)
 
 
-GIFs / PHOTOS :
+@TODO:
+Ajouter ici des GIFs / PHOTOS :
 Application qui se lance avec le launch screen, puis ma position sur la carte
 tutoriel + demande autorisations
 back home screen : coin bleu + notifcation
-montrer les radars dans le mode explorer : markers, zones de controle, points, centroids, orientation des markers
+montrer les zones de controle dans le mode explorer : markers, zones de controle, points, centroids, orientation des markers
 montrer le bouton pour re center la cam
-report un radar
+report la police
 changer de mode
 parametres
 
@@ -95,8 +103,8 @@ parametres
 
 ## Prerequis
 
-- 🐳 Docker
-- 📱 Flutter
+- **🐳 Docker**
+- **📱 Flutter**
 
 ## Run
 
@@ -110,12 +118,16 @@ L’API sera accessible sur le port 8080.
 
 ### 2. Flutter App
 
-- Modifiez dans *settings.dart* la variable **apiUrl** pour y mettre l’IP de la machine où tourne l’API (ex : http://192.168.x.x:8080).
+- Ouvrez le fichier **settings.dart** et mettez à jour la valeur de la variable **apiUrl** avec l'adresse de votre API :
+```dart
+  static String apiUrl = 'http://172.20.10.2:8080';
+```
 
-- Dans le dossier **"flutter"**, récuperez les dépendances :
+- Dans le dossier **"flutter"**, récupérez les dépendances :
 ```bash
 flutter pub get
 ```
+
 - Lancez l'app :
 ```bash
 flutter run
