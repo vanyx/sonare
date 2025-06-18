@@ -19,18 +19,13 @@ En particulier :
 - L’auteur décline toute responsabilité en cas d’usage détourné du code, des idées ou de l’application.
 
 
-
-
 # 🚔 Description
 
 Sonare est une application mobile de **navigation communautaire**, conçue pour visualiser en temps réel les **zones de contrôle routier** et la **présence policière**.  
   
-Inspirée de l’expérience utilisateur de Waze et de l'écran d'un sonar d'un sous-marin, elle propose deux modes de visualisation complémentaires : **une carte classique** affichant toutes les informations géolocalisées, et une **mini-carte circulaire** centrée sur l’utilisateur.  
+Inspirée de l’expérience utilisateur de Waze et de l'écran d'un sonar sous-marin, elle propose deux modes de visualisation complémentaires : **une carte classique** affichant toutes les informations géolocalisées, et une **mini-carte circulaire** centrée sur l’utilisateur.  
   
-Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un cercle. La **police** et les **zones de contrôle** proches apparaissent sous forme de marqueurs et de zone directement sur la carte, tandis que ceux plus éloignés sont **indiqués sur le bord du cercle** par des points dont la taille varie selon la distance, offrant ainsi une perception intuitive des alertes à proximité.  
-  
-L’objectif principal de Sonare est de démontrer une approche technique complète de développement mobile, mêlant géolocalisation, gestion de bases de données, interface utilisateur intuitive et affichage cartographique dynamique.  
-Cette application sert avant tout d’exemple d’exploration technique et d’interface avancée, et n’est pas destinée à un usage réel.
+Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un cercle. La **police** et les **zones de contrôle** proches apparaissent sous forme de **marqueurs** et de **zone** directement sur la carte, tandis que ceux plus éloignés sont **indiqués sur le bord du cercle** par des points dont la taille varie selon la distance, offrant ainsi une perception intuitive des alertes à proximité.
 
 
 #  📝 Fonctionnalités
@@ -88,16 +83,25 @@ Cette application sert avant tout d’exemple d’exploration technique et d’i
 ![Test gif](assets/test.gif)
 
 
-@TODO:
-Ajouter ici des GIFs / PHOTOS :
+@TODO: Ajouter ici des GIFs / PHOTOS
+
 Application qui se lance avec le launch screen, puis ma position sur la carte
-tutoriel + demande autorisations
-back home screen : coin bleu + notifcation
+
+MODE EXPLORER :
 montrer les zones de controle dans le mode explorer : markers, zones de controle, points, centroids, orientation des markers
 montrer le bouton pour re center la cam
+montrer en mouvement
 report la police
 changer de mode
+
+MODE SONAR :
+Montrer l'orientation de la boussole, le passage automatique à la direction quand je demarre
+points autour du cercle, voir un qui passe de la bordure en marker
+
+tutoriel + demande autorisations
+back home screen : coin bleu + notifcation
 parametres
+
 
 # 🛠️ Installation
 
