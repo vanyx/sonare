@@ -18,12 +18,12 @@ class SonarePage extends StatefulWidget {
   final LatLng? initPosition;
   final double speed;
 
-  SonarePage(
-      {Key? key,
-      required this.positionStream,
-      required this.initPosition,
-      required this.speed})
-      : super(key: key);
+  SonarePage({
+    Key? key,
+    required this.positionStream,
+    required this.initPosition,
+    required this.speed,
+  }) : super(key: key);
 
   @override
   SonarePageState createState() => SonarePageState();
@@ -90,8 +90,10 @@ class SonarePageState extends State<SonarePage> {
         _blueRadius =
             (_screenSize!.width * _sizeScreenCoef) / 2; //rayon du cercle bleu
 
-        _center = Offset(_screenSize!.width / 2,
-            _screenSize!.height / 2); //coord. centre de l'ecran
+        _center = Offset(
+          _screenSize!.width / 2,
+          _screenSize!.height / 2,
+        ); //coord. centre de l'ecran
       });
     });
 
@@ -139,8 +141,7 @@ class SonarePageState extends State<SonarePage> {
 
     if (mounted && widget.initPosition != null) {
       setState(() {
-        // @TODO _currentPosition = widget.initPosition;
-        _currentPosition = LatLng(48.09821300824947, -1.6753622078601924);
+        _currentPosition = widget.initPosition;
       });
     }
   }
@@ -155,15 +156,15 @@ class SonarePageState extends State<SonarePage> {
         if (Settings.appIsActive) {
           if (_mapReady) {
             if (mounted) {
-              // @TODO
-              // _animateMarker(_currentPosition!,
-              //     LatLng(position.latitude, position.longitude));
+              _animateMarker(
+                _currentPosition!,
+                LatLng(position.latitude, position.longitude),
+              );
 
               updateAlerts();
             }
           } else {
-            // @TODO _currentPosition = LatLng(position.latitude, position.longitude);
-            _currentPosition = LatLng(48.09821300824947, -1.6753622078601924);
+            _currentPosition = LatLng(position.latitude, position.longitude);
           }
         }
       });
@@ -209,15 +210,23 @@ class SonarePageState extends State<SonarePage> {
         int level;
         if (item is ControlZone) {
           level = Common.getControlZoneLevel(
-              _currentPosition!, item.position, item.radius);
+            _currentPosition!,
+            item.position,
+            item.radius,
+          );
         } else if (item is Police) {
           level = Common.getPoliceLevel(_currentPosition!, item.position);
         } else {
           continue; // Ignore les types inconnus
         }
 
-        _alerts.add(AlertSonareWrapper(
-            alert: item, level: level, size: alertCircleDefaultSize));
+        _alerts.add(
+          AlertSonareWrapper(
+            alert: item,
+            level: level,
+            size: alertCircleDefaultSize,
+          ),
+        );
       }
     }
 
@@ -226,8 +235,9 @@ class SonarePageState extends State<SonarePage> {
     /********* Avertissement sonore - POLICE *********/
     var policeAlerts = _alerts.where((item) => item.alert is Police).toList();
 
-    int policesMinLevel =
-        Common.getMinLevel(policeAlerts.map((item) => item.level).toList());
+    int policesMinLevel = Common.getMinLevel(
+      policeAlerts.map((item) => item.level).toList(),
+    );
     if (policesMinLevel != -1 && Settings.soundEnable) {
       Common.playPoliceByLevel(policesMinLevel);
     }
@@ -238,7 +248,8 @@ class SonarePageState extends State<SonarePage> {
         _alerts.where((item) => item.alert is ControlZone).toList();
 
     int controlZonesMinLevel = Common.getMinLevel(
-        controlZoneAlerts.map((item) => item.level).toList());
+      controlZoneAlerts.map((item) => item.level).toList(),
+    );
 
     if (controlZonesMinLevel != -1 &&
         Settings.soundEnable &&
@@ -255,9 +266,11 @@ class SonarePageState extends State<SonarePage> {
     double apiCallDistanceThreshold = Settings.policeThreshold3 / 10;
 
     // filtrage
-    _alerts.removeWhere((item) =>
-        Common.calculateDistance(_currentPosition!, item.alert.position) >
-        Settings.policeThreshold3);
+    _alerts.removeWhere(
+      (item) =>
+          Common.calculateDistance(_currentPosition!, item.alert.position) >
+          Settings.policeThreshold3,
+    );
 
     if (_lastApiPosition != null) {
       if (Common.calculateDistance(_lastApiPosition!, _currentPosition!) <
@@ -284,29 +297,41 @@ class SonarePageState extends State<SonarePage> {
       if (!existPositionInAlerts(item.position) &&
           Common.calculateDistance(_currentPosition!, item.position) <=
               Settings.policeThreshold3) {
-        _alerts.add(AlertSonareWrapper(
+        _alerts.add(
+          AlertSonareWrapper(
             alert: item,
-            level: item is ControlZone
-                ? Common.getControlZoneLevel(
-                    _currentPosition!, item.position, item.radius)
-                : Common.getPoliceLevel(_currentPosition!, item.position),
-            size: alertCircleDefaultSize));
+            level:
+                item is ControlZone
+                    ? Common.getControlZoneLevel(
+                      _currentPosition!,
+                      item.position,
+                      item.radius,
+                    )
+                    : Common.getPoliceLevel(_currentPosition!, item.position),
+            size: alertCircleDefaultSize,
+          ),
+        );
 
         // Ajoute le niveau et le type à la liste des niveaux à annoncer
         levelsToAnnounce.add({
-          "level": item is ControlZone
-              ? Common.getControlZoneLevel(
-                  _currentPosition!, item.position, item.radius)
-              : Common.getPoliceLevel(_currentPosition!, item.position),
-          "type": item is ControlZone ? "ControlZone" : "Police"
+          "level":
+              item is ControlZone
+                  ? Common.getControlZoneLevel(
+                    _currentPosition!,
+                    item.position,
+                    item.radius,
+                  )
+                  : Common.getPoliceLevel(_currentPosition!, item.position),
+          "type": item is ControlZone ? "ControlZone" : "Police",
         });
       }
     }
 
     // anonce sonore des nouvelles alertes
     if (levelsToAnnounce.isNotEmpty) {
-      var minAlert =
-          levelsToAnnounce.reduce((a, b) => a["level"] < b["level"] ? a : b);
+      var minAlert = levelsToAnnounce.reduce(
+        (a, b) => a["level"] < b["level"] ? a : b,
+      );
 
       if (Settings.soundEnable) {
         if (minAlert["type"] == "Police") {
@@ -439,23 +464,29 @@ class SonarePageState extends State<SonarePage> {
           /********* VISIBILITE *********/
           if (item.alert is ControlZone) {
             item.visible = checkControlZoneVisibility(
-                item.alert.position, (item.alert as ControlZone).radius);
+              item.alert.position,
+              (item.alert as ControlZone).radius,
+            );
           } else {
             item.visible = checkPoliceVisibility(item.alert.position);
           }
 
           /********* ANGLE *********/
-          item.angle = Common.azimutBetweenCenterAndPointRadian(
-                  _currentPosition!.latitude,
-                  _currentPosition!.longitude,
-                  item.alert.position.latitude,
-                  item.alert.position.longitude) -
+          item.angle =
+              Common.azimutBetweenCenterAndPointRadian(
+                _currentPosition!.latitude,
+                _currentPosition!.longitude,
+                item.alert.position.latitude,
+                item.alert.position.longitude,
+              ) -
               Common.degreesToRadians(_bearing != null ? _bearing! : 0);
 
-          double x = ((_screenSize!.width) / 2) +
+          double x =
+              ((_screenSize!.width) / 2) +
               _blueRadius! * cos(item.angle) -
               item.size / 2;
-          double y = ((_screenSize!.width) / 2) +
+          double y =
+              ((_screenSize!.width) / 2) +
               _blueRadius! * sin(item.angle) -
               item.size / 2;
           item.circlePosition = Offset(x, y);
@@ -463,12 +494,17 @@ class SonarePageState extends State<SonarePage> {
           /********* DISTANCE *********/
           double distance = 0;
           if (item.alert is ControlZone) {
-            distance = Common.calculateDistance(
-                    _currentPosition!, item.alert.position) -
+            distance =
+                Common.calculateDistance(
+                  _currentPosition!,
+                  item.alert.position,
+                ) -
                 (item.alert as ControlZone).radius;
           } else {
             distance = Common.calculateDistance(
-                _currentPosition!, item.alert.position);
+              _currentPosition!,
+              item.alert.position,
+            );
           }
 
           if (distance >= Settings.policeThreshold3) {
@@ -476,12 +512,14 @@ class SonarePageState extends State<SonarePage> {
           } else if (distance <= Settings.policeThreshold3 / 5) {
             item.size = alertCircleMaxSize;
           } else {
-            double normalizedDistance = 1 -
+            double normalizedDistance =
+                1 -
                 (distance - (Settings.policeThreshold3 / 5)) /
                     (Settings.policeThreshold3 -
                         (Settings.policeThreshold3 / 5));
 
-            item.size = alertCircleMinSize +
+            item.size =
+                alertCircleMinSize +
                 (alertCircleMaxSize - alertCircleMinSize) *
                     pow(normalizedDistance, 4);
           }
@@ -492,12 +530,17 @@ class SonarePageState extends State<SonarePage> {
           String alertType;
 
           if (item.alert is ControlZone) {
-            newLevel = Common.getControlZoneLevel(_currentPosition!,
-                item.alert.position, (item.alert as ControlZone).radius);
+            newLevel = Common.getControlZoneLevel(
+              _currentPosition!,
+              item.alert.position,
+              (item.alert as ControlZone).radius,
+            );
             alertType = "ControlZone";
           } else {
-            newLevel =
-                Common.getPoliceLevel(_currentPosition!, item.alert.position);
+            newLevel = Common.getPoliceLevel(
+              _currentPosition!,
+              item.alert.position,
+            );
             alertType = "Police";
           }
 
@@ -516,8 +559,9 @@ class SonarePageState extends State<SonarePage> {
 
     if (levelsToAnnounce.isNotEmpty) {
       // Trouve l'alerte avec le niveau le plus bas
-      var minAlert =
-          levelsToAnnounce.reduce((a, b) => a["level"] < b["level"] ? a : b);
+      var minAlert = levelsToAnnounce.reduce(
+        (a, b) => a["level"] < b["level"] ? a : b,
+      );
 
       // Joue le son selon le type de l'alerte
       if (Settings.soundEnable) {
@@ -543,7 +587,8 @@ class SonarePageState extends State<SonarePage> {
     );
 
     // Converti de la distance en pixels
-    final pixelDistance = distanceInMeters /
+    final pixelDistance =
+        distanceInMeters /
         (156543.03392 *
             cos(_currentPosition!.latitude * pi / 180) /
             pow(2, _zoomLevel));
@@ -565,13 +610,15 @@ class SonarePageState extends State<SonarePage> {
     );
 
     // converti de la distance en pixel
-    final distanceCenterToZonePixel = distanceCenterToZoneMeters /
+    final distanceCenterToZonePixel =
+        distanceCenterToZoneMeters /
         (156543.03392 *
             cos(_currentPosition!.latitude * pi / 180) /
             pow(2, _zoomLevel));
 
     // rayon de la zone de controle en pixel
-    final radiusZonePixel = radiusInMeter /
+    final radiusZonePixel =
+        radiusInMeter /
         (156543.03392 *
             cos(_currentPosition!.latitude * pi / 180) /
             pow(2, _zoomLevel));
@@ -584,138 +631,140 @@ class SonarePageState extends State<SonarePage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Center(
-        child: !Settings.locationPermission || _currentPosition == null
-            ? Center(
-                child: Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Container(
-                    width: _screenSize!.width * _sizeScreenCoef,
-                    height: _screenSize!.width * _sizeScreenCoef,
-                    decoration: BoxDecoration(
-                      color: AppColors.sonareFlashi,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 3,
+        child:
+            !Settings.locationPermission || _currentPosition == null
+                ? Center(
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      width: _screenSize!.width * _sizeScreenCoef,
+                      height: _screenSize!.width * _sizeScreenCoef,
+                      decoration: BoxDecoration(
+                        color: AppColors.sonareFlashi,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 3),
                       ),
                     ),
                   ),
-                ),
-              )
-            : Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    width: _screenSize!.width * _sizeScreenCoef,
-                    height: _screenSize!.width * _sizeScreenCoef,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.transparent,
-                    ),
-                    child: ClipOval(
-                      child: FlutterMap(
-                        mapController: _mapController,
-                        options: MapOptions(
-                          initialCenter: _currentPosition!,
-                          initialZoom: _zoomLevel,
-                          onMapReady: _onMapReady,
-                          interactionOptions: InteractionOptions(
-                            flags: 0, // desactive le zoom
+                )
+                : Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: _screenSize!.width * _sizeScreenCoef,
+                      height: _screenSize!.width * _sizeScreenCoef,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.transparent,
+                      ),
+                      child: ClipOval(
+                        child: FlutterMap(
+                          mapController: _mapController,
+                          options: MapOptions(
+                            initialCenter: _currentPosition!,
+                            initialZoom: _zoomLevel,
+                            onMapReady: _onMapReady,
+                            interactionOptions: InteractionOptions(
+                              flags: 0, // desactive le zoom
+                            ),
                           ),
-                        ),
-                        children: [
-                          TileLayer(urlTemplate: Settings.mapUrl),
+                          children: [
+                            TileLayer(urlTemplate: Settings.mapUrl),
 
-                          // CONTROL ZONE - CIRCLELAYERS
-                          CircleLayer(
-                            circles: [
-                              for (var item in _alerts)
-                                if (item.alert is ControlZone)
-                                  if (item.visible)
-                                    CircleMarker(
-                                      point: item.alert.position,
-                                      color: AppColors.iconBackgroundControlZone
-                                          .withValues(alpha: 0.5),
-                                      borderColor:
-                                          AppColors.iconBackgroundControlZone,
-                                      borderStrokeWidth: 2,
-                                      radius:
-                                          (item.alert as ControlZone).radius,
-                                      useRadiusInMeter: true,
-                                    ),
-                            ],
-                          ),
-                          MarkerLayer(
-                            markers: [
-                              // POLICE - MARKERS
-                              for (var item in _alerts)
-                                if (item.alert is Police)
-                                  if (item.visible)
-                                    Marker(
-                                      width: alertCircleMaxSize,
-                                      height: alertCircleMaxSize,
-                                      point: item.alert.position,
-                                      child: Transform.rotate(
-                                        angle: _bearing != null
+                            // CONTROL ZONE - CIRCLELAYERS
+                            CircleLayer(
+                              circles: [
+                                for (var item in _alerts)
+                                  if (item.alert is ControlZone)
+                                    if (item.visible)
+                                      CircleMarker(
+                                        point: item.alert.position,
+                                        color: AppColors
+                                            .iconBackgroundControlZone
+                                            .withValues(alpha: 0.5),
+                                        borderColor:
+                                            AppColors.iconBackgroundControlZone,
+                                        borderStrokeWidth: 2,
+                                        radius:
+                                            (item.alert as ControlZone).radius,
+                                        useRadiusInMeter: true,
+                                      ),
+                              ],
+                            ),
+                            MarkerLayer(
+                              markers: [
+                                // POLICE - MARKERS
+                                for (var item in _alerts)
+                                  if (item.alert is Police)
+                                    if (item.visible)
+                                      Marker(
+                                        width: alertCircleMaxSize,
+                                        height: alertCircleMaxSize,
+                                        point: item.alert.position,
+                                        child: Transform.rotate(
+                                          angle:
+                                              _bearing != null
+                                                  ? _bearing! * (pi / 180)
+                                                  : 0.0, // rotation inverse
+                                          child: CustomMarker(
+                                            size: alertCircleMaxSize,
+                                            type: "police",
+                                          ),
+                                        ),
+                                      ),
+
+                                // Icon navigation
+                                Marker(
+                                  width: 35.0,
+                                  height: 35.0,
+                                  point: _currentPosition!,
+                                  child: Transform.rotate(
+                                    angle:
+                                        _bearing != null
                                             ? _bearing! * (pi / 180)
-                                            : 0.0, // rotation inverse
-                                        child: CustomMarker(
-                                          size: alertCircleMaxSize,
-                                          type: "police",
+                                            : 0.0,
+                                    child: Container(
+                                      width: 35.0,
+                                      height: 35.0,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.sonareFlashi,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Colors.white,
+                                          width: 2.0,
                                         ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(
+                                              alpha: 0.3,
+                                            ),
+                                            offset: Offset(0, 2),
+                                            blurRadius: 3.0,
+                                            spreadRadius: 0.0,
+                                          ),
+                                        ],
                                       ),
-                                    ),
-
-                              // Icon navigation
-                              Marker(
-                                width: 35.0,
-                                height: 35.0,
-                                point: _currentPosition!,
-                                child: Transform.rotate(
-                                  angle: _bearing != null
-                                      ? _bearing! * (pi / 180)
-                                      : 0.0,
-                                  child: Container(
-                                    width: 35.0,
-                                    height: 35.0,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.sonareFlashi,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 2.0,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black
-                                              .withValues(alpha: 0.3),
-                                          offset: Offset(0, 2),
-                                          blurRadius: 3.0,
-                                          spreadRadius: 0.0,
+                                      child: Center(
+                                        child: Icon(
+                                          CupertinoIcons.location_north_fill,
+                                          color: Colors.white,
+                                          size: 22.0,
                                         ),
-                                      ],
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        CupertinoIcons.location_north_fill,
-                                        color: Colors.white,
-                                        size: 22.0,
                                       ),
                                     ),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
 
-                  // ALERTS - POINTS
-                  Container(
-                    /*
+                    // ALERTS - POINTS
+                    Container(
+                      /*
                     - Le container joue le role de repere, dans lequel on positionne les points
                       Pour trouver son centre, on utilise sa (taille / 2) en x et y
                       Il est donc necessaire de garder la meme taille utilisee pour la taille du container (repere)
@@ -723,103 +772,112 @@ class SonarePageState extends State<SonarePage> {
 
                     - C'est ensuite le rayon qui defini la distance du centre a laquelle on veut mettre les points
                     */
-                    width: (_screenSize!.width),
-                    height: (_screenSize!.width),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: Stack(
-                      children: [
-                        for (var item in _alerts)
-                          if (!item.visible)
-                            Positioned(
-                              left: item.circlePosition.dx,
-                              top: item.circlePosition.dy,
-                              child: Container(
-                                width: item.size,
-                                height: item.size,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
+                      width: (_screenSize!.width),
+                      height: (_screenSize!.width),
+                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      child: Stack(
+                        children: [
+                          for (var item in _alerts)
+                            if (!item.visible)
+                              Positioned(
+                                left: item.circlePosition.dx,
+                                top: item.circlePosition.dy,
+                                child: Container(
+                                  width: item.size,
+                                  height: item.size,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
 
-                                  // Choix couleur
-                                  color: item.alert is Police
-                                      ? AppColors.iconBackgroundPolice
-                                      : AppColors.iconBackgroundControlZone,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: item.size / 9,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.3),
-                                      blurRadius: 3.0,
-                                      spreadRadius: 0.0,
+                                    // Choix couleur
+                                    color:
+                                        item.alert is Police
+                                            ? AppColors.iconBackgroundPolice
+                                            : AppColors
+                                                .iconBackgroundControlZone,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: item.size / 9,
                                     ),
-                                  ],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        blurRadius: 3.0,
+                                        spreadRadius: 0.0,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
 
-                  // boutons zoom / dezoom
-                  Container(
-                    width: _screenSize!.width,
-                    // Valeurs pour le calcul de la taille du calque a placer par dessus la carte,
-                    // qui va contenir les boutons + et -
-                    // 10 pour l'espace entre la carte et la row
-                    // 30 pour la hauteur de la row
-                    height: _screenSize!.width + 10 * 2 + 30 * 2,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  icon: Icon(CupertinoIcons.minus,
-                                      color: Colors.white),
-                                  onPressed: () {
-                                    if (_zoomLevel > 13.5) {
-                                      setState(() {
-                                        _zoomLevel -= 0.5;
-                                      });
-                                      _mapController.move(
-                                          _currentPosition!, _zoomLevel);
-                                      updateAlertsParams();
-                                    }
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(CupertinoIcons.plus,
-                                      color: Colors.white),
-                                  onPressed: () {
-                                    if (_zoomLevel < 18) {
-                                      setState(() {
-                                        _zoomLevel += 0.5;
-                                      });
-                                      _mapController.move(
-                                          _currentPosition!, _zoomLevel);
-                                      updateAlertsParams();
-                                    }
-                                  },
-                                ),
-                              ],
+                    // boutons zoom / dezoom
+                    Container(
+                      width: _screenSize!.width,
+                      // Valeurs pour le calcul de la taille du calque a placer par dessus la carte,
+                      // qui va contenir les boutons + et -
+                      // 10 pour l'espace entre la carte et la row
+                      // 30 pour la hauteur de la row
+                      height: _screenSize!.width + 10 * 2 + 30 * 2,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      CupertinoIcons.minus,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      if (_zoomLevel > 13.5) {
+                                        setState(() {
+                                          _zoomLevel -= 0.5;
+                                        });
+                                        _mapController.move(
+                                          _currentPosition!,
+                                          _zoomLevel,
+                                        );
+                                        updateAlertsParams();
+                                      }
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      CupertinoIcons.plus,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      if (_zoomLevel < 18) {
+                                        setState(() {
+                                          _zoomLevel += 0.5;
+                                        });
+                                        _mapController.move(
+                                          _currentPosition!,
+                                          _zoomLevel,
+                                        );
+                                        updateAlertsParams();
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  )
-                ],
-              ),
+                  ],
+                ),
       ),
     );
   }

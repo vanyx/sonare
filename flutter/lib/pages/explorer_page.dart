@@ -16,13 +16,13 @@ class ExplorerPage extends StatefulWidget {
   final Stream<Position> positionStream;
   final LatLng? initPosition;
 
-  ExplorerPage(
-      {Key? key,
-      required this.userMovedCamera,
-      required this.explorerUserMovedCamera,
-      required this.positionStream,
-      required this.initPosition})
-      : super(key: key);
+  ExplorerPage({
+    Key? key,
+    required this.userMovedCamera,
+    required this.explorerUserMovedCamera,
+    required this.positionStream,
+    required this.initPosition,
+  }) : super(key: key);
 
   @override
   ExplorerPageState createState() => ExplorerPageState();
@@ -104,8 +104,7 @@ class ExplorerPageState extends State<ExplorerPage> {
 
     if (mounted && widget.initPosition != null) {
       setState(() {
-        //  @TODO _currentPosition = widget.initPosition;
-        _currentPosition = LatLng(48.09821300824947, -1.6753622078601924);
+        _currentPosition = widget.initPosition;
       });
     }
   }
@@ -120,9 +119,10 @@ class ExplorerPageState extends State<ExplorerPage> {
         if (Settings.appIsActive) {
           if (_mapReady) {
             if (mounted) {
-              // @TODO
-              // animateMarker(_currentPosition!,
-              //     LatLng(position.latitude, position.longitude));
+              animateMarker(
+                _currentPosition!,
+                LatLng(position.latitude, position.longitude),
+              );
 
               // Check automatiquement les alerts si l'user se deplace
               if (_lastPosition == null ||
@@ -140,9 +140,7 @@ class ExplorerPageState extends State<ExplorerPage> {
             }
           } else {
             setState(() {
-              _currentPosition = LatLng(48.09821300824947, -1.6753622078601924);
-
-//@TODO              _currentPosition = LatLng(position.latitude, position.longitude);
+              _currentPosition = LatLng(position.latitude, position.longitude);
             });
           }
         }
@@ -181,10 +179,11 @@ class ExplorerPageState extends State<ExplorerPage> {
 
   void refreshAlerts() async {
     List<Alert> newAlerts = await Common.getAlertByWindow(
-        _mapController.camera.visibleBounds.east,
-        _mapController.camera.visibleBounds.south,
-        _mapController.camera.visibleBounds.west,
-        _mapController.camera.visibleBounds.north);
+      _mapController.camera.visibleBounds.east,
+      _mapController.camera.visibleBounds.south,
+      _mapController.camera.visibleBounds.west,
+      _mapController.camera.visibleBounds.north,
+    );
 
     if (mounted) {
       setState(() {
@@ -249,9 +248,11 @@ class ExplorerPageState extends State<ExplorerPage> {
         double t = i / steps;
 
         // Interpolation pour le centre
-        double interpolatedLat = currentCenter.latitude +
+        double interpolatedLat =
+            currentCenter.latitude +
             (targetPosition.latitude - currentCenter.latitude) * t;
-        double interpolatedLng = currentCenter.longitude +
+        double interpolatedLng =
+            currentCenter.longitude +
             (targetPosition.longitude - currentCenter.longitude) * t;
 
         // Interpolation pour le zoom
@@ -262,7 +263,9 @@ class ExplorerPageState extends State<ExplorerPage> {
             currentRotation + (targetRotation - currentRotation) * t;
 
         _mapController.move(
-            LatLng(interpolatedLat, interpolatedLng), interpolatedZoom);
+          LatLng(interpolatedLat, interpolatedLng),
+          interpolatedZoom,
+        );
 
         _mapController.rotate(interpolatedRotation);
 
@@ -276,148 +279,156 @@ class ExplorerPageState extends State<ExplorerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body: _currentPosition == null
-          ? Center(
-              child: Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.white,
+      body:
+          _currentPosition == null
+              ? Center(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            )
-          : FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                initialCenter: _currentPosition!,
-                initialZoom: 15.0,
-                minZoom: 7.0,
-                maxZoom: 18.0,
-                onPositionChanged: _onMapChanged,
-                onMapReady: _onMapReady,
-                onTap: (tapPosition, point) {},
-                onLongPress: (tapPosition, point) {},
-              ),
-              children: [
-                TileLayer(urlTemplate: Settings.mapUrl),
-                CircleLayer(
-                  circles: [
-                    for (var item in _alerts)
-                      if (item is ControlZone)
-                        if (!item.centroid)
-                          CircleMarker(
-                            point: item.position,
-                            color: AppColors.iconBackgroundControlZone
-                                .withValues(alpha: 0.5),
-                            borderColor: AppColors.iconBackgroundControlZone,
-                            borderStrokeWidth: 2,
-                            radius: item.radius,
-                            useRadiusInMeter: true,
-                          ),
-                  ],
+              )
+              : FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialCenter: _currentPosition!,
+                  initialZoom: 15.0,
+                  minZoom: 7.0,
+                  maxZoom: 18.0,
+                  onPositionChanged: _onMapChanged,
+                  onMapReady: _onMapReady,
+                  onTap: (tapPosition, point) {},
+                  onLongPress: (tapPosition, point) {},
                 ),
-                MarkerLayer(
-                  markers: [
-                    if (_mapReady)
+                children: [
+                  TileLayer(urlTemplate: Settings.mapUrl),
+                  CircleLayer(
+                    circles: [
                       for (var item in _alerts)
-                        if (item is Police)
-                          Marker(
-                              width: _currentZoom > _zoomThreshold
-                                  ? _markerSize
-                                  : _miniMarkerSize,
-                              height: _currentZoom > _zoomThreshold
-                                  ? _markerSize
-                                  : _miniMarkerSize,
+                        if (item is ControlZone)
+                          if (!item.centroid)
+                            CircleMarker(
                               point: item.position,
-                              child: _currentZoom > _zoomThreshold
-                                  ? Transform.rotate(
-                                      angle: -_mapController.camera.rotation *
-                                          (pi / 180),
-                                      child: CustomMarker(
-                                        size: _markerSize,
-                                        type: 'police',
-                                      ),
-                                    )
-                                  : Container(
-                                      width: _miniMarkerSize,
-                                      height: _miniMarkerSize,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: AppColors.iconBackgroundPolice,
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 2,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black
-                                                .withValues(alpha: 0.3),
-                                            blurRadius: 3.0,
-                                            spreadRadius: 0.0,
-                                          ),
-                                        ],
-                                      ),
-                                    ))
-                        else if (item is ControlZone)
-                          if (item.centroid)
+                              color: AppColors.iconBackgroundControlZone
+                                  .withValues(alpha: 0.5),
+                              borderColor: AppColors.iconBackgroundControlZone,
+                              borderStrokeWidth: 2,
+                              radius: item.radius,
+                              useRadiusInMeter: true,
+                            ),
+                    ],
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      if (_mapReady)
+                        for (var item in _alerts)
+                          if (item is Police)
                             Marker(
-                              width: _miniMarkerSize,
-                              height: _miniMarkerSize,
+                              width:
+                                  _currentZoom > _zoomThreshold
+                                      ? _markerSize
+                                      : _miniMarkerSize,
+                              height:
+                                  _currentZoom > _zoomThreshold
+                                      ? _markerSize
+                                      : _miniMarkerSize,
                               point: item.position,
-                              child: Container(
+                              child:
+                                  _currentZoom > _zoomThreshold
+                                      ? Transform.rotate(
+                                        angle:
+                                            -_mapController.camera.rotation *
+                                            (pi / 180),
+                                        child: CustomMarker(
+                                          size: _markerSize,
+                                          type: 'police',
+                                        ),
+                                      )
+                                      : Container(
+                                        width: _miniMarkerSize,
+                                        height: _miniMarkerSize,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: AppColors.iconBackgroundPolice,
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withValues(
+                                                alpha: 0.3,
+                                              ),
+                                              blurRadius: 3.0,
+                                              spreadRadius: 0.0,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                            )
+                          else if (item is ControlZone)
+                            if (item.centroid)
+                              Marker(
                                 width: _miniMarkerSize,
                                 height: _miniMarkerSize,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColors.iconBackgroundControlZone,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.15),
-                                      spreadRadius: 2,
-                                      blurRadius: 8,
+                                point: item.position,
+                                child: Container(
+                                  width: _miniMarkerSize,
+                                  height: _miniMarkerSize,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.iconBackgroundControlZone,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2,
                                     ),
-                                  ],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.15,
+                                        ),
+                                        spreadRadius: 2,
+                                        blurRadius: 8,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
 
-                    // ME
-                    if (Settings.locationPermission)
-                      Marker(
-                        width: 25,
-                        height: 25,
-                        point: _currentPosition!,
-                        child: Container(
-                          width: 30.0,
-                          height: 30.0,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color.fromARGB(255, 37, 90, 254),
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 3.5,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.15),
-                                spreadRadius: 2,
-                                blurRadius: 8,
+                      // ME
+                      if (Settings.locationPermission)
+                        Marker(
+                          width: 25,
+                          height: 25,
+                          point: _currentPosition!,
+                          child: Container(
+                            width: 30.0,
+                            height: 30.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color.fromARGB(255, 37, 90, 254),
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 3.5,
                               ),
-                            ],
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.15),
+                                  spreadRadius: 2,
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
+                    ],
+                  ),
+                ],
+              ),
     );
   }
 }

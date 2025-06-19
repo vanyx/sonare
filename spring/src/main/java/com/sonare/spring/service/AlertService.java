@@ -206,7 +206,14 @@ public class AlertService {
         return locations;
     }
 
-    //@TODO: javadoc + fonction a check
+    /**
+     * Convertit les résultats SQL contenant des ControlZones avec des centroides en une liste exploitable.
+     *
+     * @param results Liste brute de résultats SQL contenant des ControlZones et leurs centroides.
+     * @param epsilon La distance (en degrés) pour déterminer si un point est un centroïde.
+     * @return Liste des ControlZones sous forme de Map<String, Object> avec latitude, longitude et attribut "centroid".
+     */
+    // Si epsilon > 0, alors c'est un centroid, sinon ce n'est pas un centroid
     private List<Map<String, Object>> parseControlZoneWithCentroidResults(List<Object[]> results, double epsilon) {
         List<Map<String, Object>> ControlZoneList = new ArrayList<>();
 
