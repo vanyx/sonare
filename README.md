@@ -96,13 +96,13 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 
 ### Boutons?? & Parametres
 
-<p align="center">
+<p>
   <img src="assets/report.PNG" width="200"/>
   <img src="assets/report2.PNG" width="200"/>
   <img src="assets/mode_choice.PNG" width="200"/>
 </p>
 
-<p align="center">
+<p>
   <img src="assets/param1.PNG" width="200"/>
   <img src="assets/param2.PNG" width="200"/>
   <img src="assets/param3.PNG" width="200"/>
@@ -110,7 +110,7 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 </p>
 
 ### Tutoriel
-<p align="center">
+<p>
   <img src="assets/tuto1.PNG" width="200"/>
   <img src="assets/tuto2.PNG" width="200"/>
   <img src="assets/tuto3.PNG" width="200"/>
@@ -118,7 +118,7 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 
 ### Notifications
 
-<p align="center">
+<p>
   <img src="assets/notif1.PNG" width="200"/>
   <img src="assets/notif2.PNG" width="200"/>
 </p>
