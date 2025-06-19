@@ -80,19 +80,48 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 # ✨ Design & interface
 
 ![Charte graphique](assets/graphic_chart.png)
-![Test gif](assets/mode_sonare.gif)
 
 ### Explorer
+<p align="center">
+  <img src="assets/explorer.PNG" width="200"/>
+  <img src="assets/explorer2.PNG" width="200"/>
+</p>
 
 ### Sonare
 
-### Parametres
+<p align="center">
+  <img src="assets/sonare.PNG" width="200"/>
+  <img src="assets/sonare2.PNG" width="200"/>
+</p>
+
+### Boutons?? & Parametres
+
+<p align="center">
+  <img src="assets/report.PNG" width="200"/>
+  <img src="assets/report2.PNG" width="200"/>
+  <img src="assets/mode_choice.PNG" width="200"/>
+</p>
+
+<p align="center">
+  <img src="assets/param1.PNG" width="200"/>
+  <img src="assets/param2.PNG" width="200"/>
+  <img src="assets/param3.PNG" width="200"/>
+  <img src="assets/param4.PNG" width="200"/>
+</p>
 
 ### Tutoriel
+<p align="center">
+  <img src="assets/tuto1.PNG" width="200"/>
+  <img src="assets/tuto2.PNG" width="200"/>
+  <img src="assets/tuto3.PNG" width="200"/>
+</p>
 
 ### Notifications
 
----------------------
+<p align="center">
+  <img src="assets/notif1.PNG" width="200"/>
+  <img src="assets/notif2.PNG" width="200"/>
+</p>
 
 
 # 🛠️ Installation
