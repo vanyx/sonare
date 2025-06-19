@@ -82,14 +82,14 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 ![Charte graphique](assets/graphic_chart.png)
 
 ### Explorer
-<p align="center">
+<p>
   <img src="assets/explorer.PNG" width="200"/>
   <img src="assets/explorer2.PNG" width="200"/>
 </p>
 
 ### Sonare
 
-<p align="center">
+<p>
   <img src="assets/sonare.PNG" width="200"/>
   <img src="assets/sonare2.PNG" width="200"/>
 </p>
