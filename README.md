@@ -87,46 +87,47 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 ## Mode "Explorer"
 
 <p>
-  <img src="assets/explorer.PNG"/>
-  <img src="assets/explorer2.PNG"/>
+  <img src="assets/explorer.PNG" width="200"/>
+  <img src="assets/explorer2.PNG" width="200"/>
 </p>
 
 ## Mode "Sonare"
 
 <p>
-  <img src="assets/sonare.PNG"/>
-  <img src="assets/sonare2.PNG"/>
+  <img src="assets/sonare.PNG" width="200"/>
+  <img src="assets/sonare2.PNG" width="200"/>
 </p>
 
 ## Interface
 
 <p>
-  <img src="assets/report.PNG"/>
-  <img src="assets/report2.PNG"/>
-  <img src="assets/mode_choice.PNG"/>
+  <img src="assets/report.PNG" width="200"/>
+  <img src="assets/report2.PNG" width="200"/>
+  <img src="assets/mode_choice.PNG" width="200"/>
 </p>
 
 ## Paramètres
 
 <p>
-  <img src="assets/param1.PNG"/>
-  <img src="assets/param2.PNG"/>
-  <img src="assets/param3.PNG"/>
-  <img src="assets/param4.PNG"/>
+  <img src="assets/param1.PNG" width="200"/>
+  <img src="assets/param2.PNG" width="200"/>
+  <img src="assets/param3.PNG" width="200"/>
+  <img src="assets/param4.PNG" width="200"/>
 </p>
 
 ## Tutoriel
+
 <p>
-  <img src="assets/tuto1.PNG"/>
-  <img src="assets/tuto2.PNG"/>
-  <img src="assets/tuto3.PNG"/>
+  <img src="assets/tuto1.PNG" width="200"/>
+  <img src="assets/tuto2.PNG" width="200"/>
+  <img src="assets/tuto3.PNG" width="200"/>
 </p>
 
 ## Notifications
 
 <p>
-  <img src="assets/notif1.PNG"/>
-  <img src="assets/notif2.PNG"/>
+  <img src="assets/notif1.PNG" width="200"/>
+  <img src="assets/notif2.PNG" width="200"/>
 </p>
 
 
