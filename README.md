@@ -94,13 +94,15 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
   <img src="assets/sonare2.PNG" width="200"/>
 </p>
 
-### Boutons?? & Parametres
+### Interface
 
 <p>
   <img src="assets/report.PNG" width="200"/>
   <img src="assets/report2.PNG" width="200"/>
   <img src="assets/mode_choice.PNG" width="200"/>
 </p>
+
+### Paramètres
 
 <p>
   <img src="assets/param1.PNG" width="200"/>
