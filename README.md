@@ -2,11 +2,8 @@
 
 ## Navigation communautaire & affichage immersif (sonar sous-marin / GTA IV)
 
-**🎥 Découvrez la démo de l’application en vidéo :**  
-**👉 https://youtu.be/Na4QJPD7eOM**
-
-### Un lien youtube est dispo ici :
-https://youtu.be/Na4QJPD7eOM
+### 🎥 Découvrez la démo de l’application en vidéo :
+### 👉 https://youtu.be/Na4QJPD7eOM
 
 # ⚠️ Disclaimer
 
