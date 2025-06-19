@@ -81,20 +81,20 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 
 ![Charte graphique](assets/graphic_chart.png)
 
-### Explorer
+## Explorer
 <p>
   <img src="assets/explorer.PNG" width="200"/>
   <img src="assets/explorer2.PNG" width="200"/>
 </p>
 
-### Sonare
+## Sonare
 
 <p>
   <img src="assets/sonare.PNG" width="200"/>
   <img src="assets/sonare2.PNG" width="200"/>
 </p>
 
-### Interface
+## Interface
 
 <p>
   <img src="assets/report.PNG" width="200"/>
@@ -102,7 +102,7 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
   <img src="assets/mode_choice.PNG" width="200"/>
 </p>
 
-### Paramètres
+## Paramètres
 
 <p>
   <img src="assets/param1.PNG" width="200"/>
@@ -111,14 +111,14 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
   <img src="assets/param4.PNG" width="200"/>
 </p>
 
-### Tutoriel
+## Tutoriel
 <p>
   <img src="assets/tuto1.PNG" width="200"/>
   <img src="assets/tuto2.PNG" width="200"/>
   <img src="assets/tuto3.PNG" width="200"/>
 </p>
 
-### Notifications
+## Notifications
 
 <p>
   <img src="assets/notif1.PNG" width="200"/>
