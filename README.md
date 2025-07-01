@@ -1,4 +1,4 @@
-# <img src="assets/logo.png" alt="logo" width="45"/> Sonare
+# <img src="assets/logo.png" alt="logo" width="70"/> Sonare
 
 ## Navigation communautaire & affichage immersif (sonar sous-marin / GTA IV)
 
