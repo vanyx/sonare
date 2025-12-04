@@ -135,20 +135,9 @@ Cette **mini-carte**, affiche uniquement la zone autour du conducteur dans un ce
 
 ## Prerequis
 
-- **🐳 Docker**
 - **📱 Flutter**
 
 ## Run
-
-### 1. API
-
-Dans le dossier de l'API **"spring"**, lancez :
-```bash
-docker-compose up -d
-```
-L’API sera accessible sur le port 8080.
-
-### 2. Flutter App
 
 - Ouvrez le fichier **settings.dart** et mettez à jour la valeur de la variable **apiUrl** avec l'adresse de votre API :
 ```dart
