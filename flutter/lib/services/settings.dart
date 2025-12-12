@@ -42,7 +42,7 @@ class Settings {
   /**************** API - endpoints ****************/
 
   // @TODO: Change this to your API URL
-  static String apiUrl = 'http://192.168.1.48:8080';
+  static String apiUrl = 'https://sonare.app';
 
   static String apiInfoEndpoint = '/api/infos';
 
