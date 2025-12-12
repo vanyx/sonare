@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:Sonare/services/settings.dart';
 import 'package:Sonare/services/common_functions.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
@@ -21,38 +24,40 @@ class BackgroundService {
   bool _locationInitializationIsOk = false;
 
   Future<void> initialize() async {
-    // Enable mode background
-    await _location.enableBackgroundMode(enable: true);
+    WidgetsFlutterBinding.ensureInitialized();
 
-    _location.changeSettings(
-      accuracy: LocationAccuracy.high,
-      // interval: 10000, // en millisecondes
-      // distanceFilter: 50 // en metres
-    );
-
-    // Initialisation notifications
+    // Notifications
     await _initializeNotifications();
 
-    // Permissions
-    bool serviceEnabled;
-    PermissionStatus permissionGranted;
+    // Demande les permissions
+    await _requestPermissions();
 
-    serviceEnabled = await _location.serviceEnabled();
+    // Configure la précision
+    _location.changeSettings(
+      accuracy: LocationAccuracy.high,
+    );
+
+    _locationInitializationIsOk = true;
+  }
+
+  Future<void> _requestPermissions() async {
+    bool serviceEnabled = await _location.serviceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await _location.requestService();
-      if (!serviceEnabled) {
-        return;
-      }
+      if (!serviceEnabled) return;
     }
 
-    permissionGranted = await _location.hasPermission();
+    PermissionStatus permissionGranted = await _location.hasPermission();
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await _location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
-      }
+      if (permissionGranted != PermissionStatus.granted) return;
     }
-    _locationInitializationIsOk = true;
+
+    // Android 10+ : demander le mode background
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      bool bgEnabled = await _location.enableBackgroundMode(enable: true);
+      if (!bgEnabled) return;
+    }
   }
 
   void start() async {
@@ -273,8 +278,9 @@ class BackgroundService {
   }
 
   Future<void> _initializeNotifications() async {
+    // Utiliser l'icône du launcher existante (ic_launcher)
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings();

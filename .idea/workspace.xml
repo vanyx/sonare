@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="601fe0bd-96d6-4b79-a1f1-3f9ec71330bb" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/flutter/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/flutter/.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/flutter/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/flutter/android/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter/android/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/flutter/android/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/flutter/android/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter/lib/services/settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter/lib/services/settings.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/flutter/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/flutter/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/flutter/windows/flutter/generated_plugins.cmake" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="TaskManager">
+    <servers />
+  </component>
+</project>

@@ -9,6 +9,7 @@ import 'services/common_functions.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   await Settings.initialize();
   if (Settings.tutorialDone) {
     await Common.requestPermissions();
