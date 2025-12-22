@@ -36,7 +36,7 @@ flutter_native_splash:
 
 # Edit here to change the app logo
 # Logo must be 512px * 512px
-# Then run : flutter pub run flutter_launcher_icons:main 
+# Then run : flutter pub run flutter_launcher_icons 
 flutter_icons:
   android: true
   ios: true
