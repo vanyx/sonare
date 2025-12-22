@@ -57,25 +57,48 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> _getCurrentLocation() async {
+    const LatLng paris = LatLng(48.8566, 2.3522);
+
+    // Si permission de position refusee, on ouvre la carte sur Paris
     if (!Settings.locationPermission) {
       await Geolocator.openLocationSettings();
-      // Si permission de position refusee, on ouvre la carte sur Paris
       if (mounted) {
         setState(() {
-          _currentPosition = LatLng(48.8566, 2.3522);
+          _currentPosition = paris;
         });
       }
       return;
     }
+
     try {
       Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.bestForNavigation);
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      ).timeout(
+        const Duration(seconds: 10),
+      );
+
       if (mounted) {
         setState(() {
           _currentPosition = LatLng(position.latitude, position.longitude);
         });
       }
-    } catch (e) {}
+    } on TimeoutException {
+      // GPS trop lent: fallback Paris
+      if (mounted) {
+        setState(() {
+          _currentPosition = paris;
+        });
+      }
+    } catch (e) {
+      // Autre erreur GPS: fallback Paris
+      if (mounted) {
+        setState(() {
+          _currentPosition = paris;
+        });
+      }
+    }
   }
 
   void _startListeningPosition() {
