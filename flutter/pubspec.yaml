@@ -16,7 +16,7 @@ dependencies:
   shimmer: ^3.0.0
   flutter_compass: ^0.8.0
   cupertino_icons: ^1.0.8
-  flutter_native_splash: ^2.4.3
+  flutter_native_splash: ^2.4.7
   flutter_launcher_icons: ^0.14.1
   flutter_local_notifications: ^19.5.0
   shared_preferences: ^2.5.4
@@ -27,12 +27,20 @@ dependencies:
   device_info_plus: ^12.3.0
 
 # Edit here to change the splash screen
-# Then run : flutter pub run flutter_native_splash:create
+# Then run : dart run flutter_native_splash:create
 flutter_native_splash:
   color: "#000000"
   image: assets/images/logo/icon.png
   android: true
   ios: true
+  android_gravity: center
+  fullscreen: true
+
+android_12:
+    color: "#000000"                          # fond noir
+    image: assets/images/logo/icon.png        # logo carré
+    icon_background_color: "#000000"         # supprime le carré blanc
+
 
 # Edit here to change the app logo
 # Logo must be 512px * 512px

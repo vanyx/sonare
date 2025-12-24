@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:Sonare/services/settings.dart';
 import 'package:Sonare/services/common_functions.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
